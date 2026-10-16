@@ -30,8 +30,7 @@ class ProductDatabase:
 
     def __init__(self, db_path: Optional[Path | str] = None):
         self.db_path = Path(db_path) if db_path else DB_PATH
-        self.backup_dir = BACKUP_DIR
-        self.backup_dir.mkdir(parents=True, exist_ok=True)
+        self.backup_dir = self.db_path.parent / "backups"
         self._init_db()
 
     def _get_connection(self) -> sqlite3.Connection:
@@ -54,6 +53,7 @@ class ProductDatabase:
         if not self.db_path.exists():
             # Nothing to backup yet
             return self.db_path
+        self.backup_dir.mkdir(parents=True, exist_ok=True)
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         backup_file = self.backup_dir / f"nutriscan_products_backup_{timestamp}.db"
         shutil.copy2(self.db_path, backup_file)

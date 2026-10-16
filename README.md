@@ -1,23 +1,32 @@
-# 🔬 NutriScan · NY
+# NutriScan · NY
 
-### ⚡ DEVELOPED BY NITIN YADAV
+### DEVELOPED BY NITIN YADAV
 
-A production-ready, mobile-first **NutriScan · NY** web application providing instant, deterministic food ingredient safety analysis, additive classification, and allergen detection.
-
----
-
-## 📱 Features
-
-- 📷 **Instant Camera & Gallery Scan**: Capture or choose a label photo with automatic one-touch instant analysis.
-- 🛡️ **Deterministic Safety Grading (A–D)**: Fixed rule-based scoring (A: Excellent, B: Good, C: Caution, D: Hazardous).
-- 🧪 **Detailed Risk Breakdown**: Breakdown per ingredient with side effects, regulatory status, and INS/E-number mapping.
-- ⚠️ **Allergen Alert System**: Highlights common allergens (Soy, Milk, Gluten, Nuts, Sulfites, etc.).
-- 🌐 **Multi-Language Support**: Seamless reporting in English, Hindi, and Hinglish without altering safety decisions.
-- 🔒 **Stable & Consistent Results**: Built-in image fingerprint caching and strict deterministic scoring rules.
+A production-ready, mobile-first NutriScan · NY application providing instant, deterministic food ingredient safety analysis, additive classification, category detection, and allergen alerts.
 
 ---
 
-## 🚀 Quick Setup
+## Direct Android APK Download
+
+The single, updated Android APK is available directly in the project root:
+- [NutriScan.apk](NutriScan.apk) (Ready to install on Android devices)
+
+---
+
+## Key Capabilities
+
+- Instant Camera and Gallery Scan: Capture or choose a label photo with automatic one-touch instant analysis.
+- Smart Product Category Detection: Automatically classifies Food & Snacks, Skincare, Haircare & Personal Care, Household Products, and Medicines & Medical items.
+- Deterministic Safety Grading (A to D): Fixed rule-based scoring (Grade A: Excellent, Grade B: Good, Grade C: Caution, Grade D: Hazardous).
+- Formulation Benchmarks: Smart formulation standards that eliminate missing ingredient errors for non-food items.
+- Detailed Risk Breakdown: Breakdown per ingredient with side effects, regulatory status, and INS / E-number mapping.
+- Allergen Alert System: Highlights common allergens (Soy, Milk, Gluten, Nuts, Sulfites, etc.).
+- Multi-Language Support: Seamless reporting in English, Hindi, and Hinglish.
+- Fast Response Times: In-memory caching delivering sub-millisecond repeated queries.
+
+---
+
+## Quick Setup
 
 ### 1. Configure Environment Keys
 Create a `.env` file in the root directory:
@@ -34,5 +43,5 @@ The app will launch at `http://localhost:8501`.
 
 ---
 
-## 👨‍💻 Developer
-**DEVELOPED BY NITIN YADAV**
+## Developer
+DEVELOPED BY NITIN YADAV

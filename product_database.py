@@ -86,6 +86,13 @@ class ProductDatabase:
 
             cursor.execute("CREATE UNIQUE INDEX IF NOT EXISTS idx_products_barcode ON products(barcode);")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_name ON products(name);")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);")
+
+            # Check and add specifications column if missing
+            cursor.execute("PRAGMA table_info(products);")
+            cols = [row[1] for row in cursor.fetchall()]
+            if cols and "specifications" not in cols:
+                cursor.execute("ALTER TABLE products ADD COLUMN specifications TEXT DEFAULT '';")
 
             # Audit log table
             cursor.execute("""
@@ -136,6 +143,7 @@ class ProductDatabase:
         confidence_score: float = 1.0,
         source: str = "LOCAL_REGISTRY",
         reason: str = "Standard update",
+        specifications: str = "",
     ) -> Dict[str, Any]:
         """
         Safely insert or update a product with verification checks and audit trail.
@@ -173,12 +181,14 @@ class ProductDatabase:
                 final_ingredients = ingredients_text if ingredients_text.strip() else (existing_dict.get("ingredients_text") or "")
                 final_image = image_url if image_url.strip() else (existing_dict.get("image_url") or "")
                 final_nutri = nutriscore if nutriscore.strip() else (existing_dict.get("nutriscore") or "")
+                final_specs = specifications if specifications.strip() else (existing_dict.get("specifications") or "")
 
                 cursor.execute("""
                     UPDATE products
                     SET name = ?, brand = ?, category = ?, ingredients_text = ?,
                         image_url = ?, nutriscore = ?, verification_status = ?,
-                        confidence_score = ?, source = ?, updated_at = ?, last_verified_at = ?
+                        confidence_score = ?, source = ?, updated_at = ?, last_verified_at = ?,
+                        specifications = ?
                     WHERE barcode = ?;
                 """, (
                     name.strip(),
@@ -192,6 +202,7 @@ class ProductDatabase:
                     source,
                     now_iso,
                     now_iso,
+                    final_specs.strip(),
                     clean_code,
                 ))
 
@@ -202,6 +213,7 @@ class ProductDatabase:
                     "ingredients_text": final_ingredients,
                     "source": source,
                     "verification_status": verification_status,
+                    "specifications": final_specs,
                 }
                 self._log_audit(clean_code, "UPDATE", existing_dict, new_data, reason, conn=conn)
                 conn.commit()
@@ -214,8 +226,8 @@ class ProductDatabase:
                     INSERT INTO products (
                         barcode, name, brand, category, ingredients_text,
                         image_url, nutriscore, verification_status, confidence_score,
-                        source, created_at, updated_at, last_verified_at
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+                        source, created_at, updated_at, last_verified_at, specifications
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                 """, (
                     clean_code,
                     name.strip(),
@@ -230,6 +242,7 @@ class ProductDatabase:
                     now_iso,
                     now_iso,
                     now_iso,
+                    specifications.strip(),
                 ))
 
                 new_data = {

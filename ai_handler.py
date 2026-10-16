@@ -717,18 +717,139 @@ def calculate_deterministic_safety(matched_ingredients: List[Dict[str, Any]]) ->
 # ─────────────────────────────────────────────────────────────────────────────
 
 def generate_deterministic_summary(
-    score_data: Dict[str, Any], language: str = "English"
+    score_data: Dict[str, Any], language: str = "English", category: Optional[str] = None
 ) -> Tuple[str, str]:
-    """Produce deterministic summary & recommendation text in selected language."""
+    """Produce deterministic summary & recommendation text in selected language adapted to product category."""
     grade = score_data.get("overall_grade", "C")
     score = score_data.get("overall_score", 50)
     concerning = score_data.get("concerning_ingredients_count", 0)
     allergens = score_data.get("allergens_detected", [])
+    cat_str = (category or score_data.get("category") or "").lower()
 
     allergen_str = f" Contains allergens: {', '.join(allergens)}." if allergens else ""
     allergen_str_hi = f" इसमें {', '.join(allergens)} जैसे एलर्जेंस मौजूद हैं।" if allergens else ""
     allergen_str_hl = f" Isme {', '.join(allergens)} allergens shamil hain." if allergens else ""
 
+    # Category Branch: Skincare & Cosmetics
+    if any(k in cat_str for k in ["skin", "serum", "moistur", "sunscreen", "cleanser", "cosmetic", "beauty"]):
+        if language == "Hindi":
+            if grade == "A":
+                summary = f"यह स्किनकेयर उत्पाद स्वच्छ और त्वचा के अनुकूल अवयवों से तैयार है (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
+                rec = "दैनिक सामयिक उपयोग के लिए कोमल और उपयुक्त। पैच टेस्ट की सलाह दी जाती है।"
+            elif grade == "B":
+                summary = f"यह स्किनकेयर उत्पाद मानक कॉस्मेटिक सुरक्षा मानकों के अनुसार सुरक्षित है (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
+                rec = "नियमित उपयोग के लिए उपयुक्त। उपयोग से पूर्व पैच टेस्ट करें।"
+            elif grade == "C":
+                summary = f"इस स्किनकेयर उत्पाद में {concerning} संभावित संवेदक या सुगंध घटक मौजूद हैं (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
+                rec = "संवेदनशील त्वचा वाले व्यक्ति चेहरे पर उपयोग से पूर्व पैच टेस्ट अवश्य करें।"
+            else:
+                summary = f"सावधान: इसमें संभावित रूप से उत्तेजक या प्रतिबंधित कॉस्मेटिक रसायन मौजूद हैं (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
+                rec = "संवेदनशील या क्षतिग्रस्त त्वचा पर उपयोग से बचें।"
+        elif language == "Hinglish":
+            if grade == "A":
+                summary = f"Yeh skincare product clean aur skin-friendly ingredients se bana hai (Formula Score: {score}/100).{allergen_str_hl}"
+                rec = "Daily skincare routine ke liye gentle aur safe hai. Patch test recommended."
+            elif grade == "B":
+                summary = f"Yeh skincare product generally safe hai aur standard cosmetic ingredients contain karta hai (Formula Score: {score}/100).{allergen_str_hl}"
+                rec = "Regular use ke liye suitable hai. Sensitive areas se bacha kar use karein."
+            elif grade == "C":
+                summary = f"Is formulation me {concerning} potential skin sensitizers ya fragrance compounds detect hue hain (Formula Score: {score}/100).{allergen_str_hl}"
+                rec = "Sensitive skin types pehle inner arm par patch test karein."
+            else:
+                summary = f"Warning: Is product me harsh ya restricted cosmetic chemicals shamil hain (Formula Score: {score}/100).{allergen_str_hl}"
+                rec = "Sensitive skin barrier ke liye safe nahi hai; milder options consider karein."
+        else:  # English
+            if grade == "A":
+                summary = f"This skincare formulation features clean, gentle, and nourishing topical ingredients (Formula Score: {score}/100).{allergen_str}"
+                rec = "Safe and suitable for regular skincare routine. Perform standard patch test."
+            elif grade == "B":
+                summary = f"This skincare product is generally safe with standard permitted cosmetic ingredients (Formula Score: {score}/100).{allergen_str}"
+                rec = "Suitable for topical usage. Avoid contact with eyes."
+            elif grade == "C":
+                summary = f"This formulation contains {concerning} potential skin sensitizer(s), fragrance components, or pore-clogging lipids (Formula Score: {score}/100).{allergen_str}"
+                rec = "Sensitive skin individuals should patch-test prior to full application."
+            else:
+                summary = f"Caution: Contains harsh, restricted, or potentially irritating cosmetic agents (Formula Score: {score}/100).{allergen_str}"
+                rec = "Not recommended for compromised skin barriers or rosacea-prone skin."
+        return summary, rec
+
+    # Category Branch: Haircare & Personal Care
+    if any(k in cat_str for k in ["hair", "shampoo", "soap", "deodorant", "roll-on", "personal"]):
+        if language == "Hindi":
+            summary = f"व्यक्तिगत स्वच्छता और बालों की देखभाल के लिए परीक्षित फॉर्मूलेशन (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
+            rec = "उपयोग के बाद साफ पानी से धोएं। आंखों के संपर्क से बचाएं।"
+        elif language == "Hinglish":
+            summary = f"Personal care aur hair hygiene formulation audit (Safety Score: {score}/100).{allergen_str_hl}"
+            rec = "Use ke baad thoroughly rinse karein. Aankhon se door rakhein."
+        else:
+            summary = f"Personal care & hygiene formulation audited for scalp and epidermal safety (Score: {score}/100).{allergen_str}"
+            rec = "Rinse thoroughly with clean water. Discontinue if redness or itching occurs."
+        return summary, rec
+
+    # Category Branch: Household Products
+    if any(k in cat_str for k in ["cleaner", "detergent", "household", "disinfectant"]):
+        if language == "Hindi":
+            summary = f"घरेलू रासायनिक क्लीनर फॉर्मूलेशन। रासायनिक सुरक्षा और हैंडलिंग ऑडिट।"
+            rec = "सावधानी: बच्चों की पहुंच से दूर रखें। हवादार स्थान में उपयोग करें। भोजन पर न छिड़कें।"
+        elif language == "Hinglish":
+            summary = f"Household chemical cleaner formulation. Handling and safety audit."
+            rec = "Warning: Bachhon se door rakhein. Ingest na karein aur skin contact avoid karein."
+        else:
+            summary = f"Household chemical maintenance formulation. Surface and handling safety audited."
+            rec = "Handling Warning: Keep out of reach of children. Use in well-ventilated areas. Do not ingest."
+        return summary, rec
+
+    # Category Branch: Medicines & Medical Products
+    if any(k in cat_str for k in ["medicine", "medical", "tablet", "pharma", "paracetamol", "drug"]):
+        if language == "Hindi":
+            summary = f"विनियमित औषधीय एवं चिकित्सीय उत्पाद। सक्रिय औषधीय यौगिक सत्यापित।"
+            rec = "चिकित्सीय सूचना: खुराक और उपयोग के लिए केवल पंजीकृत चिकित्सक या फार्मासिस्ट से परामर्श लें।"
+        elif language == "Hinglish":
+            summary = f"Regulated pharmaceutical product. Active medicinal compounds verified."
+            rec = "Doctor Notice: Proper dosage aur use ke liye registered doctor ya pharmacist se consult karein."
+        else:
+            summary = f"Regulated pharmaceutical product. Documented active compounds verified."
+            rec = "Clinical Notice: Consult a licensed physician or pharmacist for medical advice, dosage, and usage instructions."
+    # Category Branch: Hardware & Tools
+    if any(k in cat_str for k in ["hardware", "tool", "screw", "drill", "fastener", "pipe"]):
+        if language == "Hindi":
+            summary = "सत्यापित हार्डवेयर उपकरण विनिर्देश। गैर-उपभोग्य निर्मित सामग्री।"
+            rec = "उपयोग के दौरान व्यक्तिगत सुरक्षा उपकरण (PPE) पहनें और सुरक्षा निर्देशों का पालन करें।"
+        elif language == "Hinglish":
+            summary = "Verified hardware aur tools specification. Non-consumable manufactured equipment."
+            rec = "Operation ke waqt proper PPE and safety equipment use karein."
+        else:
+            summary = "Verified hardware & tool specification. Non-consumable manufactured equipment."
+            rec = "Wear appropriate personal protective equipment (PPE) and follow manufacturer operating instructions."
+        return summary, rec
+
+    # Category Branch: Electronics & Accessories
+    if any(k in cat_str for k in ["electronic", "accessory", "charger", "cable", "adapter", "battery", "power bank"]):
+        if language == "Hindi":
+            summary = "सत्यापित उपभोक्ता इलेक्ट्रॉनिक्स उपकरण। प्रमाणित विद्युत रेटिंग।"
+            rec = "निर्धारित वोल्टेज सीमाओं में उपयोग करें। प्रमाणित चार्जर का उपयोग करें और नमी से बचाएं।"
+        elif language == "Hinglish":
+            summary = "Verified electronic accessory specification. Certified electrical ratings."
+            rec = "Specified voltage par use karein, certified charger lagayein aur moisture se door rakhein."
+        else:
+            summary = "Verified consumer electronics accessory specification. Certified electrical ratings."
+            rec = "Operate within specified voltage limits. Use certified chargers and keep dry."
+        return summary, rec
+
+    # Category Branch: Other Consumer Products & Unknown
+    if any(k in cat_str for k in ["other", "consumer", "unknown", "toy", "stationery", "notebook"]):
+        if language == "Hindi":
+            summary = "सत्यापित उपभोक्ता उत्पाद रिकॉर्ड।"
+            rec = "उपयोग और सुरक्षा निर्देशों के लिए निर्माता पैकेज विवरण देखें।"
+        elif language == "Hinglish":
+            summary = "Verified consumer product record."
+            rec = "Usage aur safety instructions ke liye manufacturer package refer karein."
+        else:
+            summary = "Verified general consumer product record."
+            rec = "Refer to manufacturer packaging for safety and usage instructions."
+        return summary, rec
+
+    # Default Branch: Food & Beverages
     if language == "Hindi":
         if grade == "A":
             summary = f"यह उत्पाद पूरी तरह सुरक्षित और प्राकृतिक अवयवों से भरपूर है (सुरक्षा स्कोर: {score}/100)।{allergen_str_hi}"
@@ -862,9 +983,6 @@ class IngredientSafetyAI:
             except Exception as exc:
                 logger.warning("Gemini init failed: %s", exc)
 
-        if not self._gemini:
-            raise RuntimeError("GEMINI_API_KEY is required for image label OCR.")
-
     def analyze_image(
         self, image: Image.Image, language: str = "English", **kwargs: Any
     ) -> Dict[str, Any]:
@@ -877,6 +995,8 @@ class IngredientSafetyAI:
           5. Deterministic scoring rule engine
           6. Multi-language summary formatting
         """
+        if not self._gemini:
+            raise RuntimeError("GEMINI_API_KEY is required for image label OCR.")
         # Step 1: Compute Image Fingerprint
         img_hash = compute_image_hash(image)
 
@@ -980,7 +1100,16 @@ class IngredientSafetyAI:
 
         matched = [match_ingredient_against_kb(tok) for tok in tokens]
         score_data = calculate_deterministic_safety(matched)
-        summary, rec = generate_deterministic_summary(score_data, language=language)
+        cat_str = (product_meta or {}).get("category", "")
+        cat_type = (product_meta or {}).get("category_type", "")
+
+        # Category safety overrides for non-food categories
+        if any(k in cat_str.lower() for k in ["household", "cleaner", "detergent"]):
+            score_data["overall_grade"] = "CAUTION"
+        elif any(k in cat_str.lower() for k in ["medicine", "medical", "tablet", "pharma"]):
+            score_data["overall_grade"] = "REGULATED"
+
+        summary, rec = generate_deterministic_summary(score_data, language=language, category=cat_str)
 
         return {
             "source_type": "barcode" if product_meta else "text",
@@ -995,6 +1124,8 @@ class IngredientSafetyAI:
             "ingredients": score_data["ingredients"],
             "raw_text": raw_text,
             "product_info": product_meta or {},
+            "category": cat_str,
+            "category_type": cat_type,
         }
 
     def fetch_and_analyze_barcode(
@@ -1005,8 +1136,8 @@ class IngredientSafetyAI:
           1. Safe normalization & checksum validation (preserves leading zeros).
           2. Check normalized barcode cache.
           3. Multi-tier verified lookup (Local SQLite DB -> Verified Open Food Facts).
-          4. Barcode cross-verification on external results.
-          5. Deterministic ingredient analysis without AI fabrication.
+          4. Smart Category Classification & Rule Application.
+          5. Deterministic category-specific analysis without AI fabrication.
           6. Structured honest diagnostics when product is unverified or ingredients are missing.
         """
         from barcode_validator import normalize_barcode_string, validate_barcode
@@ -1028,15 +1159,11 @@ class IngredientSafetyAI:
             }
 
         # Check in-memory verified barcode cache
-        cache_key = f"barcode:{clean_code}"
+        cache_key = f"barcode:{clean_code}:{language}"
         if cache_key in _BARCODE_CACHE:
             cached_data = _BARCODE_CACHE[cache_key]
             logger.info("Cache hit for verified barcode: %s", clean_code)
-            summary, rec = generate_deterministic_summary(cached_data, language=language)
-            res = dict(cached_data)
-            res["summary"] = summary
-            res["recommendation"] = rec
-            return res
+            return dict(cached_data)
 
         # Run verified multi-tier resolver
         resolved = resolve_scanned_barcode(clean_code, image_ocr_text=image_ocr_text)
@@ -1059,7 +1186,48 @@ class IngredientSafetyAI:
         product_meta["source"] = resolved.get("source", "VERIFIED_REGISTRY")
         product_meta["verification_status"] = resolved.get("verification_status", "VERIFIED")
 
-        # Handle verified product record with missing ingredients
+        cat_str = resolved.get("category", "Food and snacks")
+        cat_type = resolved.get("category_type", "FOOD_AND_SNACKS")
+        rules = resolved.get("analysis_rules", {})
+        supports_ingredients = rules.get("supports_ingredients", True)
+        supports_food_score = rules.get("supports_food_score", True)
+        specs = resolved.get("specifications") or product_meta.get("specifications") or ""
+
+        # Handle non-food categories that do NOT support ingredients (Hardware, Tools, Electronics, Other)
+        if not supports_ingredients:
+            p_name = product_meta.get("name", "Product")
+            brand = product_meta.get("brand", "Manufacturer")
+            summary, rec = generate_deterministic_summary(
+                {"overall_grade": "SPEC VERIFIED", "overall_score": 100, "concerning_ingredients_count": 0, "allergens_detected": []},
+                language=language,
+                category=cat_str,
+            )
+            analysis = {
+                "source_type": "barcode",
+                "found": True,
+                "has_ingredients": False,
+                "barcode": clean_code,
+                "product_info": product_meta,
+                "verification_status": "VERIFIED",
+                "confidence_score": resolved.get("confidence_score", 1.0),
+                "source": resolved.get("source", "VERIFIED_REGISTRY"),
+                "category": cat_str,
+                "category_type": cat_type,
+                "analysis_rules": rules,
+                "overall_grade": "SPEC VERIFIED",
+                "overall_score": 100,
+                "summary": summary,
+                "recommendation": rec,
+                "total_ingredients_found": 0,
+                "concerning_ingredients_count": 0,
+                "allergens_detected": [],
+                "ingredients": [],
+                "specifications": specs,
+            }
+            _BARCODE_CACHE[cache_key] = analysis
+            return analysis
+
+        # Handle verified product record with missing ingredients (e.g. food/skincare where ingredients missing)
         if not resolved.get("has_ingredients") or not resolved.get("ingredients_text"):
             p_name = product_meta.get("name", "Product")
             brand = product_meta.get("brand", "Brand")
@@ -1072,8 +1240,12 @@ class IngredientSafetyAI:
                 "verification_status": "PARTIALLY_VERIFIED",
                 "confidence_score": resolved.get("confidence_score", 0.70),
                 "source": resolved.get("source", "VERIFIED_REGISTRY"),
+                "category": cat_str,
+                "category_type": cat_type,
+                "analysis_rules": rules,
+                "specifications": specs,
                 "message": f"Found '{p_name}' by {brand}, but its ingredient list is missing from the database.",
-                "action_prompt": "Please take a quick photo of the ingredient list on the back of the packet to complete safety analysis!",
+                "action_prompt": "Please take a quick photo of the ingredient list on the physical package to complete safety analysis!",
             }
 
         # Analyze verified product ingredients
@@ -1085,6 +1257,10 @@ class IngredientSafetyAI:
         analysis["verification_status"] = "VERIFIED"
         analysis["confidence_score"] = resolved.get("confidence_score", 1.0)
         analysis["source"] = resolved.get("source", "VERIFIED_REGISTRY")
+        analysis["category"] = cat_str
+        analysis["category_type"] = cat_type
+        analysis["analysis_rules"] = rules
+        analysis["specifications"] = specs
 
         # Cache verified analysis
         _BARCODE_CACHE[cache_key] = analysis

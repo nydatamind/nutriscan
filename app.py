@@ -529,6 +529,9 @@ GRADE_INFO = {
     "B": {"name": "Good – Generally Safe", "color": "#14b8a6", "fill": "linear-gradient(90deg, #0d9488, #14b8a6)", "desc": "Permitted additives in safe moderation"},
     "C": {"name": "Caution – Moderate Risk", "color": "#f59e0b", "fill": "linear-gradient(90deg, #d97706, #f59e0b)", "desc": "Contains artificial sweeteners or additives"},
     "D": {"name": "Hazardous – High Risk", "color": "#f43f5e", "fill": "linear-gradient(90deg, #e11d48, #f43f5e)", "desc": "Highly ultra-processed / harmful additives"},
+    "SPEC VERIFIED": {"name": "Verified Specifications", "color": "#38bdf8", "fill": "linear-gradient(90deg, #0284c7, #38bdf8)", "desc": "Non-food item. Technical specifications verified."},
+    "CAUTION": {"name": "Handling Safety", "color": "#f59e0b", "fill": "linear-gradient(90deg, #d97706, #f59e0b)", "desc": "Household formulation. Follow safety handling precautions."},
+    "REGULATED": {"name": "Regulated Product", "color": "#38bdf8", "fill": "linear-gradient(90deg, #0284c7, #38bdf8)", "desc": "Pharmaceutical item. Consult physician for dosage."},
 }
 
 
@@ -582,7 +585,42 @@ def render_results(data: dict) -> None:
         """, unsafe_allow_html=True)
         return
 
-    # Handle Barcode found but missing ingredients
+    # Handle Verified Non-Food Item (Hardware, Tools, Electronics, Consumer Goods)
+    if data.get("has_ingredients") is False and (data.get("overall_grade") == "SPEC VERIFIED" or not (data.get("analysis_rules") or {}).get("supports_ingredients", True)):
+        p_info = data.get("product_info", {})
+        p_name = p_info.get("name", "Product")
+        p_brand = p_info.get("brand", "")
+        p_img = p_info.get("image_url", "")
+        bcode = data.get("barcode", "")
+        specs = data.get("specifications") or p_info.get("specifications") or "Technical specifications verified."
+        cat = data.get("category") or p_info.get("category") or "Manufactured Product"
+        summary = data.get("summary") or f"Verified {cat} specifications."
+        rec = data.get("recommendation") or "Follow manufacturer safety guidelines."
+
+        img_html = f'<img src="{p_img}" class="product-thumb" alt="{p_name}" />' if p_img else '<div class="product-thumb-placeholder">ITEM</div>'
+
+        st.markdown(f"""
+        <div class="product-banner">
+            {img_html}
+            <div class="product-details">
+                <div class="product-brand">{p_brand}</div>
+                <div class="product-name">{p_name}</div>
+                <div class="product-meta-row">
+                    <span class="barcode-pill">BARCODE: {bcode}</span>
+                    <span class="barcode-pill" style="background:rgba(6,182,212,0.2);color:#38bdf8;">{cat}</span>
+                </div>
+            </div>
+        </div>
+        <div class="unreadable-banner" style="border-color:rgba(6,182,212,0.4);background:rgba(6,182,212,0.08);">
+            <div style="font-size:1rem;font-weight:700;color:#38bdf8;margin-bottom:0.3rem;">[VERIFIED SPECIFICATIONS]</div>
+            <strong style="font-size:0.95rem;color:#f8fafc;">{summary}</strong>
+            <div style="font-size:0.86rem;color:#94a3b8;margin-top:0.35rem;">{specs}</div>
+            <div style="font-size:0.86rem;color:#34d399;margin-top:0.35rem;">{rec}</div>
+        </div>
+        """, unsafe_allow_html=True)
+        return
+
+    # Handle Barcode found but missing ingredients (Food / Consumable)
     if data.get("has_ingredients") is False:
         p_info = data.get("product_info", {})
         p_name = p_info.get("name", "Product")

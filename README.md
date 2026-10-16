@@ -23,7 +23,6 @@ A production-ready, mobile-first **NutriScan · NY** web application providing i
 Create a `.env` file in the root directory:
 ```env
 GEMINI_API_KEY=AIzaSy...your_gemini_api_key
-GROQ_API_KEY=gsk_...your_groq_api_key
 ```
 
 ### 2. Run the App

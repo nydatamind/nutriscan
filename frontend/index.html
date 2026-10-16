@@ -2,9 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NutriScan · NY - Camera & Gallery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>NutriScan · Universal AI Chemical & Ingredient Safety Scanner</title>
+  <script src="zxing.min.js"></script>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --bg-main: #06090e;
+      --bg-surface: rgba(15, 23, 42, 0.92);
+      --bg-card: rgba(19, 29, 49, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.09);
+      --border-glow: rgba(6, 182, 212, 0.45);
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --accent-emerald: #10b981;
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-pink: #ec4899;
+      --grade-a: #10b981;
+      --grade-b: #14b8a6;
+      --grade-c: #f59e0b;
+      --grade-d: #f43f5e;
+      --nav-height: 64px;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -13,271 +35,4568 @@
       user-select: none;
     }
 
+    /* Suppress native video controls on Android WebView */
+    video::-webkit-media-controls,
+    video::-webkit-media-controls-enclosure,
+    video::-webkit-media-controls-panel,
+    video::-webkit-media-controls-play-button,
+    video::-webkit-media-controls-start-playback-button {
+      display: none !important;
+      -webkit-appearance: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
     body {
-      background: transparent;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-                   'Plus Jakarta Sans', sans-serif;
-      padding: 4px 0 6px;
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(16, 185, 129, 0.16), transparent 70%),
+                  radial-gradient(ellipse 60% 40% at 85% 15%, rgba(6, 182, 212, 0.14), transparent 60%),
+                  radial-gradient(circle at 15% 85%, rgba(236, 72, 153, 0.1), transparent 50%),
+                  #06090e;
+      background-attachment: fixed;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+      padding-bottom: calc(var(--nav-height) + 16px);
     }
 
-    /* ── True hidden file inputs ── */
-    #cam-input,
-    #gal-input {
-      position: absolute;
-      left: -9999px;
-      top: -9999px;
+    /* ════════════════════════════════════════════════════════════════════════
+       ⚡ FAST SPLASH SCREEN (0.25s)
+       ════════════════════════════════════════════════════════════════════════ */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #06090e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #splash-screen.fade-out {
       opacity: 0;
-      width: 0;
-      height: 0;
+      transform: scale(1.05);
+      pointer-events: none;
     }
 
-    /* ── Button row ── */
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .splash-bg-glow {
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.25), rgba(236, 72, 153, 0.2), transparent 70%);
+      filter: blur(40px);
+      animation: splashGlowPulse 2s ease-in-out infinite alternate;
+      pointer-events: none;
     }
 
-    /* ── Base label-button ── */
-    .btn {
+    @keyframes splashGlowPulse {
+      0% { transform: scale(0.9); opacity: 0.5; }
+      100% { transform: scale(1.15); opacity: 0.9; }
+    }
+
+    .splash-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .splash-logo-box {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      margin-bottom: 1.1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 0 12px;
-      height: 52px;
-      border-radius: 16px;
-      font-size: 15px;
+    }
+
+    .splash-aura {
+      position: absolute;
+      inset: -10px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #10b981, #06b6d4, #ec4899);
+      filter: blur(14px);
+      opacity: 0.8;
+      animation: splashAuraPulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes splashAuraPulse {
+      0% { transform: scale(0.94); opacity: 0.6; }
+      100% { transform: scale(1.08); opacity: 0.9; }
+    }
+
+    .splash-orbit-ring {
+      position: absolute;
+      inset: -14px;
+      border-radius: 34px;
+      border: 1.5px dashed rgba(6, 182, 212, 0.6);
+      animation: orbitSpin 8s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes orbitSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .splash-logo-img {
+      position: relative;
+      width: 82px;
+      height: 82px;
+      border-radius: 22px;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      object-fit: cover;
+      z-index: 2;
+    }
+
+    .splash-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.2rem;
+      background: linear-gradient(135deg, #ffffff 20%, #a5f3fc 60%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .splash-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      font-weight: 500;
+      margin-bottom: 1.2rem;
+      max-width: 280px;
+    }
+
+    .splash-loader-wrap {
+      width: 190px;
+    }
+
+    .splash-progress-track {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 0.4rem;
+    }
+
+    .splash-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #06b6d4, #10b981, #ec4899);
+      border-radius: 50px;
+      box-shadow: 0 0 12px rgba(6, 182, 212, 0.8);
+      transition: width 0.2s ease-out;
+    }
+
+    .splash-status-text {
+      font-size: 0.72rem;
+      color: #67e8f9;
       font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       📱 MAIN APP & MULTI-PAGE NAVIGATION
+       ════════════════════════════════════════════════════════════════════════ */
+    #main-app {
+      padding: 8px 12px 10px;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    }
+
+    #main-app.app-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .app-page {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .app-page.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Top App Bar */
+    .top-app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 8px 12px;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .mini-logo-box {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .mini-logo-glow {
+      position: absolute;
+      inset: -2px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #10b981, #06b6d4, #ec4899);
+      filter: blur(6px);
+      opacity: 0.6;
+    }
+
+    .mini-logo-img {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      object-fit: cover;
+    }
+
+    .brand-text-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title-compact {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #ffffff 30%, #a5f3fc 70%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-sub-compact {
+      font-size: 0.65rem;
+      color: #94a3b8;
+      font-weight: 600;
       letter-spacing: 0.3px;
+    }
+
+    .top-badge-pill {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 50px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       📷 SCANNER SCREEN (PAGE 1)
+       ════════════════════════════════════════════════════════════════════════ */
+    .scan-tabs {
+      display: flex;
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 3px;
+      margin-bottom: 0.65rem;
+      gap: 4px;
+    }
+
+    .scan-tab-btn {
+      flex: 1;
+      height: 38px;
+      border: none;
+      border-radius: 11px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .scan-tab-btn.active {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.25), rgba(16, 185, 129, 0.25));
+      border: 1px solid rgba(6, 182, 212, 0.5);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.2);
+    }
+
+    .scanner-box {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1.5px solid rgba(6, 182, 212, 0.35);
+      background: #000;
+      box-shadow: 0 16px 36px -10px rgba(0, 0, 0, 0.7), 0 0 24px rgba(6, 182, 212, 0.12);
+      margin-bottom: 0.75rem;
+    }
+
+    .video-viewport {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      background: #000;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (min-height: 720px) {
+      .video-viewport {
+        height: 290px;
+      }
+    }
+
+    #barcode-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .cam-backdrop-placeholder {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, #0f172a 0%, #06090e 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      transition: opacity 0.25s ease;
+    }
+
+    .cam-backdrop-placeholder.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .placeholder-pulse {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(6, 182, 212, 0.15);
+      border: 1.5px solid rgba(6, 182, 212, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #67e8f9;
+      margin-bottom: 8px;
+      animation: pulsePlaceholder 1.8s infinite alternate;
+    }
+
+    @keyframes pulsePlaceholder {
+      0% { transform: scale(0.92); box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+      100% { transform: scale(1.08); box-shadow: 0 0 20px 6px rgba(6, 182, 212, 0.2); }
+    }
+
+    /* Reticles */
+    .reticle {
+      position: absolute;
+      width: 220px;
+      height: 140px;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .reticle-ingredient {
+      width: 260px;
+      height: 180px;
+      border: 1.5px dashed rgba(236, 72, 153, 0.6);
+      border-radius: 16px;
+      background: rgba(236, 72, 153, 0.04);
+    }
+
+    .reticle-corner {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-color: #38bdf8;
+      border-style: solid;
+    }
+
+    .rc-tl { top: 0; left: 0; border-width: 3px 0 0 3px; border-top-left-radius: 8px; }
+    .rc-tr { top: 0; right: 0; border-width: 3px 3px 0 0; border-top-right-radius: 8px; }
+    .rc-bl { bottom: 0; left: 0; border-width: 0 0 3px 3px; border-bottom-left-radius: 8px; }
+    .rc-br { bottom: 0; right: 0; border-width: 0 3px 3px 0; border-bottom-right-radius: 8px; }
+
+    .laser {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #38bdf8, #ec4899, transparent);
+      box-shadow: 0 0 12px 3px rgba(56, 189, 248, 0.8);
+      animation: scanSweep 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes scanSweep {
+      0% { top: 6%; opacity: 0.3; }
+      50% { opacity: 1; }
+      100% { top: 92%; opacity: 0.3; }
+    }
+
+    .reticle-guide-text {
+      position: absolute;
+      bottom: 8px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #f472b6;
+      letter-spacing: 0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+    }
+
+    .shutter-flash-overlay {
+      position: absolute;
+      inset: 0;
+      background: #ffffff;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 10;
+      transition: opacity 0.15s ease-out;
+    }
+    .shutter-flash-overlay.flash-active {
+      opacity: 0.85;
+    }
+
+    /* Scanner Controls */
+    .scanner-controls-mode {
+      padding: 10px 12px;
+      background: rgba(10, 15, 29, 0.94);
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .cam-controls-bar {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 8px;
+    }
+
+    .cam-btn-smart {
+      flex: 1;
+      height: 42px;
+      border-radius: 13px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      background: rgba(16, 185, 129, 0.18);
+      border: 1.5px solid rgba(16, 185, 129, 0.45);
+      color: #34d399;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: all 0.2s ease;
+    }
+
+    .cam-btn-smart.recording {
+      background: rgba(244, 63, 94, 0.18);
+      border-color: rgba(244, 63, 94, 0.45);
+      color: #fb7185;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f43f5e;
+      box-shadow: 0 0 10px #f43f5e;
+      animation: pulseDot 1.4s infinite alternate;
+    }
+
+    @keyframes pulseDot {
+      0% { transform: scale(0.8); opacity: 0.6; }
+      100% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .cam-btn-torch, .cam-btn-flip {
+      width: 42px;
+      height: 42px;
+      border-radius: 13px;
+      border: 1.5px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cam-btn-torch.on {
+      background: rgba(250, 204, 21, 0.25);
+      border-color: #facc15;
+      color: #fde047;
+      box-shadow: 0 0 14px rgba(250, 204, 21, 0.35);
+    }
+
+    /* Manual search input */
+    .manual-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .manual-input {
+      flex: 1;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 0 12px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.8rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .manual-input:focus {
+      border-color: #06b6d4;
+      background: rgba(6, 182, 212, 0.08);
+      box-shadow: 0 0 14px rgba(6, 182, 212, 0.3);
+    }
+
+    .manual-btn {
+      height: 40px;
+      padding: 0 14px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+    }
+
+    /* Quick Chips */
+    .quick-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+      scrollbar-width: none;
+    }
+    .quick-chips-row::-webkit-scrollbar { display: none; }
+
+    .quick-chip-label {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .quick-chip {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       cursor: pointer;
       white-space: nowrap;
-      transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+      transition: all 0.2s ease;
+    }
+    .quick-chip:active {
+      transform: scale(0.95);
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
     }
 
-    .btn:active {
-      transform: scale(0.96);
+    /* Shutter Bar (Mode 2) */
+    .shutter-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 6px 12px 2px;
     }
 
-    /* ── Camera – gradient ── */
-    .btn-cam {
-      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
-      color: #ffffff;
-      border: 1px solid rgba(255,255,255,0.2);
-      box-shadow: 0 4px 20px rgba(37,99,235,0.45);
+    .shutter-main-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      gap: 5px;
     }
 
-    .btn-cam:active {
-      box-shadow: 0 2px 10px rgba(37,99,235,0.3);
-      filter: brightness(1.1);
+    .shutter-main-ring {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 3px solid rgba(236, 72, 153, 0.6);
+      background: rgba(236, 72, 153, 0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+      transition: transform 0.15s ease;
+    }
+    .shutter-main-btn:active .shutter-main-ring {
+      transform: scale(0.9);
     }
 
-    /* ── Gallery – dark glass ── */
-    .btn-gal {
-      background: rgba(23,29,43,0.97);
-      color: #cbd5e1;
-      border: 1px solid #2a3449;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    .shutter-main-core {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ec4899, #f43f5e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 22px;
     }
 
-    .btn-gal:active {
-      background: #1e2638;
-      color: #ffffff;
-      border-color: #3b82f6;
+    .shutter-main-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #f472b6;
+      letter-spacing: 0.5px;
     }
 
-    /* ── Status bar ── */
-    #status {
-      margin-top: 8px;
-      font-size: 12px;
-      font-weight: 600;
+    .shutter-side-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .shutter-hint-text {
+      font-size: 0.72rem;
+      color: #94a3b8;
       text-align: center;
-      padding: 6px 10px;
-      border-radius: 8px;
+      line-height: 1.4;
+      margin-top: 8px;
+    }
+
+    /* Home Hero Stats Card */
+    .home-hero-card {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.08));
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      border-radius: 18px;
+      padding: 12px 14px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .hero-stat-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-stat-icon {
+      font-size: 26px;
+    }
+
+    .hero-stat-text h4 {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .hero-stat-text p {
+      font-size: 0.68rem;
+      color: #94a3b8;
+    }
+
+    .hero-stat-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 50px;
+      background: rgba(16, 185, 129, 0.2);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       📊 DEDICATED REPORT SCREEN (PAGE 2)
+       ════════════════════════════════════════════════════════════════════════ */
+    .report-screen-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      padding: 4px 2px;
+    }
+
+    .back-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--border-subtle);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .back-nav-btn:active {
+      transform: scale(0.95);
+      background: rgba(6, 182, 212, 0.25);
+    }
+
+    .report-header-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .share-icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Product Details Card */
+    .product-card {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 12px;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
+    }
+
+    .p-thumb {
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .p-brand {
+      font-size: 0.72rem;
+      color: #38bdf8;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .p-title {
+      font-size: 0.96rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.25;
+      margin: 2px 0 6px;
+    }
+
+    .p-meta {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 50px;
+    }
+    .pill-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .pill-pink { background: rgba(236, 72, 153, 0.15); color: #f472b6; border: 1px solid rgba(236, 72, 153, 0.3); }
+    .pill-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Expiry Banner */
+    .expiry-banner {
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border: 1px solid transparent;
+    }
+    .expiry-fresh { background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.35); }
+    .expiry-warning { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.45); }
+    .expiry-expired { background: rgba(244, 63, 94, 0.18); border-color: rgba(244, 63, 94, 0.55); }
+    .expiry-guide { background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.3); }
+
+    .expiry-banner-icon { font-size: 22px; flex-shrink: 0; line-height: 1; margin-top: 2px; }
+    .expiry-banner-body { flex: 1; min-width: 0; }
+    .expiry-banner-title { font-size: 0.84rem; font-weight: 800; color: #fff; display: flex; align-items: center; }
+    .expiry-banner-desc { font-size: 0.74rem; color: #cbd5e1; margin-top: 2px; line-height: 1.35; }
+    .expiry-banner-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; font-size: 0.7rem; color: #94a3b8; }
+
+    /* Grade & Score Gauge Card */
+    .grade-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+    }
+
+    .gauge-svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .gauge-bg-circle {
+      fill: none;
+      stroke: rgba(255, 255, 255, 0.08);
+      stroke-width: 7;
+    }
+
+    .gauge-fill-circle {
+      fill: none;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 238.76;
+      stroke-dashoffset: 238.76;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .gauge-center-content {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-score-val {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .gauge-grade-badge {
+      font-size: 0.58rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 50px;
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .grade-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .grade-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .score-bar {
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .score-fill {
+      height: 100%;
+      border-radius: 50px;
+      transition: width 0.8s ease-out;
+    }
+
+    /* Stats Row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 0.75rem;
+    }
+
+    .stat-pill {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 8px 6px;
+      text-align: center;
+    }
+    .stat-num { font-family: 'Outfit', sans-serif; font-size: 1.15rem; font-weight: 900; line-height: 1; }
+    .stat-lbl { font-size: 0.62rem; color: #94a3b8; font-weight: 700; margin-top: 3px; }
+
+    /* Allergen Box */
+    .allergen-box {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.35);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      color: #fde68a;
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Health Profile Custom Warning Box */
+    .health-profile-warning-box {
+      background: rgba(244, 63, 94, 0.15);
+      border: 1.5px solid rgba(244, 63, 94, 0.45);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      color: #fecdd3;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Guidance & Verdict Cards */
+    .alt-choice-box {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(16, 185, 129, 0.12));
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 0.75rem;
+    }
+    .alt-choice-title { font-size: 0.82rem; font-weight: 800; color: #67e8f9; margin-bottom: 3px; }
+    .alt-choice-desc { font-size: 0.74rem; color: #e2e8f0; line-height: 1.35; }
+
+    .verdict-box {
+      background: rgba(15, 23, 42, 0.75);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-box {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 14px;
+      padding: 10px 12px;
+      font-size: 0.76rem;
+      color: #a7f3d0;
+      line-height: 1.4;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Filter Pills */
+    .ing-filter-row {
+      display: flex;
+      gap: 5px;
+      margin: 8px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+    .ing-filter-row::-webkit-scrollbar { display: none; }
+
+    .filter-pill-btn {
+      height: 30px;
+      padding: 0 10px;
+      border-radius: 50px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+    .filter-pill-btn.active {
+      background: rgba(6, 182, 212, 0.2);
+      border-color: #06b6d4;
+      color: #67e8f9;
+    }
+
+    /* Ingredient Cards */
+    .ing-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .ing-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .ing-name { font-size: 0.84rem; font-weight: 800; color: #fff; }
+    .ing-cat { font-size: 0.68rem; color: #94a3b8; font-weight: 600; }
+
+    .risk-chip {
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 50px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .chip-safe { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.35); }
+    .chip-mod { background: rgba(245, 158, 11, 0.15); color: #facc15; border: 1px solid rgba(245, 158, 11, 0.35); }
+    .chip-high { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid rgba(244, 63, 94, 0.45); }
+    .chip-low { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+
+    .ing-desc { font-size: 0.72rem; color: #cbd5e1; margin-top: 4px; line-height: 1.35; }
+    .ing-reg { font-size: 0.66rem; color: #94a3b8; font-weight: 700; margin-top: 4px; }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .retake-btn, .share-btn {
+      height: 42px;
+      border-radius: 13px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .retake-btn {
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid var(--border-subtle);
+      color: #fff;
+    }
+
+    .share-btn {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       🕒 PANTRY & HISTORY SCREEN (PAGE 3)
+       ════════════════════════════════════════════════════════════════════════ */
+    .page-header {
+      margin-bottom: 0.85rem;
+    }
+
+    .page-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .page-header p {
+      font-size: 0.74rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .history-toolbar, .guide-toolbar {
+      margin-bottom: 0.75rem;
+    }
+
+    .history-filter-row, .guide-filter-row {
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .history-filter-row::-webkit-scrollbar, .guide-filter-row::-webkit-scrollbar { display: none; }
+
+    .history-cards-container, .guide-cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      margin-bottom: 1rem;
+    }
+
+    .history-card-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .history-card-item:active {
+      transform: scale(0.98);
+      border-color: #06b6d4;
+    }
+
+    .history-card-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .hbadge-A { background: rgba(16, 185, 129, 0.2); border: 1.5px solid #10b981; color: #10b981; }
+    .hbadge-B { background: rgba(20, 184, 166, 0.2); border: 1.5px solid #14b8a6; color: #14b8a6; }
+    .hbadge-C { background: rgba(245, 158, 11, 0.2); border: 1.5px solid #f59e0b; color: #f59e0b; }
+    .hbadge-D { background: rgba(244, 63, 94, 0.2); border: 1.5px solid #f43f5e; color: #f43f5e; }
+
+    .history-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .history-card-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-card-meta {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .history-actions-bar {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-secondary {
+      flex: 1;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: #cbd5e1;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      flex: 1;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #06b6d4, #10b981);
+      border: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .empty-state-box {
+      text-align: center;
+      padding: 30px 16px;
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-subtle);
+      border-radius: 18px;
+      margin-bottom: 1rem;
+    }
+    .empty-state-icon { font-size: 36px; margin-bottom: 8px; }
+    .empty-state-title { font-size: 0.92rem; font-weight: 800; color: #fff; }
+    .empty-state-desc { font-size: 0.74rem; color: #94a3b8; margin-top: 4px; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       🧪 SAFETY GUIDE & ENCYCLOPEDIA (PAGE 4)
+       ════════════════════════════════════════════════════════════════════════ */
+    .guide-card-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 12px;
+    }
+
+    .guide-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .guide-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .guide-category {
+      font-size: 0.7rem;
+      color: #38bdf8;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+
+    .guide-desc {
+      font-size: 0.74rem;
+      color: #cbd5e1;
+      margin-top: 5px;
+      line-height: 1.35;
+    }
+
+    .guide-status {
+      font-size: 0.68rem;
+      color: #94a3b8;
+      font-weight: 700;
+      margin-top: 5px;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       ⚙️ HEALTH PROFILE & SETTINGS SCREEN (PAGE 5)
+       ════════════════════════════════════════════════════════════════════════ */
+    .profile-section-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 14px;
+      margin-bottom: 0.85rem;
+    }
+
+    .section-title {
+      font-size: 0.84rem;
+      font-weight: 800;
+      color: #67e8f9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .pref-toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .pref-toggle-row:last-child { border-bottom: none; }
+
+    .pref-info strong {
+      font-size: 0.82rem;
+      color: #fff;
+      display: block;
+    }
+
+    .pref-info small {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      display: block;
+      margin-top: 1px;
+    }
+
+    /* iOS/Android Style Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+      flex-shrink: 0;
+    }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .25s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    .lang-selector-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .settings-lang-btn {
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-sub);
+      font-family: inherit;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .settings-lang-btn.active {
+      background: rgba(6, 182, 212, 0.25);
+      border-color: #06b6d4;
+      color: #fff;
+    }
+
+    .app-info-card {
+      text-align: center;
+      padding: 16px 12px;
+    }
+
+    .app-credit-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .credit-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+    }
+
+    .credit-title { font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 900; color: #fff; }
+    .credit-sub { font-size: 0.68rem; color: #94a3b8; }
+    .credit-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 4px 12px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: #67e8f9;
+      margin: 8px 0 4px;
+      letter-spacing: 0.5px;
+    }
+    .credit-meta { font-size: 0.68rem; color: #64748b; }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       ⚡ FIXED BOTTOM NAVIGATION BAR
+       ════════════════════════════════════════════════════════════════════════ */
+    .bottom-nav-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: rgba(10, 15, 29, 0.95);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 4px calc(env(safe-area-inset-bottom, 0px) + 2px);
+      z-index: 1000;
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .nav-tab-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      gap: 3px;
+      padding: 6px 0;
+      transition: all 0.2s ease;
+    }
+
+    .nav-icon-wrap {
+      position: relative;
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab-btn span {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: color 0.2s ease;
+    }
+
+    .nav-tab-btn.active {
+      color: #38bdf8;
+    }
+
+    .nav-tab-btn.active .nav-icon-wrap svg {
+      stroke: #38bdf8;
+      filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.6));
+    }
+
+    .report-dot {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 6px #10b981;
+    }
+
+    /* ════════════════════════════════════════════════════════════════════════
+       🌀 FUTURISTIC HOLOGRAPHIC PROCESSING HUD
+       ════════════════════════════════════════════════════════════════════════ */
+    .processing-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 20000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(6, 9, 14, 0.88);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      animation: fadeInHud 0.25s ease-out;
+    }
+
+    @keyframes fadeInHud {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .hud-card {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      background: rgba(15, 23, 42, 0.96);
+      border: 1.5px solid rgba(6, 182, 212, 0.5);
+      border-radius: 24px;
+      padding: 24px 20px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(6, 182, 212, 0.25);
+    }
+
+    .hud-scanner-hologram {
+      position: relative;
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hud-radar-circle {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px dashed rgba(6, 182, 212, 0.6);
+      animation: radarSpin 4s linear infinite;
+    }
+
+    @keyframes radarSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hud-radar-sweep {
+      position: absolute;
+      inset: 6px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, transparent 60%, rgba(6, 182, 212, 0.4) 100%);
+      animation: radarSpin 1.8s linear infinite;
+    }
+
+    .hud-center-icon {
+      position: relative;
+      font-size: 32px;
+      color: #67e8f9;
+      filter: drop-shadow(0 0 10px rgba(6, 182, 212, 0.8));
+    }
+
+    .hud-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 2px;
+    }
+
+    .hud-subtitle {
+      font-size: 0.74rem;
+      color: #94a3b8;
+      margin-bottom: 16px;
+    }
+
+    .hud-steps-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+      margin-bottom: 16px;
+    }
+
+    .hud-step-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 0.74rem;
+      color: #64748b;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .hud-step-row.active {
+      color: #38bdf8;
+      font-weight: 800;
+    }
+
+    .hud-step-row.done {
+      color: #34d399;
+      font-weight: 700;
+    }
+
+    .hud-step-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .hud-step-row.active .hud-step-dot {
+      background: #38bdf8;
+      border-color: #38bdf8;
+      box-shadow: 0 0 10px #38bdf8;
+      animation: pulseStepDot 0.8s infinite alternate;
+    }
+
+    .hud-step-row.done .hud-step-dot {
+      background: #10b981;
+      border-color: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    @keyframes pulseStepDot {
+      from { transform: scale(0.8); }
+      to { transform: scale(1.3); }
+    }
+
+    .hud-progress-track {
+      width: 100%;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      overflow: hidden;
+    }
+
+    .hud-progress-fill {
+      height: 100%;
+      width: 20%;
+      background: linear-gradient(90deg, #06b6d4, #10b981, #ec4899);
+      border-radius: 50px;
+      transition: width 0.3s ease-out;
+    }
+
+    /* Status Toast Box */
+    #status-box {
+      position: fixed;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 15000;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 0.76rem;
+      font-weight: 800;
       display: none;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+      animation: slideDownToast 0.25s ease-out;
     }
 
-    #status.loading {
-      display: block;
-      background: rgba(59,130,246,0.12);
-      border: 1px solid rgba(59,130,246,0.3);
-      color: #93c5fd;
+    @keyframes slideDownToast {
+      from { top: -20px; opacity: 0; }
+      to { top: 14px; opacity: 1; }
     }
 
-    #status.success {
-      display: block;
-      background: rgba(16,185,129,0.12);
-      border: 1px solid rgba(16,185,129,0.3);
-      color: #6ee7b7;
+    #status-box.loading { background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.6); color: #38bdf8; }
+    #status-box.success { background: rgba(6, 78, 59, 0.95); border: 1.5px solid #10b981; color: #6ee7b7; }
+
+    /* Raw Ingredients Accordion Card */
+    .raw-ingredients-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      margin-top: 1rem;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    .raw-drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.02);
+      transition: background 0.2s;
+    }
+    .raw-drawer-header:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .raw-drawer-body {
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--border-subtle);
+    }
+    .raw-text-box {
+      font-size: 0.78rem;
+      color: #cbd5e1;
+      line-height: 1.55;
+      background: rgba(6, 9, 14, 0.6);
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-top: 10px;
+      max-height: 180px;
+      overflow-y: auto;
+      user-select: text;
+      word-break: break-word;
+    }
+    .copy-raw-btn {
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.35);
+      color: #38bdf8;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .copy-raw-btn:active {
+      transform: scale(0.95);
+      background: rgba(6, 182, 212, 0.25);
+    }
+
+    /* History Delete Button */
+    .history-del-btn {
+      background: rgba(244, 63, 94, 0.1);
+      border: 1px solid rgba(244, 63, 94, 0.25);
+      color: #fb7185;
+      font-size: 0.72rem;
+      padding: 6px 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-left: 6px;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .history-del-btn:active {
+      transform: scale(0.9);
+      background: rgba(244, 63, 94, 0.25);
     }
   </style>
 </head>
 <body>
 
-  <!--
-    CAMERA INPUT: accept="image/*" capture="environment"
-      → Android / iOS opens the original native Camera app directly.
-      → User takes photo, taps tick mark ✔ / OK → photo returned to app.
-    GALLERY INPUT: accept="image/*"  (no capture attribute)
-      → Android / iOS opens the Photo Gallery / Media Picker directly.
-      → Does NOT open the generic file manager for documents.
-  -->
-  <input type="file" id="cam-input" accept="image/*" capture="environment">
-  <input type="file" id="gal-input" accept="image/*">
+  <!-- ════════════════════════════════════════════════════════════════════════
+       ⚡ 1. SPLASH SCREEN (FAST 0.25s BOOT)
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div id="splash-screen">
+    <div class="splash-bg-glow"></div>
+    <div class="splash-content">
+      <div class="splash-logo-box">
+        <div class="splash-aura"></div>
+        <div class="splash-orbit-ring"></div>
+        <img src="logo.png" class="splash-logo-img" alt="NutriScan AI Logo">
+      </div>
 
-  <div class="btn-row">
-    <label for="cam-input" class="btn btn-cam">
-      📷 Camera
-    </label>
-    <label for="gal-input" class="btn btn-gal">
-      🖼️ Gallery
-    </label>
+      <div class="splash-title">NutriScan</div>
+      <div class="splash-subtitle">Universal Chemical & Ingredient Safety Scanner</div>
+
+      <div class="splash-loader-wrap">
+        <div class="splash-progress-track">
+          <div class="splash-progress-fill" id="splash-fill"></div>
+        </div>
+        <div class="splash-status-text" id="splash-status">Launching Safety Core...</div>
+      </div>
+    </div>
   </div>
 
-  <div id="status"></div>
+  <!-- ════════════════════════════════════════════════════════════════════════
+       🌀 2. FUTURISTIC HOLOGRAPHIC PROCESSING HUD
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div id="processing-hud" class="processing-hud" style="display:none;">
+    <div class="hud-card">
+      <div class="hud-scanner-hologram">
+        <div class="hud-radar-circle"></div>
+        <div class="hud-radar-sweep"></div>
+        <div class="hud-center-icon">⚡</div>
+      </div>
+      <div class="hud-title" id="hud-title">AI Safety Engine Auditing</div>
+      <div class="hud-subtitle" id="hud-subtitle">Analyzing product ingredients & composition…</div>
 
+      <div class="hud-steps-box">
+        <div class="hud-step-row active" id="hud-step-1">
+          <span class="hud-step-dot"></span>
+          <span class="hud-step-text">Decoding Barcode & Label Packaging</span>
+        </div>
+        <div class="hud-step-row" id="hud-step-2">
+          <span class="hud-step-dot"></span>
+          <span class="hud-step-text">Auditing 1500+ EU & FDA Chemical Additives</span>
+        </div>
+        <div class="hud-step-row" id="hud-step-3">
+          <span class="hud-step-dot"></span>
+          <span class="hud-step-text">Evaluating Personalized Allergy & Toxicity</span>
+        </div>
+        <div class="hud-step-row" id="hud-step-4">
+          <span class="hud-step-dot"></span>
+          <span class="hud-step-text">Finalizing Grade & Safety Report</span>
+        </div>
+      </div>
+
+      <div class="hud-progress-track">
+        <div class="hud-progress-fill" id="hud-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Toast Bar -->
+  <div id="status-box"></div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       📱 3. MAIN APPLICATION CONTAINER
+       ════════════════════════════════════════════════════════════════════════ -->
+  <div id="main-app">
+    
+    <!-- Top Ultra-Compact App Bar -->
+    <div class="top-app-bar">
+      <div class="brand-left">
+        <div class="mini-logo-box">
+          <div class="mini-logo-glow"></div>
+          <img src="logo.png" class="mini-logo-img" alt="Logo" />
+        </div>
+        <div class="brand-text-col">
+          <span class="brand-title-compact">NutriScan</span>
+          <span class="brand-sub-compact">Universal AI Chemical Safety</span>
+        </div>
+      </div>
+
+      <div class="top-badge-pill">
+        <span>⚡</span> <span>v3.0 Ultra</span>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         📷 SCREEN 1: SCANNER VIEW (PAGE-SCAN)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section id="page-scan" class="app-page active">
+      
+      <!-- Scanner Mode Tabs (2 Modes) -->
+      <div class="scan-tabs">
+        <button class="scan-tab-btn active" id="tab-bc" onclick="switchScanTab('barcode')">
+          <span>⚡</span> Barcode Scan
+        </button>
+        <button class="scan-tab-btn" id="tab-ph" onclick="switchScanTab('photo')">
+          <span>🔬</span> Ingredient Scanner
+        </button>
+      </div>
+
+      <!-- Unified Smart Scanner Viewport -->
+      <div class="scanner-box">
+        <div class="video-viewport" id="viewport-container">
+          <video id="barcode-video" playsinline muted autoplay poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E"></video>
+          
+          <div class="cam-backdrop-placeholder" id="cam-placeholder">
+            <div class="placeholder-pulse" onclick="toggleCamera()" style="cursor:pointer;" title="Tap to Toggle Camera">⚡</div>
+            <div id="cam-placeholder-title" style="font-size:0.82rem;font-weight:700;color:#67e8f9;">Camera Ready</div>
+            <div id="cam-placeholder-sub" style="font-size:0.68rem;color:#94a3b8;margin-top:2px;">Point at product barcode or ingredient list</div>
+            <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;">
+              <button class="quick-chip" onclick="startCamera()" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);">📷 Start Camera</button>
+              <button class="quick-chip" onclick="document.getElementById('hidden-gal').click()">🖼️ Upload Photo</button>
+            </div>
+          </div>
+
+          <!-- Mode A: Barcode Reticle -->
+          <div class="reticle" id="reticle-barcode">
+            <div class="reticle-corner rc-tl"></div>
+            <div class="reticle-corner rc-tr"></div>
+            <div class="reticle-corner rc-bl"></div>
+            <div class="reticle-corner rc-br"></div>
+            <div class="laser"></div>
+          </div>
+
+          <!-- Mode B: Ingredient Label Reticle -->
+          <div class="reticle reticle-ingredient" id="reticle-ingredient" style="display:none;">
+            <div class="reticle-corner rc-tl"></div>
+            <div class="reticle-corner rc-tr"></div>
+            <div class="reticle-corner rc-bl"></div>
+            <div class="reticle-corner rc-br"></div>
+            <div class="reticle-guide-text">
+              <span>🔬 FRAME INGREDIENTS & DATES</span>
+            </div>
+          </div>
+
+          <div id="shutter-flash" class="shutter-flash-overlay"></div>
+        </div>
+
+        <!-- Mode 1 Controls: Barcode Live Scanner -->
+        <div id="controls-barcode" class="scanner-controls-mode">
+          <div class="cam-controls-bar">
+            <button id="btn-toggle-cam" class="cam-btn-smart recording" onclick="toggleCamera()">
+              <span class="pulse-dot"></span>
+              <span id="cam-btn-label">Live Camera Active</span>
+            </button>
+            <button id="btn-torch" class="cam-btn-torch" onclick="toggleFlashlight()" title="Toggle Flashlight">
+              💡
+            </button>
+            <button id="btn-flip" class="cam-btn-flip" onclick="flipCamera()" title="Switch Camera">
+              🔄
+            </button>
+          </div>
+
+          <div class="manual-row">
+            <input type="text" id="manual-code-input" class="manual-input" placeholder="Search barcode or product (e.g. Roll-on, Maggi)" onkeyup="if(event.key==='Enter') lookupManualBarcode()" />
+            <button class="manual-btn" onclick="lookupManualBarcode()">
+              <span>🔍</span> Search
+            </button>
+          </div>
+
+          <!-- Quick Tap Chips for Instant Lookups -->
+          <div class="quick-chips-row">
+            <span class="quick-chip-label">Quick:</span>
+            <button class="quick-chip" onclick="searchProductByName('BE Bodywise Roll-on')">Bodywise Roll-on</button>
+            <button class="quick-chip" onclick="searchProductByName('Maggi')">Maggi</button>
+            <button class="quick-chip" onclick="searchProductByName('KitKat')">KitKat</button>
+            <button class="quick-chip" onclick="searchProductByName('Parle-G')">Parle-G</button>
+            <button class="quick-chip" onclick="searchProductByName('Dabur Amla')">Dabur Amla</button>
+            <button class="quick-chip" onclick="searchProductByName('Close Up')">Close Up</button>
+          </div>
+        </div>
+
+        <!-- Mode 2 Controls: Ingredient OCR Scanner -->
+        <div id="controls-ingredient" class="scanner-controls-mode" style="display:none;">
+          <input type="file" id="hidden-gal" accept="image/*" style="display:none;" onchange="handleFileSelect(this)">
+          
+          <div class="shutter-bar">
+            <button class="shutter-side-btn" onclick="document.getElementById('hidden-gal').click()" title="Pick from Gallery">
+              <span style="font-size:18px;">🖼️</span>
+              <span>Gallery</span>
+            </button>
+
+            <button class="shutter-main-btn" id="btn-shutter" onclick="captureAndScanIngredients()" title="Capture & Scan Ingredients">
+              <div class="shutter-main-ring">
+                <div class="shutter-main-core">
+                  <span style="font-size:22px;">📸</span>
+                </div>
+              </div>
+              <span class="shutter-main-label">Scan Ingredients</span>
+            </button>
+
+            <button class="shutter-side-btn" onclick="toggleFlashlight()" title="Toggle Flashlight">
+              <span style="font-size:18px;">💡</span>
+              <span>Torch</span>
+            </button>
+          </div>
+
+          <div class="shutter-hint-text">
+            ✨ <strong>Point at ingredient list or date stamp</strong> & tap the center button for instant chemical & expiry audit!
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Feature Card -->
+      <div class="home-hero-card">
+        <div class="hero-stat-left">
+          <div class="hero-stat-icon">🛡️</div>
+          <div class="hero-stat-text">
+            <h4>Universal Chemical Safety</h4>
+            <p>Audits Foods, Drinks, Skincare & Additives</p>
+          </div>
+        </div>
+        <div class="hero-stat-badge">A to D Grading</div>
+      </div>
+
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         📊 SCREEN 2: DEDICATED REPORT SCREEN (PAGE-REPORT)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section id="page-report" class="app-page">
+      <div class="report-screen-header">
+        <button class="back-nav-btn" onclick="navToPage('scan')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Scanner</span>
+        </button>
+        <span class="report-header-title">Product Audit Report</span>
+        <button class="share-icon-btn" onclick="shareReport()" title="Share Report">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
+        </button>
+      </div>
+
+      <!-- Results Container populated by renderAnalysis -->
+      <div id="results-area">
+        <div class="empty-state-box">
+          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-title">No Product Scanned Yet</div>
+          <div class="empty-state-desc">Scan a barcode or take an ingredient photo to view the full safety report.</div>
+          <button class="btn-primary" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;" onclick="navToPage('scan')">📷 Open Scanner</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         🕒 SCREEN 3: PANTRY & HISTORY SCREEN (PAGE-HISTORY)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section id="page-history" class="app-page">
+      <div class="page-header">
+        <h2>🕒 Scan History & Pantry</h2>
+        <p>Audit trail of all your scanned food, snacks & skincare products</p>
+      </div>
+
+      <div class="history-toolbar">
+        <input type="text" id="history-search" class="manual-input" placeholder="Search saved scans by name, brand..." oninput="filterHistoryList(this.value)" />
+        <div class="history-filter-row">
+          <button class="filter-pill-btn active" id="hflt-all" onclick="filterHistoryGrade('all')">All Scans</button>
+          <button class="filter-pill-btn" id="hflt-safe" onclick="filterHistoryGrade('safe')">✅ Clean (A/B)</button>
+          <button class="filter-pill-btn" id="hflt-hazard" onclick="filterHistoryGrade('hazard')">🔴 Caution (C/D)</button>
+        </div>
+      </div>
+
+      <div id="history-full-list" class="history-cards-container"></div>
+
+      <div class="history-actions-bar">
+        <button class="btn-secondary" onclick="clearAllHistory()">🗑️ Clear History</button>
+        <button class="btn-primary" onclick="navToPage('scan')">📷 Scan Product</button>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         🧪 SCREEN 4: SAFETY GUIDE & ADDITIVE ENCYCLOPEDIA (PAGE-GUIDE)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section id="page-guide" class="app-page">
+      <div class="page-header">
+        <h2>🧪 Safety Guide & Encyclopedia</h2>
+        <p>Search 40+ canonical INS codes, food additives & cosmetic chemicals</p>
+      </div>
+
+      <div class="guide-toolbar">
+        <input type="text" id="guide-search" class="manual-input" placeholder="Search additive (e.g. INS 924a, Parabens, SLS, TBHQ, MSG)..." oninput="filterGuideList(this.value)" />
+        <div class="guide-filter-row">
+          <button class="filter-pill-btn active" id="gflt-all" onclick="filterGuideCategory('all')">All Additives</button>
+          <button class="filter-pill-btn" id="gflt-high" onclick="filterGuideCategory('high')">🔴 High Risk Only</button>
+          <button class="filter-pill-btn" id="gflt-cosmetic" onclick="filterGuideCategory('cosmetic')">🧴 Skincare & Hair</button>
+          <button class="filter-pill-btn" id="gflt-food" onclick="filterGuideCategory('food')">🍫 Food Additives</button>
+        </div>
+      </div>
+
+      <div id="guide-items-list" class="guide-cards-container"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         ⚙️ SCREEN 5: HEALTH PROFILE & SETTINGS (PAGE-PROFILE)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section id="page-profile" class="app-page">
+      <div class="page-header">
+        <h2>⚙️ Health Profile & Preferences</h2>
+        <p>Personalize toxic chemical alerts and safety report languages</p>
+      </div>
+
+      <!-- Personalized Health & Dietary Toggles -->
+      <div class="profile-section-card">
+        <div class="section-title">🎯 Personal Health Alerts</div>
+        
+        <div class="pref-toggle-row">
+          <div class="pref-info">
+            <strong>🩸 Diabetic / Low Glycemic Alert</strong>
+            <small>Flag hidden maltodextrin, high-fructose corn syrup & invert sugars</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="pref-diabetic" onchange="saveHealthPrefs()"><span class="slider"></span></label>
+        </div>
+
+        <div class="pref-toggle-row">
+          <div class="pref-info">
+            <strong>🤰 Pregnancy Safe Mode</strong>
+            <small>Flag high-risk retinoids, artificial sweeteners & chemical preservatives</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="pref-pregnancy" onchange="saveHealthPrefs()"><span class="slider"></span></label>
+        </div>
+
+        <div class="pref-toggle-row">
+          <div class="pref-info">
+            <strong>🌿 100% Vegan Verification</strong>
+            <small>Flag gelatin, carmine (E120), bone char, shellac & animal derivatives</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="pref-vegan" onchange="saveHealthPrefs()"><span class="slider"></span></label>
+        </div>
+
+        <div class="pref-toggle-row">
+          <div class="pref-info">
+            <strong>🌾 Gluten-Free / Celiac Mode</strong>
+            <small>Detect wheat, barley, malt, spelt & hidden gluten sources</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="pref-gluten" onchange="saveHealthPrefs()"><span class="slider"></span></label>
+        </div>
+
+        <div class="pref-toggle-row">
+          <div class="pref-info">
+            <strong>💧 Sensitive Skin / Fragrance-Free</strong>
+            <small>Flag SLS, harsh sulfates, synthetic parfum & petroleum mineral oil</small>
+          </div>
+          <label class="switch"><input type="checkbox" id="pref-skin" onchange="saveHealthPrefs()"><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Language Selector -->
+      <div class="profile-section-card">
+        <div class="section-title">🌐 Analysis Language</div>
+        <div class="lang-selector-row">
+          <button class="settings-lang-btn" id="plang-en" onclick="setLanguage('English')">🇬🇧 English</button>
+          <button class="settings-lang-btn" id="plang-hi" onclick="setLanguage('Hindi')">🇮🇳 हिन्दी</button>
+          <button class="settings-lang-btn active" id="plang-hl" onclick="setLanguage('Hinglish')">🔀 Hinglish</button>
+        </div>
+      </div>
+
+      <!-- Custom Gemini AI Key Section -->
+      <div class="profile-section-card">
+        <div class="section-title">🔑 Custom Gemini AI Key (Optional)</div>
+        <p style="font-size:0.75rem;color:var(--text-sub);margin-bottom:10px;line-height:1.4;">
+          The app includes a built-in high-speed Gemini AI engine. You can optionally enter your own Google AI Studio key below for dedicated personal quota.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <input type="password" id="custom-gemini-key" class="manual-input" style="height:36px;font-size:0.78rem;" placeholder="AIzaSy... (leave blank for default)" />
+          <button class="manual-btn" style="height:36px;padding:0 14px;font-size:0.78rem;" onclick="saveCustomApiKey()">Save</button>
+        </div>
+        <div id="key-status-badge" style="margin-top:8px;font-size:0.72rem;font-weight:700;"></div>
+      </div>
+
+      <!-- App & Dev Info -->
+      <div class="profile-section-card app-info-card">
+        <div class="app-credit-header">
+          <img src="logo.png" class="credit-logo" alt="Logo" onerror="this.style.display='none'" />
+          <div>
+            <div class="credit-title">NutriScan · NY</div>
+            <div class="credit-sub">Universal Chemical & Safety Intelligence</div>
+          </div>
+        </div>
+        <div class="credit-badge">⚡ DEVELOPED BY NITIN YADAV</div>
+        <div class="credit-meta">v3.0 Ultra Edition · Multi-Engine Vision AI</div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       ⚡ FIXED BOTTOM NAVIGATION BAR
+       ════════════════════════════════════════════════════════════════════════ -->
+  <nav class="bottom-nav-bar">
+    <button class="nav-tab-btn active" id="nav-btn-scan" onclick="navToPage('scan')">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"></path><path d="M17 3h2a2 2 0 0 1 2 2v2"></path><path d="M21 17v2a2 2 0 0 1-2 2h-2"></path><path d="M7 21H5a2 2 0 0 1-2-2v-2"></path><rect x="7" y="7" width="10" height="10" rx="1"></rect></svg>
+      </div>
+      <span>Scan</span>
+    </button>
+
+    <button class="nav-tab-btn" id="nav-btn-report" onclick="navToPage('report')">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+        <span class="report-dot" id="report-active-dot" style="display:none;"></span>
+      </div>
+      <span>Report</span>
+    </button>
+
+    <button class="nav-tab-btn" id="nav-btn-history" onclick="navToPage('history')">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </div>
+      <span>History</span>
+    </button>
+
+    <button class="nav-tab-btn" id="nav-btn-guide" onclick="navToPage('guide')">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.31"></path><path d="M14 9.3V2"></path><path d="M8.5 2h7"></path><path d="M14 9.3a6.5 6.5 0 1 1-4 0"></path><path d="M5.52 16h12.96"></path></svg>
+      </div>
+      <span>Guide</span>
+    </button>
+
+    <button class="nav-tab-btn" id="nav-btn-profile" onclick="navToPage('profile')">
+      <div class="nav-icon-wrap">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
+      <span>Profile</span>
+    </button>
+  </nav>
+
+  <!-- ════════════════════════════════════════════════════════════════════════
+       📜 JAVASCRIPT ENGINE & ARCHITECTURE
+       ════════════════════════════════════════════════════════════════════════ -->
   <script>
-    // ─────────────────────────────────────────────────────────────────────
-    // Streamlit Component Protocol (bidirectional communication)
-    // ─────────────────────────────────────────────────────────────────────
+    var GEMINI_KEY = "";
+    var currentLanguage = "Hinglish";
+    var currentPage = "scan";
+    var currentActiveTab = "barcode";
+    var activeStream = null;
+    var zxingReader = null;
+    var nativeDetector = null;
+    var scanInterval = null;
+    var scanAnimFrame = null;
+    var isScanningFrame = false;
+    var isCameraStarting = false;
+    var lastScannedBarcode = null;
+    var currentScanSeqId = 0;
+    var lastAnalysisData = null;
 
-    var STREAMLIT_ORIGIN = window.location.origin;
-
+    // ── Streamlit Bridge Helper ──
     function stPost(msg) {
-      window.parent.postMessage(Object.assign({ isStreamlitMessage: true }, msg), "*");
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(Object.assign({ isStreamlitMessage: true }, msg), "*");
+      }
     }
-
-    // 1. Announce we are ready (critical – without this Streamlit renders blank)
     function componentReady() {
       stPost({ type: "streamlit:componentReady", apiVersion: 1 });
       setFrameHeight();
     }
-
-    // 2. Set iframe height so Streamlit sizes the container correctly
     function setFrameHeight() {
-      var h = document.documentElement.scrollHeight || document.body.scrollHeight || 70;
+      var h = document.documentElement.scrollHeight || document.body.scrollHeight || 700;
       stPost({ type: "streamlit:setFrameHeight", height: h });
     }
+    var torchState = false;
+    var currentFacingMode = "environment";
+    var splashDone = false;
+    var splashStarted = false;
 
-    // 3. Send image data back to Python
-    function sendValue(val) {
-      stPost({ type: "streamlit:setComponentValue", value: val });
+    // ── Pre-Indexed Local Database for Instant 0ms Lookup ──
+    var LOCAL_PRODUCT_DB = {
+      "8901088770507": {
+        name: 'Nihar Naturals Shanti Amla Badam Kesh Tel',
+        brand: 'Nihar Naturals (Marico)',
+        image_url: "",
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (73.4% v/v), Heavy Liquid Paraffin, Edible Vegetable Oil (25% v/v), Fragrance (Parfum), Tertiary Butylhydroquinone (TBHQ INS 319), Amla Extract (0.01% w/v), Almond Oil (0.1% w/v), Vitamin E Acetate, Synthetic Colours (CI 12700, CI 26100, CI 61565).'
+      },
+      "8901030383793": {
+        name: 'Dabur Amla Hair Oil',
+        brand: 'Dabur',
+        image_url: "",
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (50%), Canola Oil, Peanut Oil, Amla Extract, TBHQ (Antioxidant), Fragrance, Yellow 11 (CI 47000), Green 6 (CI 61565).'
+      },
+      "8901207010071": {
+        name: 'Bajaj Almond Drops Non-Sticky Hair Oil',
+        brand: 'Bajaj Consumer Care',
+        image_url: "",
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (77%), Refined Mustard Oil (21%), Sweet Almond Oil, Vitamin E Acetate, Fragrance, TBHQ (Antioxidant), CI 12700, CI 26100.'
+      },
+      "8901030013003": {
+        name: 'Parachute 100% Pure Coconut Oil',
+        brand: 'Parachute (Marico)',
+        image_url: "",
+        category: 'Pure Coconut Oil',
+        ingredients_text: '100% Pure Coconut Oil (Cold Pressed / Pure Edible & Hair Oil).'
+      },
+      "8901030353451": {
+        name: 'Head & Shoulders Smooth & Silky Shampoo',
+        brand: 'Procter & Gamble',
+        image_url: "",
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate (SLES), Sodium Xylenesulfonate, Zinc Carbonate, Cocamide MEA, Cocamidopropyl Betaine, Dimethicone, Zinc Pyrithione, Fragrance, Sodium Chloride, DMDM Hydantoin.'
+      },
+      "8901030865374": {
+        name: 'Dove Intense Repair Shampoo',
+        brand: 'Dove (Hindustan Unilever)',
+        image_url: "",
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Glycerin, Glycol Distearate, Carbomer, Gluconolactone, Sodium Hydroxide, Guar Hydroxypropyltrimonium Chloride, Citric Acid, DMDM Hydantoin.'
+      },
+      "8901030716577": {
+        name: 'Clinic Plus Strong & Long Health Shampoo',
+        brand: 'Clinic Plus (Hindustan Unilever)',
+        image_url: "",
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Milk Protein, Lysine HCl, Carbomer, Guar Hydroxypropyltrimonium Chloride, Mica, Titanium Dioxide, Citric Acid, DMDM Hydantoin.'
+      },
+      "8901030800375": {
+        name: 'Sunsilk Black Shine Shampoo with Amla Pearl',
+        brand: 'Sunsilk (Hindustan Unilever)',
+        image_url: "",
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Dimethiconol, TEA-Dodecylbenzenesulfonate, Perfume, Pearl Extract, Phyllanthus Emblica (Amla) Fruit Extract, Carbomer, Sodium Chloride, Mica, Titanium Dioxide, Disodium EDTA, DMDM Hydantoin.'
+      },
+      "8901030825361": {
+        name: 'TRESemme Keratin Smooth Shampoo',
+        brand: 'TRESemme (Hindustan Unilever)',
+        image_url: "",
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Hydrolyzed Keratin, Argania Spinosa (Argan) Kernel Oil, Carbomer, Glycol Distearate, Guar Hydroxypropyltrimonium Chloride, DMDM Hydantoin.'
+      },
+      "8906014640039": {
+        name: 'Mamaearth Onion Hair Oil with Onion Oil & Redensyl',
+        brand: 'Mamaearth (Honasa)',
+        image_url: "",
+        category: 'Hair Oil',
+        ingredients_text: 'Helianthus Annuus (Sunflower) Seed Oil, Simmondsia Chinensis (Jojoba) Oil, Prunus Amygdalus Dulcis (Almond) Oil, Allium Cepa (Onion) Seed Oil, Eclipta Alba (Bhringraj) Oil, Redensyl, Tocopheryl Acetate (Vitamin E), Fragrance.'
+      },
+      "8901719101038": {
+        name: 'Parle-G Original Gluco Biscuits',
+        brand: 'Parle',
+        image_url: "",
+        category: 'Biscuits',
+        ingredients_text: 'Wheat Flour (67%), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Milk Solids, Emulsifier [INS 322(i)], Artificial Vanilla Flavour.'
+      },
+      "8901063142275": {
+        name: 'Britannia Bourbon Chocolate Biscuits',
+        brand: 'Britannia',
+        image_url: "",
+        category: 'Biscuits',
+        ingredients_text: 'Refined Wheat Flour, Sugar, Palm Oil, Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 500ii, INS 503ii], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Chocolate Flavors.'
+      },
+      "8901063012653": {
+        name: 'Britannia Good Day Butter Cookies',
+        brand: 'Britannia',
+        image_url: "",
+        category: 'Cookies',
+        ingredients_text: 'Refined Wheat Flour (Maida), Sugar, Edible Vegetable Oil (Palm), Butter (2%), Invert Sugar Syrup, Milk Solids, Raising Agents [INS 503(ii), INS 500(ii)], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Butter Flavours.'
+      },
+      "8901063014169": {
+        name: 'Britannia Marie Gold Biscuits',
+        brand: 'Britannia',
+        image_url: "",
+        category: 'Biscuits',
+        ingredients_text: 'Refined Wheat Flour (Maida 65%), Sugar, Refined Palm Oil, Invert Sugar Syrup, Milk Solids, Raising Agents [INS 500(ii), INS 503(ii)], Iodised Salt, Emulsifiers [INS 471, INS 472e], Dough Conditioner (INS 223), Added Artificial Milk & Vanilla Flavours.'
+      },
+      "8901719104046": {
+        name: 'Parle Monaco Classic Regular Salted Biscuits',
+        brand: 'Parle',
+        image_url: "",
+        category: 'Salted Biscuits',
+        ingredients_text: 'Refined Wheat Flour (Maida), Edible Vegetable Oil (Palm Oil), Sugar, Raising Agents [INS 503(ii), INS 500(ii)], Invert Sugar Syrup, Edible Common Salt (2.1%), Yeast, Acidity Regulators [INS 270, INS 296], Emulsifiers [INS 322(i)], Dough Conditioner [INS 223].'
+      },
+      "8901719108020": {
+        name: 'Parle Hide & Seek Chocolate Chip Cookies',
+        brand: 'Parle',
+        image_url: "",
+        category: 'Cookies',
+        ingredients_text: 'Wheat Flour (Maida), Chocolate Chips (Sugar, Cocoa Mass, Cocoa Butter, Emulsifier INS 322), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Artificial Chocolate & Vanilla Flavours.'
+      },
+      "8901058852394": {
+        name: 'Maggi 2-Minute Masala Instant Noodles',
+        brand: 'Nestlé',
+        image_url: "",
+        category: 'Instant Noodles',
+        ingredients_text: 'Wheat Flour (Maida), Palm Oil, Salt, Wheat Gluten, Mineral (Calcium Carbonate), Guar Gum. Tastemaker: Hydrolysed Peanut Protein, Mixed Spices (Onion Powder, Coriander, Chili Powder, Turmeric, Garlic Powder, Cumin, Aniseed, Fenugreek, Ginger, Black Pepper, Clove, Nutmeg, Cardamom), Noodle Powder, Sugar, Edible Starch, Palm Oil, Caramel (INS 150d), Flavor Enhancer (INS 635), Acidity Regulator (INS 330), Sodium Bicarbonate.'
+      },
+      "8901499008602": {
+        name: "Lay's India's Magic Masala Potato Chips",
+        brand: "Lay's (PepsiCo)",
+        image_url: "",
+        category: 'Potato Chips',
+        ingredients_text: 'Potato, Edible Vegetable Oil (Palmolein, Rice Bran Oil), Seasoning (Spices and Condiments, Iodised Salt, Maltodextrin, Black Salt, Sugar, Tomato Powder, Acidity Regulators [INS 330, INS 296, INS 334], Flavor Enhancers [INS 627, INS 631], Anticaking Agent [INS 551]).'
+      },
+      "8901499008589": {
+        name: 'Kurkure Masala Munch Crispy Snack',
+        brand: 'Kurkure (PepsiCo)',
+        image_url: "",
+        category: 'Extruded Corn Snack',
+        ingredients_text: 'Rice Meal (42.8%), Edible Vegetable Oil (Palmolein Oil), Corn Meal (19.8%), Gram Meal (3.3%), Spices and Condiments (Onion Powder, Chili Powder, Amchur, Coriander Powder, Ginger Powder, Garlic Powder, Black Pepper Powder, Turmeric Powder, Fenugreek Powder), Iodised Salt, Sugar, Tomato Powder, Citric Acid (INS 330), Tartaric Acid (INS 334), Flavor Enhancers (INS 627, INS 631).'
+      },
+      "8901058852233": {
+        name: 'KitKat 4-Finger Crisp Wafer in Milk Chocolate',
+        brand: 'Nestlé',
+        image_url: "",
+        category: 'Chocolate Wafer',
+        ingredients_text: 'Sugar, Milk Solids (16.2%), Fractionated Vegetable Fat (Hydrogenated Palm Kernel Oil), Refined Wheat Flour (Maida), Cocoa Solids (4.5%), Emulsifier (Soya Lecithin INS 322), Yeast, Raising Agent [INS 500(ii)], Artificial Vanilla Flavor.'
+      },
+      "8901233024035": {
+        name: 'Cadbury Dairy Milk Chocolate',
+        brand: 'Cadbury (Mondelez)',
+        image_url: "",
+        category: 'Milk Chocolate',
+        ingredients_text: 'Sugar, Milk Solids (22%), Cocoa Butter, Cocoa Solids, Emulsifiers (INS 442, INS 476), Added Flavours (Natural, Nature Identical and Artificial Vanilla Flavouring Substances).'
+      },
+      "8906114631234": {
+        name: 'BE Bodywise 4% AHA Underarm Roll-On (Lactic + Mandelic)',
+        brand: 'BE Bodywise',
+        image_url: "",
+        category: 'Active Underarm Roll-on',
+        ingredients_text: 'Aqua, Lactic Acid (2%), Mandelic Acid (2%), Propylene Glycol, Propanediol, Salicylic Acid (0.5%), Butyrospermum Parkii (Shea Butter), Aloe Barbadensis Leaf Extract, Niacinamide, Sclerotium Gum, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide.'
+      },
+      "8906009450070": {
+        name: 'Nivea Pearl & Beauty Deodorant Roll-on',
+        brand: 'Nivea (Beiersdorf)',
+        image_url: "",
+        category: 'Antiperspirant Roll-on',
+        ingredients_text: 'Aqua, Aluminum Chlorohydrate, PPG-15 Stearyl Ether, Steareth-2, Steareth-21, Parfum, Hydrolyzed Pearl, Persea Gratissima Oil (Avocado Oil), Trisodium EDTA, BHT.'
+      },
+      "8901314010520": {
+        name: 'Colgate Strong Teeth Dental Cream',
+        brand: 'Colgate-Palmolive',
+        image_url: "",
+        category: 'Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide).'
+      },
+      "8901207011030": {
+        name: 'Dabur Red Ayurvedic Toothpaste',
+        brand: 'Dabur',
+        image_url: "",
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben.'
+      },
+      "8901262013017": {
+        name: 'Patanjali Dant Kanti Natural Dental Cream',
+        brand: 'Patanjali Ayurved',
+        image_url: "",
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate base, Anacyclus pyrethrum (Akarkara), Azadirachta indica (Neem), Acacia arabica (Babhul), Xanthoxylum alatum (Tomar), Mentha spicata (Pudina), Syzygium aromaticum (Laung), Piper sylvaticum (Pippali), Bakul, Vidang, Haldi, Pilu, Majuphal.'
+      },
+      "8901030341014": {
+        name: 'Close Up Everfresh Red Hot Gel Toothpaste',
+        brand: 'Close Up (Hindustan Unilever)',
+        image_url: "",
+        category: 'Gel Toothpaste',
+        ingredients_text: 'Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, Synthetic Fluorphlogopite, CI 16035, CI 17200.'
+      },
+      "5000347000010": {
+        name: 'Sensodyne Repair & Protect Toothpaste with NovaMin',
+        brand: 'Sensodyne (Haleon)',
+        image_url: "",
+        category: 'Sensitivity Toothpaste',
+        ingredients_text: 'Glycerin, PEG-8, Hydrated Silica, Calcium Sodium Phosphosilicate (NovaMin 5%), Cocamidopropyl Betaine, Sodium Methyl Cocoyl Taurate, Aroma, Titanium Dioxide, Carbomer, Sodium Saccharin, Sodium Fluoride (1450 ppm Fluoride).'
+      },
+      "8901314010544": {
+        name: 'Colgate Strong Teeth Calcium Boost Toothpaste',
+        brand: 'Colgate-Palmolive',
+        image_url: "",
+        category: 'Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide).'
+      },
+      "8901207000102": {
+        name: 'Dabur Red Paste 100g',
+        brand: 'Dabur',
+        image_url: "",
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben.'
+      },
+      "8901030919244": {
+        name: 'Close Up Triple Fresh Gel Red Hot',
+        brand: 'Close Up (Hindustan Unilever)',
+        image_url: "",
+        category: 'Gel Toothpaste',
+        ingredients_text: 'Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, CI 16035, CI 17200.'
+      },
+      "8906114630015": {
+        name: 'The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50',
+        brand: 'The Derma Co (Honasa)',
+        image_url: "",
+        category: 'Sunscreen Gel',
+        ingredients_text: 'Aqua, 1% Hyaluronic Acid, Vitamin E, Titanium Dioxide, Zinc Oxide, Ethylhexyl Methoxycinnamate, Butyl Methoxydibenzoylmethane, Phospholipids, 1,3-Butylene Glycol, Propanediol, Phenoxyethanol, Ethylhexylglycerin.'
+      },
+      "8906128100016": {
+        name: 'Minimalist SPF 50 Multi-Vitamin Sunscreen',
+        brand: 'Minimalist',
+        image_url: "",
+        category: 'Sunscreen',
+        ingredients_text: 'Water, Octocrylene, Ethylhexyl Salicylate, Niacinamide, Butyl Methoxydibenzoylmethane, Glycerin, Titanium Dioxide, Vitamin B5 (Panthenol), Vitamin F, Phenoxyethanol, Ethylhexylglycerin.'
+      },
+      "8901138500047": {
+        name: 'Himalaya Purifying Neem Face Wash',
+        brand: 'Himalaya Wellness',
+        image_url: "",
+        category: 'Face Wash',
+        ingredients_text: 'Aqua, Ammonium Lauryl Sulfate, Melia Azadirachta Leaf Extract (Neem), Curcuma Longa (Turmeric) Rhizome Extract, Cocamidopropyl Betaine, Sodium Cocoyl Glutamate, Glycerin, Acrylates/C10-30 Alkyl Acrylate Crosspolymer, Sodium Hydroxide, Phenoxyethanol, Methylchloroisothiazolinone, Methylisothiazolinone, CI 19140, CI 42090.'
+      },
+      "8901030752100": {
+        name: "Pond's Super Light Gel Oil-Free Moisturiser",
+        brand: "Pond's (Hindustan Unilever)",
+        image_url: "",
+        category: 'Face Moisturiser',
+        ingredients_text: 'Water, Dimethicone, Glycerin, Butylene Glycol, Ammonium Acryloyldimethyltaurate/VP Copolymer, Niacinamide, Sodium Hyaluronate (Hyaluronic Acid), Vitamin E Acetate, Phenoxyethanol, Perfume, CI 42090.'
+      },
+      "8901144000012": {
+        name: 'Boroline Antiseptic Ayurvedic Cream',
+        brand: 'G.D. Pharmaceuticals',
+        image_url: "",
+        category: 'Antiseptic Skin Cream',
+        ingredients_text: 'Boric Acid (1% w/w), Zinc Oxide (3% w/w), Anhydrous Lanolin, White Petroleum Jelly (Heavy Liquid Paraffin), Perfume, Microcrystalline Wax.'
+      },
+      "8901396001027": {
+        name: 'Dettol Original Germ Protection Bathing Soap',
+        brand: 'Dettol (Reckitt)',
+        image_url: "",
+        category: 'Bathing Soap',
+        ingredients_text: 'Sodium Palmate, Sodium Palm Kernelate, Aqua, Talc, Glycerin, Parfum, Chloroxylenol, Sodium Chloride, Titanium Dioxide (CI 77891), Tetrasodium EDTA, Etidronic Acid, Cymbopogon Flexuosus Oil, CI 11680.'
+      },
+      "8901030001017": {
+        name: 'Dove Cream Beauty Bathing Bar (1/4 Moisturising Cream)',
+        brand: 'Dove (Hindustan Unilever)',
+        image_url: "",
+        category: 'Beauty Bar',
+        ingredients_text: 'Sodium Lauroyl Isethionate, Stearic Acid, Lauric Acid, Sodium Palmate, Aqua, Sodium Isethionate, Sodium Stearate, Cocamidopropyl Betaine, Sodium Palm Kernelate, Glycerin, Parfum, Sodium Chloride, Zinc Oxide, Tetrasodium EDTA, Titanium Dioxide.'
+      },
+      "8901030364020": {
+        name: 'Lifebuoy Total 10 Germ Protection Soap',
+        brand: 'Lifebuoy (Hindustan Unilever)',
+        image_url: "",
+        category: 'Bathing Soap',
+        ingredients_text: 'Sodium Palmate, Sodium Palm Kernelate, Water, Talc, Glycerin, Perfume, Sodium Chloride, Titanium Dioxide, Terpineol, Thymol, Silver Oxide, Tetrasodium EDTA, Etidronic Acid, CI 12490.'
+      },
+      "8901499008015": {
+        name: "Kellogg's Corn Flakes Original",
+        brand: "Kellogg's",
+        image_url: "",
+        category: 'Breakfast Cereal',
+        ingredients_text: 'Corn Grits (88.6%), Sugar, Cereal Extract, Iodized Salt, Vitamins (Vitamin C, Vitamin B1, Vitamin B2, Vitamin B3, Vitamin B6, Folate, Vitamin B12), Mineral (Iron), Antioxidant (INS 307b).'
+      },
+      "8901088001014": {
+        name: 'Saffola Masala Oats Classic Masala',
+        brand: 'Saffola (Marico)',
+        image_url: "",
+        category: 'Instant Oats',
+        ingredients_text: 'Rolled Oats (73.9%), Spices & Condiments (3.8%) (Onion, Turmeric, Pepper, Clove, Red Chili, Garlic, Fenugreek), Dried Vegetables (Carrots, Green Peas), Salt, Sugar, Hydrolysed Vegetable Protein, Flavour Enhancers (INS 627, INS 631), Refined Rice Bran Oil.'
+      },
+      "8901764012235": {
+        name: 'Coca-Cola Original Carbonated Beverage',
+        brand: 'The Coca-Cola Company',
+        image_url: "",
+        category: 'Carbonated Soft Drink',
+        ingredients_text: 'Carbonated Water, Sugar, Acidity Regulator (INS 338), Caramel Colour (INS 150d), Natural Flavouring Substances, Caffeine.'
+      },
+      "8901207010477": {
+        name: 'Real Fruit Power Mixed Fruit Juice',
+        brand: 'Real (Dabur)',
+        image_url: "",
+        category: 'Packaged Fruit Juice',
+        ingredients_text: 'Water, Mixed Fruit Concentrate (18.1%) (Apple Juice Conc., Orange Juice Conc., Guava Puree, Mango Puree, Banana Puree, Apricot Puree, Peach Puree), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Stabilizer (INS 440).'
+      },
+      "90162602": {
+        name: 'Red Bull Energy Drink',
+        brand: 'Red Bull',
+        image_url: "",
+        category: 'Energy Drink',
+        ingredients_text: 'Carbonated Water, Sucrose, Glucose, Acidity Regulators (Citric Acid, Sodium Bicarbonate, Magnesium Carbonate), Taurine (0.4%), Caffeine (0.03%), Vitamins (Niacin, Pantothenic Acid, B6, B12), Flavours, Colours (Caramel, Riboflavin).'
+      },
+      "8901719101014": {
+        name: "Frooti Fresh 'N' Juicy Mango Drink",
+        brand: 'Parle Agro',
+        image_url: "",
+        category: 'Mango Beverage',
+        ingredients_text: 'Water, Mango Pulp (19.5%), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Permitted Class II Preservatives (INS 211, INS 224, INS 202).'
+      },
+    };
+
+    // ── Comprehensive Universal Canonical Safety Knowledge Base ──
+    var CANONICAL_DB = [
+      // ── High Risk Cosmetic & Chemical Additives ──
+      { name: "TBHQ (Tertiary Butylhydroquinone / INS 319)", patterns: [/\btbhq\b/i, /tertiary\s*butylhydroquinone/i, /ins\s*319/i, /e\s*319/i], risk: "High Risk", cat: "Synthetic Antioxidant Preservative", side_effects: "Used as lipid stabilizer in hair oils & cosmetics; high doses linked to skin allergies and cellular stress.", status: "Restricted in EU & Cosmetics", icon: "🔴", penalty: 25 },
+      { name: "Parabens (Methyl / Propyl / Butyl Paraben)", patterns: [/methylparaben/i, /propylparaben/i, /butylparaben/i, /ethylparaben/i, /isobutylparaben/i, /paraben/i, /ins\s*218/i, /ins\s*216/i], risk: "High Risk", cat: "Cosmetic Preservative", side_effects: "Endocrine disrupting potential; mimics estrogen in biological tissue; bioaccumulates.", status: "Banned/Restricted in EU Cosmetics", icon: "🔴", penalty: 28 },
+      { name: "Formaldehyde Releasers (DMDM Hydantoin / Quaternium-15)", patterns: [/dmdm\s*hydantoin/i, /quaternium-?15/i, /imidazolidinyl\s*urea/i, /diazolidinyl\s*urea/i, /bronopol/i, /sodium\s*hydroxymethylglycinate/i], risk: "High Risk", cat: "Formaldehyde-Releasing Preservative", side_effects: "Gradually releases carcinogenic formaldehyde; potent contact allergen causing scalp/skin dermatitis.", status: "Severely Restricted / Banned in EU", icon: "🔴", penalty: 32 },
+      { name: "Coal Tar Dyes (PPD / Resorcinol / CI 12700 / CI 26100)", patterns: [/p-?phenylenediamine/i, /\bppd\b/i, /resorcinol/i, /ci\s*12700/i, /ci\s*26100/i, /ci\s*61565/i, /coal\s*tar/i], risk: "High Risk", cat: "Synthetic Dye & Aromatic Amine", side_effects: "Severe sensitization, contact dermatitis, and potential endocrine/mutagenic concerns in hair dyes/oils.", status: "Regulated Cosmetic Colorant", icon: "🔴", penalty: 25 },
+      { name: "Triclosan & Triclocarban", patterns: [/triclosan/i, /triclocarban/i], risk: "High Risk", cat: "Antibacterial Agent", side_effects: "Endocrine disruptor affecting thyroid hormone metabolism; contributes to antibiotic resistance.", status: "Banned in Hand Washes by FDA", icon: "🔴", penalty: 30 },
+      { name: "Chemical Sunscreens (Oxybenzone / Benzophenone-3)", patterns: [/oxybenzone/i, /benzophenone-?3/i, /octinoxate/i, /octyl\s*methoxycinnamate/i, /homosalate/i], risk: "High Risk", cat: "Chemical UV Filter", side_effects: "Endocrine disruption, hormone mimicry, skin penetration, and coral reef bleaching toxicity.", status: "Banned in Hawaii & Restricted in EU", icon: "🔴", penalty: 25 },
+      
+      // ── Moderate Risk Cosmetic & Hair Care Ingredients ──
+      { name: "Mineral Oil / Light Liquid Paraffin", patterns: [/mineral\s*oil/i, /liquid\s*paraffin/i, /paraffinum\s*liquidum/i, /petroleum\s*oil/i, /white\s*mineral\s*oil/i], risk: "Moderate Risk", cat: "Petroleum Hydrocarbon Base", side_effects: "Heavy petroleum by-product; forms an occlusive barrier on scalp/skin, can clog pores and trap dirt.", status: "Approved with Purity Limits", icon: "🟠", penalty: 15 },
+      { name: "Sulphates (SLS - Sodium Lauryl Sulfate / SLES)", patterns: [/sodium\s*lauryl\s*sulfate/i, /sodium\s*laureth\s*sulfate/i, /\bsls\b/i, /\bsles\b/i, /ammonium\s*lauryl\s*sulfate/i], risk: "Moderate Risk", cat: "Harsh Surfactant & Foaming Agent", side_effects: "Strips natural scalp sebum and hair proteins; common cause of scalp irritation, dryness, and hair thinning.", status: "Cosmetic Standard with Concentration Limits", icon: "🟠", penalty: 16 },
+      { name: "Non-Soluble Silicones (Dimethicone / Cyclopentasiloxane)", patterns: [/dimethicone/i, /cyclopentasiloxane/i, /amodimethicone/i, /dimethiconol/i, /cyclomethicone/i], risk: "Moderate Risk", cat: "Synthetic Silicone Emollient", side_effects: "Provides synthetic smoothness but causes product buildup on scalp and hair shafts requiring clarifying washes.", status: "Approved Cosmetic Agent", icon: "🟠", penalty: 12 },
+      { name: "Synthetic Fragrance / Perfume (Parfum)", patterns: [/fragrance/i, /perfume/i, /parfum/i, /aroma/i, /phthalate/i], risk: "Moderate Risk", cat: "Synthetic Scent Compound", side_effects: "Proprietary chemical mixture; frequent cause of contact dermatitis, scalp allergies, and headache triggers.", status: "IFRA Standards Regulated", icon: "🟠", penalty: 12 },
+      { name: "PEGs & Ethoxylated Emulsifiers (PEG-40 / Polysorbates)", patterns: [/peg-\d+/i, /polyethylene\s*glycol/i, /polysorbate-\d+/i, /steareth-\d+/i, /ceteareth-\d+/i], risk: "Moderate Risk", cat: "Penetration Enhancer & Emulsifier", side_effects: "Enhances skin permeability; risk of trace 1,4-dioxane and ethylene oxide impurities if not purified.", status: "Cosmetic Approved with Purity Limits", icon: "🟠", penalty: 12 },
+
+      // ── Food Additives & High/Moderate Hazards ──
+      { name: "Potassium Bromate (INS 924a)", patterns: [/potassium\s*bromate/i, /ins\s*924\s*a?/i, /e\s*924\s*a?/i], risk: "High Risk", cat: "Flour Treatment Agent", side_effects: "Classified as potential carcinogen; banned in EU, India, UK.", status: "Banned in Food", icon: "🔴", penalty: 35 },
+      { name: "BHA / INS 320", patterns: [/\bbha\b/i, /butylated\s*hydroxyanisole/i, /ins\s*320/i, /e\s*320/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Potential endocrine disruptor; long-term high dose risks.", status: "Restricted in EU / FDA Regulated", icon: "🔴", penalty: 25 },
+      { name: "BHT / INS 321", patterns: [/\bbht\b/i, /butylated\s*hydroxytoluene/i, /ins\s*321/i, /e\s*321/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Linked to hormone disruption and potential organ toxicity.", status: "Strictly Limited Use", icon: "🔴", penalty: 25 },
+      { name: "Titanium Dioxide (INS 171 / CI 77891)", patterns: [/titanium\s*dioxide/i, /ins\s*171/i, /e\s*171/i, /ci\s*77891/i], risk: "High Risk", cat: "Artificial Color & Mineral Opacifier", side_effects: "Banned in EU food due to genotoxicity concerns; approved in cosmetics with inhalation restrictions.", status: "Banned in EU Food / Cosmetic Grade Approved", icon: "🔴", penalty: 25 },
+      { name: "Trans Fat / Partially Hydrogenated Oil", patterns: [/partially\s*hydrogenated/i, /trans\s*fat/i, /vanaspati/i, /hydrogenated\s*vegetable\s*oil/i], risk: "High Risk", cat: "Industrial Fat", side_effects: "Elevates bad LDL cholesterol; significantly increases heart risk.", status: "Prohibited by WHO & FDA", icon: "🔴", penalty: 30 },
+      { name: "Red 40 / Allura Red (INS 129)", patterns: [/allura\s*red/i, /red\s*40/i, /ins\s*129/i, /e\s*129/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic azo dye; linked to hyperactivity in sensitive children.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
+      { name: "Tartrazine / Yellow 5 (INS 102)", patterns: [/tartrazine/i, /yellow\s*5/i, /ins\s*102/i, /e\s*102/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "May trigger hives, asthma, and hyperactive behavior in children.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
+      { name: "Sunset Yellow (INS 110)", patterns: [/sunset\s*yellow/i, /yellow\s*6/i, /ins\s*110/i, /e\s*110/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic dye; linked to hyperactivity and allergy symptoms.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
+      { name: "Sodium Benzoate (INS 211)", patterns: [/sodium\s*benzoate/i, /ins\s*211/i, /e\s*211/i], risk: "Moderate Risk", cat: "Preservative", side_effects: "Can form trace benzene when combined with Vitamin C.", status: "FSSAI / FDA Approved with Limits", icon: "🟠", penalty: 14 },
+      { name: "High Fructose Corn Syrup (HFCS)", patterns: [/high\s*fructose\s*corn\s*syrup/i, /\bhfcs\b/i, /fructose\s*glucose\s*syrup/i, /invert\s*sugar/i], risk: "Moderate Risk", cat: "Refined Sweetener", side_effects: "Linked to fatty liver risk, insulin resistance, and obesity.", status: "Permitted Caloric Sweetener", icon: "🟠", penalty: 14 },
+      { name: "Aspartame (INS 951)", patterns: [/aspartame/i, /ins\s*951/i, /e\s*951/i], risk: "Moderate Risk", cat: "Artificial Sweetener", side_effects: "Classified as possibly carcinogenic (Group 2B); unsafe for PKU.", status: "FDA Approved / PKU Warning", icon: "🟠", penalty: 16 },
+      { name: "Palm Oil / Palmolein", patterns: [/palm\s*oil/i, /palmolein/i, /palm\s*kernel/i], risk: "Moderate Risk", cat: "Saturated Fat", side_effects: "High saturated palmitic fat; frequent high intake raises lipid levels.", status: "Approved Cooking Fat", icon: "🟠", penalty: 12 },
+
+      // ── Safe & Beneficial Botanical & Skincare Actives ──
+      { name: "Amla Extract (Emblica Officinalis)", patterns: [/amla/i, /emblica\s*officinalis/i, /indian\s*gooseberry/i], risk: "Safe", cat: "Natural Ayurvedic Botanical", side_effects: "Rich in natural Vitamin C and flavonoids; nourishes hair roots and scalp.", status: "Beneficial Natural Botanical", icon: "✅", penalty: 0 },
+      { name: "Almond Oil (Prunus Amygdalus)", patterns: [/almond\s*oil/i, /badam\s*oil/i, /prunus\s*amygdalus/i, /sweet\s*almond/i], risk: "Safe", cat: "Natural Plant Lipid", side_effects: "Nourishing natural emollient rich in fatty acids and Vitamin E.", status: "Beneficial Botanical Oil", icon: "✅", penalty: 0 },
+      { name: "Bhringraj Extract (Eclipta Alba)", patterns: [/bhringraj/i, /eclipta\s*alba/i, /false\s*daisy/i], risk: "Safe", cat: "Ayurvedic Hair Tonic", side_effects: "Traditional herb clinically shown to support hair follicle vitality.", status: "Natural Ayurvedic Herb", icon: "✅", penalty: 0 },
+      { name: "Coconut Oil (Cocos Nucifera)", patterns: [/coconut\s*oil/i, /cocos\s*nucifera/i, /nariyal\s*tel/i], risk: "Safe", cat: "Pure Plant Lipid", side_effects: "Penetrates hair shaft to reduce protein loss; highly moisturizing.", status: "Beneficial Natural Oil", icon: "✅", penalty: 0 },
+      { name: "Vitamin E / Tocopheryl Acetate", patterns: [/vitamin\s*e/i, /tocopher/i, /ins\s*307/i, /e\s*307/i], risk: "Safe", cat: "Natural Antioxidant & Nutrient", side_effects: "Potent natural antioxidant protecting cells against lipid peroxidation.", status: "Safe & Essential Nutrient", icon: "✅", penalty: 0 },
+      { name: "Niacinamide (Vitamin B3)", patterns: [/niacinamide/i, /nicotinamide/i, /vitamin\s*b3/i], risk: "Safe", cat: "Active Skincare Vitamin", side_effects: "Repairs skin barrier, regulates sebum, reduces hyperpigmentation and inflammation.", status: "Dermatologist Recommended", icon: "✅", penalty: 0 },
+      { name: "Lactic Acid (AHA Exfoliant)", patterns: [/lactic\s*acid/i], risk: "Safe", cat: "Alpha Hydroxy Acid (AHA)", side_effects: "Gentle AHA exfoliant; brightens skin, reduces underarm/body hyperpigmentation & hydrates skin.", status: "Dermatologist Approved Active", icon: "✅", penalty: 0 },
+      { name: "Salicylic Acid (BHA Active)", patterns: [/salicylic\s*acid/i, /\bbha\b/i], risk: "Safe", cat: "Beta Hydroxy Acid (BHA)", side_effects: "Penetrates deep into pores to control body odour, unclog pores, and clear acne-causing bacteria.", status: "Dermatologist Approved Active", icon: "✅", penalty: 0 },
+      { name: "Mandelic Acid (AHA Active)", patterns: [/mandelic\s*acid/i], risk: "Safe", cat: "Gentle AHA Exfoliant", side_effects: "Almond-derived gentle AHA; brightens skin tone safely without redness or irritation.", status: "Cosmetic Active Approved", icon: "✅", penalty: 0 },
+      { name: "Shea Butter (Butyrospermum Parkii)", patterns: [/shea\s*butter/i, /butyrospermum\s*parkii/i], risk: "Safe", cat: "Nourishing Botanical Lipid", side_effects: "Rich in essential fatty acids and Vitamin E; deeply moisturizes skin barrier.", status: "Beneficial Natural Emollient", icon: "✅", penalty: 0 },
+      { name: "Propylene Glycol / Propanediol", patterns: [/propylene\s*glycol/i, /propanediol/i], risk: "Safe", cat: "Skin Hydrator & Delivery Carrier", side_effects: "Helps active ingredients penetrate skin surface; locks in moisture.", status: "Cosmetic Standard Approved", icon: "✅", penalty: 0 },
+      { name: "Carrot Seed Oil / Extract", patterns: [/carrot/i, /daucus\s*carota/i], risk: "Safe", cat: "Natural Botanical Antioxidant", side_effects: "Rich in Beta-Carotene & Vitamin A; natural protection against free radical sun damage.", status: "Beneficial Botanical Extract", icon: "✅", penalty: 0 },
+      { name: "Xanthan Gum / Sclerotium Gum", patterns: [/xanthan\s*gum/i, /sclerotium\s*gum/i, /guar\s*gum/i], risk: "Safe", cat: "Natural Botanical Thickener", side_effects: "Plant-derived natural gelling & stabilizing agent; 100% non-toxic.", status: "Natural GRAS Approved", icon: "✅", penalty: 0 },
+      { name: "Hyaluronic Acid / Sodium Hyaluronate", patterns: [/hyaluronic\s*acid/i, /sodium\s*hyaluronate/i], risk: "Safe", cat: "Hydrating Humectant", side_effects: "Holds 1000x its weight in water; delivers intense moisture to skin and hair.", status: "Clean & Safe Hydrator", icon: "✅", penalty: 0 },
+      { name: "Aloe Vera Extract (Aloe Barbadensis)", patterns: [/aloe\s*vera/i, /aloe\s*barbadensis/i, /ghritkumari/i], risk: "Safe", cat: "Soothing Botanical Gel", side_effects: "Calms scalp irritation, hydrates skin, and promotes wound healing.", status: "Natural Botanical", icon: "✅", penalty: 0 },
+      { name: "Glycerin / Vegetable Glycerin", patterns: [/glycerin/i, /glycerol/i], risk: "Safe", cat: "Natural Humectant", side_effects: "Attracts moisture into skin and hair fibers; non-irritating.", status: "Natural GRAS Approved", icon: "✅", penalty: 0 },
+      { name: "Citric Acid (INS 330)", patterns: [/citric\s*acid/i, /ins\s*330/i, /e\s*330/i], risk: "Safe", cat: "Natural Acidity Regulator", side_effects: "Naturally derived from citrus; balances formula pH safely.", status: "Natural / GRAS", icon: "✅", penalty: 0 },
+      { name: "Soy Lecithin (INS 322)", patterns: [/soy\s*lecithin/i, /lecithin/i, /ins\s*322/i, /e\s*322/i], risk: "Safe", cat: "Emulsifier", side_effects: "Plant-derived emulsifier; safe (contains soy allergen).", status: "Natural / Approved", icon: "✅", penalty: 0 }
+    ];
+
+    var ALLERGEN_PATTERNS = {
+      "Gluten / Wheat": [/gluten/i, /wheat/i, /barley/i, /rye/i, /maida/i, /atta/i],
+      "Milk / Dairy": [/milk/i, /dairy/i, /cheese/i, /whey/i, /lactose/i, /casein/i, /butter/i],
+      "Peanuts / Groundnut": [/peanut/i, /groundnut/i],
+      "Tree Nuts (Almond / Cashew)": [/cashew/i, /walnut/i, /pistachio/i, /hazelnut/i],
+      "Soy": [/soy/i, /soya/i, /edamame/i],
+      "Egg": [/egg/i, /albumin/i, /egg\s*white/i],
+      "Fish & Seafood": [/fish/i, /prawn/i, /shrimp/i, /crab/i],
+      "Sesame / Til": [/sesame/i, /til/i],
+      "Sulphites": [/sulphite/i, /sulfite/i, /sulfur\s*dioxide/i]
+    };
+
+    // ── Navigation Controller ──
+    function navToPage(pageName) {
+      haptic();
+      if (currentPage === pageName) return;
+
+      if (currentPage === "scan" && pageName !== "scan") {
+        stopCamera();
+      }
+
+      var pages = document.querySelectorAll(".app-page");
+      pages.forEach(function(p) {
+        p.classList.remove("active");
+      });
+
+      var navBtns = document.querySelectorAll(".nav-tab-btn");
+      navBtns.forEach(function(b) {
+        b.classList.remove("active");
+      });
+
+      var targetPage = document.getElementById("page-" + pageName);
+      var targetNav = document.getElementById("nav-btn-" + pageName);
+
+      if (targetPage) targetPage.classList.add("active");
+      if (targetNav) targetNav.classList.add("active");
+
+      currentPage = pageName;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (pageName === "scan") {
+        if (splashDone && currentActiveTab === "barcode") {
+          startCamera();
+        }
+      } else if (pageName === "history") {
+        renderFullHistoryPage();
+      } else if (pageName === "guide") {
+        renderFullGuidePage();
+      } else if (pageName === "profile") {
+        loadHealthPrefsUI();
+      }
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Status helper
-    // ─────────────────────────────────────────────────────────────────────
-    var statusEl = document.getElementById("status");
+    // ── Android Hardware Back Hook ──
+    window.handleAppBack = function() {
+      var hud = document.getElementById("processing-hud");
+      if (hud && hud.style.display === "flex") {
+        hideProcessingHud();
+        return true;
+      }
+      if (currentPage !== "scan") {
+        navToPage("scan");
+        return true;
+      }
+      return false;
+    };
 
+    // ── Futuristic Holographic Processing HUD ──
+    var hudStepTimers = [];
+    function showProcessingHud(title, subtitle) {
+      var hud = document.getElementById("processing-hud");
+      if (!hud) return;
+      hud.style.display = "flex";
+
+      if (title) document.getElementById("hud-title").textContent = title;
+      if (subtitle) document.getElementById("hud-subtitle").textContent = subtitle;
+
+      // Reset HUD steps
+      for (var i = 1; i <= 4; i++) {
+        var s = document.getElementById("hud-step-" + i);
+        if (s) { s.className = "hud-step-row"; }
+      }
+      var s1 = document.getElementById("hud-step-1");
+      if (s1) s1.className = "hud-step-row active";
+
+      var fill = document.getElementById("hud-fill");
+      if (fill) fill.style.width = "25%";
+
+      // Clear previous timers
+      hudStepTimers.forEach(function(t) { clearTimeout(t); });
+      hudStepTimers = [];
+
+      hudStepTimers.push(setTimeout(function() {
+        var s1 = document.getElementById("hud-step-1");
+        var s2 = document.getElementById("hud-step-2");
+        if (s1) s1.className = "hud-step-row done";
+        if (s2) s2.className = "hud-step-row active";
+        if (fill) fill.style.width = "50%";
+      }, 250));
+
+      hudStepTimers.push(setTimeout(function() {
+        var s2 = document.getElementById("hud-step-2");
+        var s3 = document.getElementById("hud-step-3");
+        if (s2) s2.className = "hud-step-row done";
+        if (s3) s3.className = "hud-step-row active";
+        if (fill) fill.style.width = "75%";
+      }, 500));
+
+      hudStepTimers.push(setTimeout(function() {
+        var s3 = document.getElementById("hud-step-3");
+        var s4 = document.getElementById("hud-step-4");
+        if (s3) s3.className = "hud-step-row done";
+        if (s4) s4.className = "hud-step-row done";
+        if (fill) fill.style.width = "100%";
+      }, 750));
+    }
+
+    function hideProcessingHud() {
+      var hud = document.getElementById("processing-hud");
+      if (hud) hud.style.display = "none";
+      hudStepTimers.forEach(function(t) { clearTimeout(t); });
+      hudStepTimers = [];
+    }
+
+    // ── Haptic and Beep Feedback ──
+    function haptic() {
+      if (window.AndroidBridge && typeof window.AndroidBridge.vibrateHaptic === "function") {
+        window.AndroidBridge.vibrateHaptic("click");
+      } else if (navigator.vibrate) {
+        try { navigator.vibrate(35); } catch(e){}
+      }
+    }
+
+    function playBeep() {
+      try {
+        var ctx = new (window.AudioContext || window.webkitAudioContext)();
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(920, ctx.currentTime);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.12);
+      } catch(e){}
+    }
+
+    // Status Toast Box Helper
+    var statusBox = document.getElementById("status-box");
     function showStatus(text, cls) {
-      statusEl.className = cls;
-      statusEl.textContent = text;
-      setFrameHeight();
+      if (!statusBox) return;
+      statusBox.className = cls || "loading";
+      statusBox.textContent = text;
+      statusBox.style.display = "block";
     }
-
     function hideStatus() {
-      statusEl.className = "";
-      statusEl.textContent = "";
-      setFrameHeight();
+      if (statusBox) statusBox.style.display = "none";
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // File handler: resize → base64 → send to Python
-    // ─────────────────────────────────────────────────────────────────────
-    function handleFile(file, source) {
-      if (!file) return;
+    // ── Instant Splash Screen Boot (0.25s) ──
+    function runSplashScreen() {
+      if (splashStarted) return;
+      splashStarted = true;
 
-      showStatus("⏳ Loading image…", "loading");
+      var splash = document.getElementById("splash-screen");
+      var fill = document.getElementById("splash-fill");
+      var status = document.getElementById("splash-status");
+      var mainApp = document.getElementById("main-app");
 
-      var reader = new FileReader();
+      if (fill) fill.style.width = "100%";
+      if (status) status.textContent = "Ready!";
 
-      reader.onload = function (e) {
-        var img = new Image();
+      setTimeout(function() {
+        if (splash) splash.classList.add("fade-out");
+        if (mainApp) mainApp.classList.add("app-visible");
+        splashDone = true;
 
-        img.onload = function () {
-          var MAX = 1600;
-          var w = img.width, h = img.height;
-
-          if (w > MAX || h > MAX) {
-            if (w >= h) { h = Math.round(h * MAX / w); w = MAX; }
-            else         { w = Math.round(w * MAX / h); h = MAX; }
+        setTimeout(function() {
+          if (splash) splash.style.display = "none";
+          try {
+            if (currentPage === "scan") startCamera();
+          } catch (camErr) {
+            console.warn("Auto camera launch:", camErr);
           }
+        }, 120);
+      }, 180);
+    }
 
-          var canvas = document.createElement("canvas");
-          canvas.width  = w;
-          canvas.height = h;
-          canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+    // ── High Performance Live Camera & Barcode Engine ──
+    async function startCamera() {
+      if (activeStream || isCameraStarting) return;
+      isCameraStarting = true;
 
-          var b64 = canvas.toDataURL("image/jpeg", 0.88);
+      var video = document.getElementById("barcode-video");
+      var btn = document.getElementById("btn-toggle-cam");
+      var placeholder = document.getElementById("cam-placeholder");
 
-          showStatus(
-            source === "camera" ? "✓ Photo captured!" : "✓ Image loaded!",
-            "success"
-          );
+      if (btn) {
+        btn.innerHTML = '<span class="pulse-dot" style="background:#38bdf8;box-shadow:0 0 10px #38bdf8;"></span> <span id="cam-btn-label">Starting Camera...</span>';
+        btn.className = "cam-btn-smart";
+      }
 
-          sendValue({
-            data:      b64,
-            source:    source,
-            name:      file.name || (source === "camera" ? "camera.jpg" : "gallery.jpg"),
-            width:     w,
-            height:    h,
-            timestamp: Date.now()
+      if ('BarcodeDetector' in window && !nativeDetector) {
+        try {
+          nativeDetector = new BarcodeDetector({
+            formats: ['qr_code', 'ean_13', 'ean_8', 'upc_a', 'upc_e', 'code_128', 'code_39', 'data_matrix']
           });
+        } catch (e) {
+          try { nativeDetector = new BarcodeDetector(); } catch(err){}
+        }
+      }
 
-          setTimeout(hideStatus, 2500);
+      if (!nativeDetector && typeof ZXing !== 'undefined' && !zxingReader) {
+        try {
+          var hints = new Map();
+          if (ZXing.DecodeHintType && ZXing.BarcodeFormat) {
+            hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, [
+              ZXing.BarcodeFormat.QR_CODE,
+              ZXing.BarcodeFormat.EAN_13,
+              ZXing.BarcodeFormat.EAN_8,
+              ZXing.BarcodeFormat.UPC_A,
+              ZXing.BarcodeFormat.UPC_E,
+              ZXing.BarcodeFormat.CODE_128
+            ]);
+            hints.set(ZXing.DecodeHintType.TRY_HARDER, false);
+          }
+          zxingReader = new ZXing.BrowserMultiFormatReader(hints);
+        } catch(e) {
+          try { zxingReader = new ZXing.BrowserMultiFormatReader(); } catch(err){}
+        }
+      }
+
+      try {
+        var constraints = {
+          video: {
+            facingMode: { ideal: currentFacingMode },
+            width: { ideal: 1280, max: 1920 },
+            height: { ideal: 720, max: 1080 }
+          },
+          audio: false
         };
 
-        img.onerror = function () {
-          showStatus("⚠️ Could not read image. Try again.", "loading");
-          setTimeout(hideStatus, 3000);
-        };
+        var stream = await navigator.mediaDevices.getUserMedia(constraints);
+        activeStream = stream;
+        isCameraStarting = false;
 
-        img.src = e.target.result;
+        if (video) {
+          video.setAttribute("playsinline", "true");
+          video.setAttribute("autoplay", "true");
+          video.setAttribute("muted", "true");
+          video.srcObject = stream;
+
+          video.onloadedmetadata = function() {
+            video.play().catch(function(){});
+            if (placeholder) placeholder.classList.add("hidden");
+            startScanningLoop();
+          };
+
+          if (video.readyState >= 2) {
+            video.play().catch(function(){});
+            if (placeholder) placeholder.classList.add("hidden");
+            startScanningLoop();
+          }
+        }
+
+        if (btn) {
+          btn.innerHTML = '<span class="pulse-dot"></span> <span id="cam-btn-label">Live Camera Active</span>';
+          btn.className = "cam-btn-smart recording";
+        }
+      } catch (err) {
+        console.warn("Camera start error:", err);
+        isCameraStarting = false;
+        if (btn) {
+          btn.innerHTML = '<span class="pulse-dot" style="background:#10b981;box-shadow:0 0 10px #10b981;"></span> <span id="cam-btn-label">Start Smart Camera</span>';
+          btn.className = "cam-btn-smart";
+        }
+        if (placeholder) {
+          placeholder.classList.remove("hidden");
+          var pTitle = document.getElementById("cam-placeholder-title");
+          var pSub = document.getElementById("cam-placeholder-sub");
+          if (pTitle) pTitle.textContent = "Camera Ready / Gallery Mode";
+          if (pSub) pSub.textContent = "Tap Start Camera or upload a photo of the package";
+        }
+      }
+    }
+
+    function stopScanningLoop() {
+      if (scanAnimFrame) {
+        cancelAnimationFrame(scanAnimFrame);
+        scanAnimFrame = null;
+      }
+      if (scanInterval) {
+        clearInterval(scanInterval);
+        scanInterval = null;
+      }
+      isScanningFrame = false;
+    }
+
+    function stopCamera() {
+      isCameraStarting = false;
+      stopScanningLoop();
+
+      if (activeStream) {
+        try {
+          var tracks = activeStream.getTracks();
+          for (var i = 0; i < tracks.length; i++) {
+            tracks[i].stop();
+          }
+        } catch(e){}
+        activeStream = null;
+      }
+
+      var video = document.getElementById("barcode-video");
+      if (video) {
+        try { video.pause(); } catch(e){}
+        video.srcObject = null;
+      }
+
+      var btn = document.getElementById("btn-toggle-cam");
+      if (btn) {
+        btn.innerHTML = '<span class="pulse-dot" style="background:#10b981;box-shadow:0 0 10px #10b981;"></span> <span id="cam-btn-label">Start Smart Camera</span>';
+        btn.className = "cam-btn-smart";
+      }
+
+      var placeholder = document.getElementById("cam-placeholder");
+      if (placeholder) placeholder.classList.remove("hidden");
+
+      torchState = false;
+      var tBtn = document.getElementById("btn-torch");
+      if (tBtn) tBtn.classList.remove("on");
+    }
+
+    function toggleCamera() {
+      haptic();
+      if (activeStream || isCameraStarting) {
+        stopCamera();
+        showStatus("📷 Camera Paused", "loading");
+        setTimeout(hideStatus, 800);
+      } else {
+        startCamera();
+        showStatus("⚡ Camera Started", "success");
+        setTimeout(hideStatus, 800);
+      }
+    }
+
+    async function toggleFlashlight() {
+      haptic();
+      if (!activeStream) {
+        showStatus("⚠️ Please start camera first to use flashlight.", "loading");
+        setTimeout(hideStatus, 1500);
+        return;
+      }
+      var track = activeStream.getVideoTracks()[0];
+      if (!track) return;
+      try {
+        torchState = !torchState;
+        await track.applyConstraints({ advanced: [{ torch: torchState }] });
+        var btn = document.getElementById("btn-torch");
+        if (torchState) {
+          if (btn) btn.classList.add("on");
+          showStatus("⚡ Flashlight Torch ON", "success");
+          setTimeout(hideStatus, 1000);
+        } else {
+          if (btn) btn.classList.remove("on");
+          showStatus("💡 Flashlight Torch OFF", "loading");
+          setTimeout(hideStatus, 800);
+        }
+      } catch (e) {
+        console.warn("Torch error:", e);
+        torchState = false;
+        var btn = document.getElementById("btn-torch");
+        if (btn) btn.classList.remove("on");
+        showStatus("💡 Flashlight not supported on this camera.", "loading");
+        setTimeout(hideStatus, 1500);
+      }
+    }
+
+    function flipCamera() {
+      haptic();
+      var fBtn = document.getElementById("btn-flip");
+      if (fBtn) {
+        fBtn.style.transform = "scale(0.9) rotate(180deg)";
+        setTimeout(function() { fBtn.style.transform = ""; }, 300);
+      }
+      currentFacingMode = (currentFacingMode === "environment") ? "user" : "environment";
+      stopCamera();
+      setTimeout(startCamera, 80);
+    }
+
+    function startScanningLoop() {
+      stopScanningLoop();
+      var video = document.getElementById("barcode-video");
+      if (!video) return;
+
+      if (nativeDetector) {
+        var lastScanTime = 0;
+        var scanIntervalMs = 70;
+
+        function tickNative(timestamp) {
+          if (!activeStream || currentActiveTab !== "barcode" || currentPage !== "scan") return;
+          if (timestamp - lastScanTime >= scanIntervalMs && !isScanningFrame && video.readyState >= 2) {
+            lastScanTime = timestamp;
+            isScanningFrame = true;
+            nativeDetector.detect(video).then(function(codes) {
+              isScanningFrame = false;
+              if (currentActiveTab !== "barcode" || !activeStream) return;
+              if (codes && codes.length > 0) {
+                var code = codes[0].rawValue;
+                if (code && code !== lastScannedBarcode) {
+                  lastScannedBarcode = code;
+                  onBarcodeCaptured(code);
+                }
+              }
+            }).catch(function() {
+              isScanningFrame = false;
+            });
+          }
+          scanAnimFrame = requestAnimationFrame(tickNative);
+        }
+        scanAnimFrame = requestAnimationFrame(tickNative);
+      } else if (zxingReader) {
+        scanInterval = setInterval(async function () {
+          if (currentActiveTab !== "barcode" || currentPage !== "scan") return;
+          if (!activeStream || !video || video.readyState < 2 || isScanningFrame) return;
+          isScanningFrame = true;
+          try {
+            var result = await zxingReader.decodeOnceFromVideoElement(video);
+            if (result && result.getText()) {
+              var code = result.getText().trim();
+              if (code && code !== lastScannedBarcode) {
+                lastScannedBarcode = code;
+                onBarcodeCaptured(code);
+              }
+            }
+          } catch(e) {}
+          isScanningFrame = false;
+        }, 120);
+      }
+    }
+
+    function switchScanTab(tab) {
+      haptic();
+      currentActiveTab = tab;
+      var bBc = document.getElementById("tab-bc");
+      var bPh = document.getElementById("tab-ph");
+      var reticleBc = document.getElementById("reticle-barcode");
+      var reticlePh = document.getElementById("reticle-ingredient");
+      var ctrlBc = document.getElementById("controls-barcode");
+      var ctrlPh = document.getElementById("controls-ingredient");
+
+      if (bBc) bBc.className = "scan-tab-btn" + (tab === "barcode" ? " active" : "");
+      if (bPh) bPh.className = "scan-tab-btn" + (tab === "photo" ? " active" : "");
+
+      if (tab === "barcode") {
+        if (reticleBc) reticleBc.style.display = "block";
+        if (reticlePh) reticlePh.style.display = "none";
+        if (ctrlBc) ctrlBc.style.display = "block";
+        if (ctrlPh) ctrlPh.style.display = "none";
+        if (!activeStream) {
+          startCamera();
+        } else {
+          startScanningLoop();
+        }
+      } else {
+        if (reticleBc) reticleBc.style.display = "none";
+        if (reticlePh) reticlePh.style.display = "block";
+        if (ctrlBc) ctrlBc.style.display = "none";
+        if (ctrlPh) ctrlPh.style.display = "block";
+        stopScanningLoop();
+        if (!activeStream) {
+          startCamera();
+        }
+      }
+    }
+
+    // ── Checksum Verification for 1D Barcodes ──
+    function isValidBarcodeChecksum(digits) {
+      if (!digits || !/^\d+$/.test(digits)) return false;
+      if (digits.length === 13) {
+        var sum = 0;
+        for (var i = 0; i < 12; i++) {
+          var d = parseInt(digits.charAt(i), 10);
+          sum += (i % 2 === 0) ? d : d * 3;
+        }
+        var check = (10 - (sum % 10)) % 10;
+        return check === parseInt(digits.charAt(12), 10);
+      }
+      if (digits.length === 12) {
+        var sum12 = 0;
+        for (var k = 0; k < 11; k++) {
+          var d12 = parseInt(digits.charAt(k), 10);
+          sum12 += (k % 2 === 0) ? d12 * 3 : d12;
+        }
+        var check12 = (10 - (sum12 % 10)) % 10;
+        return check12 === parseInt(digits.charAt(11), 10);
+      }
+      if (digits.length === 8) {
+        var sum8 = 0;
+        for (var j = 0; j < 7; j++) {
+          var d8 = parseInt(digits.charAt(j), 10);
+          sum8 += (j % 2 === 0) ? d8 * 3 : d8;
+        }
+        var check8 = (10 - (sum8 % 10)) % 10;
+        return check8 === parseInt(digits.charAt(7), 10);
+      }
+      if (digits.length === 14) {
+        var sum14 = 0;
+        for (var m = 0; m < 13; m++) {
+          var d14 = parseInt(digits.charAt(m), 10);
+          sum14 += (m % 2 === 0) ? d14 * 3 : d14;
+        }
+        var check14 = (10 - (sum14 % 10)) % 10;
+        return check14 === parseInt(digits.charAt(13), 10);
+      }
+      return false;
+    }
+
+    // ── Date and Expiry Evaluation Engine ──
+    var MONTH_NAME_MAP = {
+      jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5,
+      jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11
+    };
+
+    function parseDateStringToDate(str) {
+      if (!str || typeof str !== "string") return null;
+      var s = str.trim().toLowerCase().replace(/,/g, " ").replace(/\s+/g, " ");
+
+      var isoMatch = s.match(/^(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})$/);
+      if (isoMatch) {
+        return new Date(parseInt(isoMatch[1], 10), parseInt(isoMatch[2], 10) - 1, parseInt(isoMatch[3], 10));
+      }
+
+      var textMonthMatch = s.match(/(\d{1,2})[-\/\s]+([a-z]{3,9})[-\/\s]+(\d{2,4})/);
+      if (textMonthMatch) {
+        var d = parseInt(textMonthMatch[1], 10);
+        var mStr = textMonthMatch[2].substring(0, 3);
+        var y = parseInt(textMonthMatch[3], 10);
+        if (y < 100) y += 2000;
+        if (MONTH_NAME_MAP[mStr] !== undefined) {
+          return new Date(y, MONTH_NAME_MAP[mStr], d);
+        }
+      }
+
+      var mmYyyyMatch = s.match(/^(\d{1,2})[-\/](\d{2,4})$/);
+      if (mmYyyyMatch) {
+        var m = parseInt(mmYyyyMatch[1], 10) - 1;
+        var my = parseInt(mmYyyyMatch[2], 10);
+        if (my < 100) my += 2000;
+        var lastDay = new Date(my, m + 1, 0).getDate();
+        return new Date(my, m, lastDay);
+      }
+
+      var ddMmYyyyMatch = s.match(/^(\d{1,2})[-\/](\d{1,2})[-\/](\d{2,4})$/);
+      if (ddMmYyyyMatch) {
+        var p1 = parseInt(ddMmYyyyMatch[1], 10);
+        var p2 = parseInt(ddMmYyyyMatch[2], 10);
+        var p3 = parseInt(ddMmYyyyMatch[3], 10);
+        if (p3 < 100) p3 += 2000;
+        if (p1 > 12 && p2 <= 12) return new Date(p3, p2 - 1, p1);
+        if (p2 > 12 && p1 <= 12) return new Date(p3, p1 - 1, p2);
+        return new Date(p3, p2 - 1, p1);
+      }
+
+      return null;
+    }
+
+    function calculateExpiryStatus(expDateStr, mfgDateStr, shelfLifeStr) {
+      var now = new Date();
+      var expDate = parseDateStringToDate(expDateStr);
+
+      if (!expDate && mfgDateStr && shelfLifeStr) {
+        var mfg = parseDateStringToDate(mfgDateStr);
+        var monthsMatch = String(shelfLifeStr).match(/(\d+)\s*month/i);
+        var daysMatch = String(shelfLifeStr).match(/(\d+)\s*day/i);
+        if (mfg && monthsMatch) {
+          var addMonths = parseInt(monthsMatch[1], 10);
+          expDate = new Date(mfg.getFullYear(), mfg.getMonth() + addMonths, mfg.getDate());
+        } else if (mfg && daysMatch) {
+          var addDays = parseInt(daysMatch[1], 10);
+          expDate = new Date(mfg.getTime() + addDays * 86400000);
+        }
+      }
+
+      if (!expDate) {
+        return {
+          hasDate: false,
+          status: "NO_DATE",
+          mfg: mfgDateStr || null,
+          shelfLife: shelfLifeStr || null
+        };
+      }
+
+      var diffMs = expDate.getTime() - now.getTime();
+      var diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+      var dateFormatted = expDate.toLocaleDateString("en-IN", { month: "short", year: "numeric", day: "numeric" });
+
+      if (diffDays < 0) {
+        var expiredDaysAgo = Math.abs(diffDays);
+        var expiredMonthsAgo = Math.floor(expiredDaysAgo / 30.4);
+        var agoText = expiredMonthsAgo > 1 ? (expiredMonthsAgo + " months ago") : (expiredDaysAgo + " days ago");
+        return {
+          hasDate: true,
+          status: "EXPIRED",
+          badge: "🚨 EXPIRED PRODUCT",
+          alertClass: "expiry-expired",
+          dateFormatted: dateFormatted,
+          daysDiff: diffDays,
+          message: "This product expired on " + dateFormatted + " (" + agoText + "). DO NOT consume or apply on skin!",
+          safetyPenalty: 40
+        };
+      }
+
+      if (diffDays <= 30) {
+        return {
+          hasDate: true,
+          status: "EXPIRING_SOON",
+          badge: "⏳ EXPIRING SOON",
+          alertClass: "expiry-warning",
+          dateFormatted: dateFormatted,
+          daysDiff: diffDays,
+          message: "Expiring in " + diffDays + " day" + (diffDays === 1 ? "" : "s") + " (" + dateFormatted + "). Consume or use promptly!",
+          safetyPenalty: 10
+        };
+      }
+
+      var monthsLeft = Math.floor(diffDays / 30.4);
+      var leftText = monthsLeft > 1 ? (monthsLeft + " months remaining") : (diffDays + " days remaining");
+      return {
+        hasDate: true,
+        status: "FRESH",
+        badge: "✅ FRESH & SAFE",
+        alertClass: "expiry-fresh",
+        dateFormatted: dateFormatted,
+        daysDiff: diffDays,
+        message: "Valid until " + dateFormatted + " (" + leftText + ").",
+        safetyPenalty: 0
       };
+    }
 
-      reader.onerror = function () {
-        showStatus("⚠️ File read error. Try again.", "loading");
+    function getTypicalShelfLife(category, name) {
+      var cat = (category || "").toLowerCase() + " " + (name || "").toLowerCase();
+      if (/milk|dahi|curd|yogurt|paneer/i.test(cat)) return "3 to 7 Days (Refrigerated)";
+      if (/bread|bakery/i.test(cat)) return "5 to 7 Days";
+      if (/biscuit|cookie|wafer|snack|chips|namkeen|noodles/i.test(cat)) return "6 to 9 Months from MFD";
+      if (/chocolate|confectionery/i.test(cat)) return "9 to 12 Months from MFD";
+      if (/tea|coffee/i.test(cat)) return "12 to 24 Months";
+      if (/oil|ghee/i.test(cat)) return "12 to 18 Months";
+      if (/shampoo|body\s*wash|soap|face\s*wash/i.test(cat)) return "24 to 36 Months";
+      if (/sunscreen|moisturiser|serum|skincare|roll-on/i.test(cat)) return "24 to 36 Months (12M after opening)";
+      if (/toothpaste/i.test(cat)) return "24 Months";
+      return "12 to 24 Months from Packaging";
+    }
+
+    function checkManualPackExpiry(dateStr, cat) {
+      haptic();
+      var container = document.getElementById("manual-exp-result");
+      if (!container) return;
+      if (!dateStr || !dateStr.trim()) {
+        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">⚠️ Please enter a date (e.g. 10/2025).</span>';
+        return;
+      }
+      var res = calculateExpiryStatus(dateStr.trim(), null, null);
+      if (!res.hasDate) {
+        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">⚠️ Could not parse date. Format: MM/YYYY or DD/MM/YYYY.</span>';
+        return;
+      }
+      var color = res.status === "EXPIRED" ? "#f43f5e" : (res.status === "EXPIRING_SOON" ? "#f59e0b" : "#10b981");
+      container.innerHTML = '<div style="background:rgba(0,0,0,0.45);border:1px solid ' + color + ';padding:8px 10px;border-radius:10px;margin-top:6px;font-size:0.78rem;">' +
+        '<strong style="color:' + color + '">' + res.badge + ':</strong> ' + res.message +
+      '</div>';
+    }
+
+    // ── Universal QR & Barcode Intelligent Parser ──
+    function parseScannedCode(raw) {
+      if (!raw) return null;
+      var text = String(raw).trim();
+
+      if (/^upi:\/\/pay/i.test(text) || /@(okhdfcbank|okaxis|ybl|paytm|axl|ibl|barodampay)/i.test(text)) {
+        return {
+          type: "payment_qr",
+          display: "Payment / UPI QR Code",
+          raw: text,
+          message: "This is a payment QR code (UPI/Paytm/GPay), not a product package code. Please scan the product barcode or ingredient label."
+        };
+      }
+
+      var gs1Match = text.match(/(?:\/01\/|\(01\)|^01)(\d{14})/);
+      var gs1ExpMatch = text.match(/(?:\/17\/|\(17\))(\d{6})/);
+      var gs1BestMatch = text.match(/(?:\/15\/|\(15\))(\d{6})/);
+      var gs1MfgMatch = text.match(/(?:\/11\/|\(11\))(\d{6})/);
+      var gs1BatchMatch = text.match(/(?:\/10\/|\(10\))([A-Za-z0-9\-_]+)/);
+      if (gs1Match && gs1Match[1]) {
+        var gtin14 = gs1Match[1];
+        var ean = gtin14.startsWith("0") ? gtin14.substring(1) : gtin14;
+        return {
+          type: "barcode",
+          barcode: ean,
+          raw: text,
+          isGS1: true,
+          expiry_date: gs1ExpMatch ? gs1ExpMatch[1] : (gs1BestMatch ? gs1BestMatch[1] : null),
+          mfg_date: gs1MfgMatch ? gs1MfgMatch[1] : null,
+          batch_no: gs1BatchMatch ? gs1BatchMatch[1] : null,
+          display: "GS1 Product Code: " + ean
+        };
+      }
+
+      if (/^https?:\/\//i.test(text)) {
+        try {
+          var parsedUrl = new URL(text);
+          var paramBarcode = parsedUrl.searchParams.get("barcode") ||
+                             parsedUrl.searchParams.get("gtin") ||
+                             parsedUrl.searchParams.get("ean") ||
+                             parsedUrl.searchParams.get("upc");
+          if (paramBarcode) {
+            var cleanParam = paramBarcode.replace(/[^\d]/g, "");
+            if (cleanParam.length >= 8 && cleanParam.length <= 14) {
+              if (cleanParam.length === 14 && cleanParam.startsWith("0")) cleanParam = cleanParam.substring(1);
+              return {
+                type: "barcode",
+                barcode: cleanParam,
+                raw: text,
+                url: text,
+                display: "Product Link Barcode: " + cleanParam
+              };
+            }
+          }
+        } catch(e) {}
+
+        return {
+          type: "qr_url",
+          url: text,
+          raw: text,
+          display: text.replace(/^https?:\/\/(?:www\.)?/, '').substring(0, 35)
+        };
+      }
+
+      var onlyDigits = text.replace(/[^\d]/g, "");
+      if (onlyDigits.length >= 8 && onlyDigits.length <= 14) {
+        if (!isValidBarcodeChecksum(onlyDigits)) {
+          return {
+            type: "invalid_barcode",
+            raw: text,
+            barcode: onlyDigits,
+            display: "Barcode #" + onlyDigits,
+            message: "Checksum failed (blurred or partial scan: #" + onlyDigits + ")"
+          };
+        }
+        var eanCode = onlyDigits;
+        if (eanCode.length === 14 && eanCode.startsWith("0")) {
+          eanCode = eanCode.substring(1);
+        }
+        return {
+          type: "barcode",
+          barcode: eanCode,
+          raw: text,
+          display: "Barcode #" + eanCode
+        };
+      }
+
+      return {
+        type: "text",
+        text: text,
+        raw: text,
+        display: text.substring(0, 30)
+      };
+    }
+
+    // ── Search Local DB by Name or Brand (Strict Matching) ──
+    function searchLocalDbByName(term) {
+      if (!term || term.trim().length < 3) return null;
+      var q = term.trim().toLowerCase();
+      for (var k in LOCAL_PRODUCT_DB) {
+        var item = LOCAL_PRODUCT_DB[k];
+        if (item.name.toLowerCase() === q) {
+          return { barcode: k, item: item };
+        }
+      }
+      for (var k2 in LOCAL_PRODUCT_DB) {
+        var item2 = LOCAL_PRODUCT_DB[k2];
+        if (item2.name.toLowerCase().startsWith(q) || item2.brand.toLowerCase() === q) {
+          return { barcode: k2, item: item2 };
+        }
+      }
+      return null;
+    }
+
+    // ── Manual Barcode or Search Input ──
+    function lookupManualBarcode() {
+      haptic();
+      var input = document.getElementById("manual-code-input");
+      var val = input ? input.value.trim() : "";
+      if (!val) {
+        if (input) {
+          input.style.borderColor = "#f43f5e";
+          input.style.boxShadow = "0 0 16px rgba(244, 63, 94, 0.4)";
+          setTimeout(function() {
+            input.style.borderColor = "";
+            input.style.boxShadow = "";
+          }, 1500);
+        }
+        showStatus("⚠️ Please enter a barcode number or product name.", "loading");
+        setTimeout(hideStatus, 2000);
+        return;
+      }
+      onBarcodeCaptured(val);
+    }
+
+    // ── Instant Multi-Source Product Search Handler ──
+    async function searchProductByName(query) {
+      if (!query || !query.trim()) return;
+      haptic();
+      stopCamera();
+      var q = query.trim();
+      showProcessingHud("Searching Product Formula", "Finding '" + q + "' in verified safety registry…");
+
+      // Tier 1: Local Pre-Indexed Database (0ms)
+      var match = searchLocalDbByName(q);
+      if (match) {
+        setTimeout(function() {
+          hideProcessingHud();
+          var meta = {
+            name: match.item.name,
+            brand: match.item.brand,
+            barcode: match.barcode,
+            nutriscore: "",
+            category: match.item.category || "Consumer Product",
+            image_url: match.item.image_url || ""
+          };
+          var analysis = analyzeIngredientsText(match.item.ingredients_text, meta);
+          lastAnalysisData = analysis;
+          renderAnalysis(analysis);
+          navToPage("report");
+        }, 500);
+        return;
+      }
+
+      // Tier 2: OpenFoodFacts Cloud Search
+      try {
+        var offSearchUrl = "https://world.openfoodfacts.org/cgi/search.pl?search_terms=" + encodeURIComponent(q) + "&search_simple=1&action=process&json=1&page_size=5";
+        var offRes = await fetch(offSearchUrl);
+        if (offRes.ok) {
+          var offJson = await offRes.json();
+          if (offJson.products && offJson.products.length > 0) {
+            for (var i = 0; i < offJson.products.length; i++) {
+              var sp = offJson.products[i];
+              var sIng = sp.ingredients_text || sp.ingredients_text_en || sp.ingredients_text_hi || "";
+              if (sIng && sIng.trim().length > 10) {
+                hideProcessingHud();
+                var sMeta = {
+                  name: sp.product_name || sp.product_name_en || q,
+                  brand: sp.brands || "Brand",
+                  barcode: sp.code || "SEARCH-OFF",
+                  nutriscore: (sp.nutriscore_grade || "").toUpperCase(),
+                  category: sp.categories || "Food / Beverage",
+                  image_url: sp.image_front_url || sp.image_url || ""
+                };
+                var sAnalysis = analyzeIngredientsText(sIng, sMeta);
+                lastAnalysisData = sAnalysis;
+                renderAnalysis(sAnalysis);
+                navToPage("report");
+                return;
+              }
+            }
+          }
+        }
+      } catch(e){}
+
+      // Tier 3: Multimodal Gemini AI Fallback
+      try {
+        var aiRes = await callGeminiTextSearch(q);
+        hideProcessingHud();
+        var meta2 = {
+          name: aiRes.product_name || q,
+          brand: aiRes.brand || "Brand",
+          barcode: "SEARCH-QUERY",
+          nutriscore: "",
+          category: aiRes.category || "Consumer Product"
+        };
+        var analysis2 = analyzeIngredientsText(aiRes.ingredients_text, meta2);
+        lastAnalysisData = analysis2;
+        renderAnalysis(analysis2);
+        navToPage("report");
+      } catch (err) {
+        hideProcessingHud();
+        showStatus("⚠️ Could not locate formula for: " + q, "loading");
+        setTimeout(hideStatus, 2500);
+      }
+    }
+
+    // ── Render Honest Unverified State (No AI Fabrications) ──
+    function renderUnverifiedBarcodeResult(barcode) {
+      var resultsDiv = document.getElementById("results-area");
+      if (!resultsDiv) return;
+      resultsDiv.innerHTML = '<div class="empty-state-box" style="margin-top:2rem;">' +
+        '<div class="empty-state-icon">📦 🔍</div>' +
+        '<div class="empty-state-title" style="color:#fef08a;">Product Not Verified</div>' +
+        '<div class="empty-state-desc">Barcode #' + barcode + ' is not verified in the product registry.<br><br>To inspect ingredient safety, please take a clear photo of the ingredients list on the packaging!</div>' +
+        '<div style="margin-top:1.5rem;"><button class="retake-btn" onclick="navToPage(\'scan\');switchScanTab(\'photo\')">📷 Take Ingredient Photo</button></div>' +
+      '</div>';
+      var reportDot = document.getElementById("report-active-dot");
+      if (reportDot) reportDot.style.display = "block";
+    }
+
+    // ── Universal Barcode Capture Pipeline with Strict Barcode Verification ──
+    async function onBarcodeCaptured(rawScanned) {
+      if (!rawScanned) return;
+      var parsed = parseScannedCode(rawScanned);
+      if (!parsed) return;
+
+      if (parsed.type === "payment_qr") {
+        haptic();
+        showStatus("⚠️ " + parsed.message, "loading");
+        setTimeout(hideStatus, 3500);
+        return;
+      }
+
+      if (parsed.type === "invalid_barcode") {
+        haptic();
+        showStatus("⚠️ " + parsed.message + ". Please rescan clearly.", "loading");
         setTimeout(hideStatus, 3000);
-      };
+        return;
+      }
 
+      playBeep();
+      haptic();
+      stopCamera();
+
+      // Sequence ID to isolate concurrent scans and ignore stale async responses
+      var thisScanId = ++currentScanSeqId;
+
+      // Show Holographic Processing HUD
+      showProcessingHud("Auditing Product Formula", "Scanned: " + (parsed.display || rawScanned));
+
+      if (parsed.type === "barcode") {
+        var clean = parsed.barcode;
+
+        // Bridge to parent Streamlit if loaded in Streamlit iframe
+        stPost({
+          type: "streamlit:setComponentValue",
+          value: { type: "barcode", barcode: clean, timestamp: Date.now() }
+        });
+
+        // Tier 1: Exact match in verified local product database (0ms instant)
+        var localItem = LOCAL_PRODUCT_DB[clean];
+        if (localItem) {
+          setTimeout(function() {
+            if (thisScanId !== currentScanSeqId) return;
+            hideProcessingHud();
+            var meta = {
+              name: localItem.name,
+              brand: localItem.brand,
+              barcode: clean,
+              nutriscore: "",
+              category: localItem.category || "Consumer Product",
+              expiry_date: parsed.expiry_date || null,
+              mfg_date: parsed.mfg_date || null,
+              batch_no: parsed.batch_no || null,
+              image_url: localItem.image_url || "",
+              verification_status: "VERIFIED"
+            };
+            var analysis = analyzeIngredientsText(localItem.ingredients_text, meta);
+            lastAnalysisData = analysis;
+            renderAnalysis(analysis);
+            navToPage("report");
+          }, 350);
+          return;
+        }
+
+        // Tier 2: OpenFoodFacts Global Cloud API (with strict returned barcode check)
+        try {
+          var offRes = await fetch("https://world.openfoodfacts.org/api/v2/product/" + clean + ".json");
+          if (thisScanId !== currentScanSeqId) return;
+          if (offRes.ok) {
+            var offData = await offRes.json();
+            if (offData.status === 1 && offData.product) {
+              var p = offData.product;
+              var retCode = String(p.code || p._id || offData.code || "").trim();
+
+              // Strict validation: returned code must match scanned barcode
+              if (!retCode || retCode === clean || retCode.endsWith(clean)) {
+                var ingText = p.ingredients_text || p.ingredients_text_en || p.ingredients_text_hi || "";
+                if (ingText && ingText.trim().length > 5) {
+                  hideProcessingHud();
+                  var metaOFF = {
+                    name: p.product_name || p.product_name_en || ("Product #" + clean),
+                    brand: p.brands || p.brand_owner || "Brand",
+                    barcode: clean,
+                    nutriscore: (p.nutriscore_grade || "").toUpperCase(),
+                    category: p.categories || "Food / Beverage",
+                    image_url: p.image_front_url || p.image_url || "",
+                    expiry_date: parsed.expiry_date || p.expiration_date || null,
+                    verification_status: "VERIFIED"
+                  };
+                  var analysisOFF = analyzeIngredientsText(ingText, metaOFF);
+                  lastAnalysisData = analysisOFF;
+                  renderAnalysis(analysisOFF);
+                  navToPage("report");
+                  return;
+                }
+              } else {
+                console.warn("Mismatched barcode from OpenFoodFacts: expected", clean, "got", retCode);
+              }
+            }
+          }
+        } catch (e) {
+          console.debug("OpenFoodFacts fetch error:", e);
+        }
+
+        // Tier 3: OpenBeautyFacts Global Cloud API (Cosmetics, Hair Care, Skincare)
+        try {
+          var obfRes = await fetch("https://world.openbeautyfacts.org/api/v2/product/" + clean + ".json");
+          if (thisScanId !== currentScanSeqId) return;
+          if (obfRes.ok) {
+            var obfData = await obfRes.json();
+            if (obfData.status === 1 && obfData.product) {
+              var bp = obfData.product;
+              var bRetCode = String(bp.code || bp._id || obfData.code || "").trim();
+
+              if (!bRetCode || bRetCode === clean || bRetCode.endsWith(clean)) {
+                var bIngText = bp.ingredients_text || bp.ingredients_text_en || bp.ingredients_text_hi || "";
+                if (bIngText && bIngText.trim().length > 5) {
+                  hideProcessingHud();
+                  var metaOBF = {
+                    name: bp.product_name || bp.product_name_en || ("Cosmetic #" + clean),
+                    brand: bp.brands || bp.brand_owner || "Cosmetics Brand",
+                    barcode: clean,
+                    nutriscore: "",
+                    category: bp.categories || "Skincare & Cosmetics",
+                    image_url: bp.image_front_url || bp.image_url || "",
+                    expiry_date: parsed.expiry_date || bp.expiration_date || null,
+                    verification_status: "VERIFIED"
+                  };
+                  var analysisOBF = analyzeIngredientsText(bIngText, metaOBF);
+                  lastAnalysisData = analysisOBF;
+                  renderAnalysis(analysisOBF);
+                  navToPage("report");
+                  return;
+                }
+              }
+            }
+          }
+        } catch(e) {
+          console.debug("OpenBeautyFacts fetch error:", e);
+        }
+
+        if (thisScanId !== currentScanSeqId) return;
+
+        // Tier 4: Honest Unverified Handling (DO NOT invent products or ingredients with AI)
+        hideProcessingHud();
+        showStatus("⚠️ Product not verified for Barcode #" + clean + ". Please scan back label!", "loading");
+        setTimeout(hideStatus, 3500);
+        renderUnverifiedBarcodeResult(clean);
+        navToPage("report");
+      } else {
+        // Alphanumeric text or explicit manual search
+        searchProductByName(parsed.text || rawScanned);
+      }
+    }
+
+    // ── Ingredient Capture & Direct AI OCR ──
+    async function captureAndScanIngredients() {
+      haptic();
+      var video = document.getElementById("barcode-video");
+      if (!video || !activeStream || video.readyState < 2) {
+        document.getElementById("hidden-gal").click();
+        return;
+      }
+
+      var flash = document.getElementById("shutter-flash");
+      if (flash) {
+        flash.classList.add("flash-active");
+        setTimeout(function() { flash.classList.remove("flash-active"); }, 200);
+      }
+
+      playBeep();
+      if (window.AndroidBridge && typeof window.AndroidBridge.vibrateHaptic === "function") {
+        window.AndroidBridge.vibrateHaptic("shutter");
+      }
+
+      var canvas = document.createElement("canvas");
+      var w = video.videoWidth || 1280;
+      var h = video.videoHeight || 720;
+      canvas.width = w;
+      canvas.height = h;
+      var ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, w, h);
+
+      var dataUrl = canvas.toDataURL("image/jpeg", 0.90);
+      var base64Data = dataUrl.split(",")[1];
+
+      stPost({ type: "streamlit:setComponentValue", value: { type: "image", data: base64Data, source: "camera", timestamp: Date.now() } });
+      stopCamera();
+      showProcessingHud("Gemini Vision AI Auditing", "Reading ingredients list & expiry stamps from photo…");
+
+      try {
+        var aiResult = await callGeminiVision(base64Data);
+        hideProcessingHud();
+        var meta = {
+          name: aiResult.product_name || "Verified Product",
+          brand: aiResult.brand || "Brand",
+          barcode: "AI-INGREDIENT-SCAN",
+          nutriscore: "",
+          category: aiResult.category || "Consumer Product",
+          mfg_date: aiResult.mfg_date || null,
+          expiry_date: aiResult.expiry_date || null,
+          shelf_life: aiResult.shelf_life || null,
+          batch_no: aiResult.batch_no || null
+        };
+        var analysis = analyzeIngredientsText(aiResult.ingredients_text, meta);
+        lastAnalysisData = analysis;
+        renderAnalysis(analysis);
+        navToPage("report");
+      } catch(e) {
+        hideProcessingHud();
+        showStatus("⚠️ Could not read ingredients clearly. Try closer with good light.", "loading");
+        setTimeout(hideStatus, 3000);
+        startCamera();
+      }
+    }
+
+    function handleFileSelect(input) {
+      if (!input.files || !input.files[0]) return;
+      var file = input.files[0];
+      var reader = new FileReader();
+      reader.onload = async function(e) {
+        var base64Data = e.target.result.split(",")[1];
+        stPost({ type: "streamlit:setComponentValue", value: { type: "image", data: base64Data, source: "gallery", timestamp: Date.now() } });
+        showProcessingHud("Auditing Uploaded Photo", "Gemini Vision AI analyzing uploaded label photo…");
+        try {
+          var aiResult = await callGeminiVision(base64Data);
+          hideProcessingHud();
+          var meta = {
+            name: aiResult.product_name || file.name.replace(/\.[^/.]+$/, ""),
+            brand: aiResult.brand || "Brand",
+            barcode: "GALLERY-PHOTO-SCAN",
+            nutriscore: "",
+            category: aiResult.category || "Consumer Product",
+            mfg_date: aiResult.mfg_date || null,
+            expiry_date: aiResult.expiry_date || null,
+            shelf_life: aiResult.shelf_life || null,
+            batch_no: aiResult.batch_no || null
+          };
+          var analysis = analyzeIngredientsText(aiResult.ingredients_text, meta);
+          lastAnalysisData = analysis;
+          renderAnalysis(analysis);
+          navToPage("report");
+        } catch(err) {
+          hideProcessingHud();
+          showStatus("⚠️ Vision OCR could not read ingredients. Please try another image.", "loading");
+          setTimeout(hideStatus, 3000);
+        }
+      };
       reader.readAsDataURL(file);
     }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Wire up file inputs
-    // ─────────────────────────────────────────────────────────────────────
-    document.getElementById("cam-input").addEventListener("change", function (e) {
-      if (e.target.files && e.target.files[0]) {
-        handleFile(e.target.files[0], "camera");
-      }
-      e.target.value = "";   // reset so same file can be re-captured
-    });
+    // ── Resilient Multi-Model Gemini Engine (Fallback: 2.5-flash -> 1.5-flash -> 2.0-flash) ──
+    async function executeGeminiRequest(payload) {
+      var userKey = "";
+      try { userKey = localStorage.getItem("nutriscan_custom_gemini_key"); } catch(e){}
+      var apiKey = (userKey && userKey.trim()) ? userKey.trim() : GEMINI_KEY;
+      var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+      var lastErr = null;
 
-    document.getElementById("gal-input").addEventListener("change", function (e) {
-      if (e.target.files && e.target.files[0]) {
-        handleFile(e.target.files[0], "gallery");
+      for (var i = 0; i < models.length; i++) {
+        var model = models[i];
+        var url = "https://generativelanguage.googleapis.com/v1beta/models/" + model + ":generateContent?key=" + apiKey;
+        try {
+          var controller = new AbortController();
+          var timeoutId = setTimeout(function() { controller.abort(); }, 12000);
+          var res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+            signal: controller.signal
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            var json = await res.json();
+            if (json.candidates && json.candidates[0] && json.candidates[0].content && json.candidates[0].content.parts && json.candidates[0].content.parts[0]) {
+              var raw = json.candidates[0].content.parts[0].text;
+              raw = raw.replace(/```json/gi, "").replace(/```/g, "").trim();
+              var s = raw.indexOf('{');
+              var e = raw.lastIndexOf('}');
+              if (s !== -1 && e !== -1) raw = raw.substring(s, e + 1);
+              return JSON.parse(raw);
+            }
+          } else {
+            console.warn("Gemini " + model + " returned HTTP " + res.status);
+            lastErr = new Error("Model " + model + " HTTP " + res.status);
+          }
+        } catch(err) {
+          console.warn("Gemini " + model + " failed:", err);
+          lastErr = err;
+        }
       }
-      e.target.value = "";   // reset so same image can be re-selected
-    });
+      throw (lastErr || new Error("Gemini AI service unavailable. Please check internet connection."));
+    }
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Listen for render event from Streamlit (re-sent on every rerun)
-    // ─────────────────────────────────────────────────────────────────────
-    window.addEventListener("message", function (event) {
-      if (event.data && event.data.type === "streamlit:render") {
-        setFrameHeight();
+    async function callGeminiVision(base64Image) {
+      var promptText = "You are an expert chemical safety and product label analyst. " +
+        "Analyze this product package or back-label photo (Skincare, Food, Beverage, etc.). " +
+        "Extract: " +
+        "1. product_name: Exact product title. " +
+        "2. brand: Brand name. " +
+        "3. category: Product category. " +
+        "4. ingredients_text: Clean comma-separated list of ingredients. " +
+        "5. mfg_date: Manufacturing date if stamped (null if absent). " +
+        "6. expiry_date: Expiration / Best Before date if stamped (null if absent). " +
+        "7. shelf_life: Shelf life text statement (or null). " +
+        "8. batch_no: Batch number (or null). " +
+        "Return ONLY a valid JSON object matching this schema: " +
+        "{\"product_name\": \"...\", \"brand\": \"...\", \"category\": \"...\", \"ingredients_text\": \"...\", \"mfg_date\": null, \"expiry_date\": null, \"shelf_life\": null, \"batch_no\": null} with no markdown formatting.";
+
+      var payload = {
+        contents: [{
+          parts: [
+            { text: promptText },
+            { inline_data: { mime_type: "image/jpeg", data: base64Image } }
+          ]
+        }],
+        generationConfig: { temperature: 0.0, responseMimeType: "application/json" }
+      };
+
+      return await executeGeminiRequest(payload);
+    }
+
+    async function callGeminiBarcodeLookup(barcode) {
+      var promptText = "A user scanned a commercial barcode #" + barcode + ". " +
+        "Identify the commercial packaged product, its brand, category, and exact ingredients list. " +
+        "Return ONLY a JSON object: {\"product_name\": \"...\", \"brand\": \"...\", \"category\": \"...\", \"ingredients_text\": \"...\"}";
+
+      var payload = {
+        contents: [{ parts: [{ text: promptText }] }],
+        generationConfig: { temperature: 0.0, responseMimeType: "application/json" }
+      };
+
+      return await executeGeminiRequest(payload);
+    }
+
+    async function callGeminiTextSearch(query) {
+      var promptText = "A user searched for product: '" + query + "'. " +
+        "Identify the official commercial consumer product, brand, category, and standard ingredients list. " +
+        "Return ONLY JSON: {\"product_name\": \"...\", \"brand\": \"...\", \"category\": \"...\", \"ingredients_text\": \"...\"}";
+
+      var payload = {
+        contents: [{ parts: [{ text: promptText }] }],
+        generationConfig: { temperature: 0.0, responseMimeType: "application/json" }
+      };
+
+      return await executeGeminiRequest(payload);
+    }
+
+    // ── Deterministic Universal Safety Engine with Personalized Health Rules ──
+    function analyzeIngredientsText(text, productMeta) {
+      var tokens = text.split(/[,;\n•·|()\[\]{}]/).map(function(s) { return s.trim(); }).filter(function(s) { return s.length > 2; });
+      var score = 100;
+      var matchedItems = [];
+      var detectedAllergens = [];
+      var customHealthWarnings = [];
+
+      // Check Allergens
+      for (var aName in ALLERGEN_PATTERNS) {
+        var pats = ALLERGEN_PATTERNS[aName];
+        for (var p of pats) {
+          if (p.test(text)) {
+            if (!detectedAllergens.includes(aName)) detectedAllergens.push(aName);
+            break;
+          }
+        }
       }
-    });
 
-    // ─────────────────────────────────────────────────────────────────────
-    // Initialise: announce ready as early as possible
-    // ─────────────────────────────────────────────────────────────────────
-    // Try immediately, and again after DOM paint to be safe
-    componentReady();
-    window.addEventListener("load", function () {
-      componentReady();
-      setTimeout(setFrameHeight, 100);
-    });
+      // Check Personalized Preferences
+      var prefs = getHealthPrefs();
+      if (prefs.diabetic && (/maltodextrin/i.test(text) || /high\s*fructose/i.test(text) || /invert\s*sugar/i.test(text) || /liquid\s*glucose/i.test(text))) {
+        customHealthWarnings.push("🩸 Diabetic Alert: Contains rapid glycemic index sweeteners (Maltodextrin / Invert Sugars).");
+      }
+      if (prefs.pregnancy && (/retinol/i.test(text) || /retinoid/i.test(text) || /aspartame/i.test(text) || /saccharin/i.test(text))) {
+        customHealthWarnings.push("🤰 Pregnancy Alert: Contains ingredients not recommended during pregnancy (Retinoids / Artificial Sweeteners).");
+      }
+      if (prefs.vegan && (/gelatin/i.test(text) || /carmine/i.test(text) || /e\s*120/i.test(text) || /whey/i.test(text) || /lanolin/i.test(text) || /casein/i.test(text))) {
+        customHealthWarnings.push("🌿 Vegan Alert: Contains animal-derived components (Gelatin / Carmine E120 / Dairy derivatives).");
+      }
+      if (prefs.gluten && (/wheat/i.test(text) || /gluten/i.test(text) || /barley/i.test(text) || /maida/i.test(text) || /atta/i.test(text))) {
+        customHealthWarnings.push("🌾 Gluten Alert: Contains wheat/gluten sources.");
+      }
+      if (prefs.skin && (/sodium\s*lauryl\s*sulfate/i.test(text) || /sls/i.test(text) || /fragrance/i.test(text) || /parfum/i.test(text) || /mineral\s*oil/i.test(text))) {
+        customHealthWarnings.push("💧 Sensitive Skin Alert: Contains potential pore-cloggers or harsh sulfates (SLS / Synthetic Perfume / Mineral Oil).");
+      }
+
+      // Canonical Database Matching
+      tokens.forEach(function(tok) {
+        var matched = null;
+        for (var item of CANONICAL_DB) {
+          for (var p of item.patterns) {
+            if (p.test(tok)) {
+              matched = item;
+              break;
+            }
+          }
+          if (matched) break;
+        }
+
+        if (matched) {
+          score -= matched.penalty;
+          matchedItems.push(matched);
+        } else {
+          matchedItems.push({
+            name: tok,
+            risk: "Safe",
+            cat: "Standard Component",
+            side_effects: "Natural or standard ingredient; safe for regular usage.",
+            status: "Approved",
+            icon: "✅",
+            penalty: 0
+          });
+        }
+      });
+
+      score = Math.max(10, Math.min(100, score));
+      var grade = "A";
+      if (score < 40) grade = "D";
+      else if (score < 70) grade = "C";
+      else if (score < 85) grade = "B";
+
+      return {
+        product: productMeta,
+        score: score,
+        grade: grade,
+        allergens: detectedAllergens,
+        healthWarnings: customHealthWarnings,
+        ingredients: matchedItems,
+        total: matchedItems.length,
+        concerning: matchedItems.filter(function(i) { return i.risk === "Moderate Risk" || i.risk === "High Risk"; }).length,
+        rawIngredients: text
+      };
+    }
+
+    // ── Filter Ingredients on Report Page ──
+    function filterIngredients(category) {
+      haptic();
+      var pills = ['all', 'high', 'mod', 'safe'];
+      pills.forEach(function(p) {
+        var btn = document.getElementById("flt-" + p);
+        if (btn) btn.className = "filter-pill-btn" + ((p === category || (category === 'High Risk' && p === 'high') || (category === 'Moderate Risk' && p === 'mod') || (category === 'Safe' && p === 'safe')) ? " active" : "");
+      });
+
+      var cards = document.querySelectorAll(".ing-card-item");
+      cards.forEach(function(c) {
+        var r = c.getAttribute("data-risk");
+        if (category === "all") {
+          c.style.display = "block";
+        } else if (category === "High Risk" && r === "High Risk") {
+          c.style.display = "block";
+        } else if (category === "Moderate Risk" && r === "Moderate Risk") {
+          c.style.display = "block";
+        } else if (category === "Safe" && (r === "Safe" || r === "Low Risk")) {
+          c.style.display = "block";
+        } else {
+          c.style.display = "none";
+        }
+      });
+    }
+
+    // ── Render Analysis Results on Dedicated Screen ──
+    function renderAnalysis(data) {
+      var resultsDiv = document.getElementById("results-area");
+      if (!resultsDiv) return;
+
+      var p = data.product || {};
+      var gradeInfo = {
+        "A": { name: "Excellent – Clean & Safe", color: "#10b981", stroke: "#10b981", desc: "Clean formulation, natural botanicals & safe components" },
+        "B": { name: "Good – Generally Safe", color: "#14b8a6", stroke: "#14b8a6", desc: "Standard permitted components with low concern" },
+        "C": { name: "Caution – Moderate Concern", color: "#f59e0b", stroke: "#f59e0b", desc: "Contains petroleum bases, silicones, sulphates or moderate additives" },
+        "D": { name: "High Concern – Harsh/Toxic", color: "#f43f5e", stroke: "#f43f5e", desc: "Contains parabens, TBHQ, formaldehyde releasers or toxic additives" }
+      }[data.grade] || {};
+
+      var summaryText = "";
+      var adviceText = "";
+
+      if (currentLanguage === "Hindi") {
+        if (data.grade === "A") { summaryText = "यह उत्पाद पूरी तरह सुरक्षित, स्वच्छ और पौष्टिक प्राकृतिक अवयवों से भरपूर है।"; adviceText = "दैनिक उपयोग और बालों/त्वचा की देखभाल के लिए सुरक्षित विकल्प।"; }
+        else if (data.grade === "B") { summaryText = "यह उत्पाद सामान्य रूप से सुरक्षित है और मानक अनुमत घटकों से बना है।"; adviceText = "नियमित उपयोग के लिए उपयुक्त।"; }
+        else if (data.grade === "C") { summaryText = "इस उत्पाद में " + data.concerning + " मध्यम-जोखिम वाले घटक (जैसे Mineral Oil, Sulfates या Fragrance) पाए गए हैं।"; adviceText = "संवेदनशील त्वचा/स्कैल्प होने पर सावधानी बरतें।"; }
+        else { summaryText = "सावधान: इस उत्पाद में Parabens, TBHQ या हानिकारक रसायन मौजूद हैं।"; adviceText = "स्वास्थ्य सुरक्षा के लिए स्वच्छ एवं प्राकृतिक विकल्पों को प्राथमिकता दें।"; }
+      } else if (currentLanguage === "Hinglish") {
+        if (data.grade === "A") { summaryText = "Yeh product kaafi clean, safe aur natural botanicals se bana hai (Score: " + data.score + "/100)."; adviceText = "Daily hair/skin care ya consumption ke liye safe aur healthy choice hai."; }
+        else if (data.grade === "B") { summaryText = "Yeh product generally safe hai aur standard permitted components contain karta hai."; adviceText = "Regular use ke liye suitable hai."; }
+        else if (data.grade === "C") { summaryText = "Is product me " + data.concerning + " concerning ingredients (jaise Mineral Oil, Sulfates, Silicones) detect hue hain."; adviceText = "Sensitive skin/scalp hone par excessive use avoid karein."; }
+        else { summaryText = "Warning: Is product me high-risk chemicals (jaise Parabens, TBHQ, Formaldehyde Releasers) shamil hain."; adviceText = "Health protection ke liye cleaner toxin-free alternatives choose karein."; }
+      } else {
+        if (data.grade === "A") { summaryText = "This product features clean, non-toxic, and nourishing ingredients (Score: " + data.score + "/100)."; adviceText = "Safe and recommended for regular daily routine."; }
+        else if (data.grade === "B") { summaryText = "This product is generally safe with standard permitted cosmetic/food ingredients."; adviceText = "Suitable for regular usage."; }
+        else if (data.grade === "C") { summaryText = "This product contains " + data.concerning + " moderate-risk components (e.g. Mineral Oil base, Sulfates, Silicones, or Fragrance)."; adviceText = "Check for scalp/skin sensitivity or pores clogging if used frequently."; }
+        else { summaryText = "Caution: Contains high-risk chemicals (Parabens, TBHQ, harsh sensitizers or hazardous additives)."; adviceText = "Consider cleaner, botanical, or toxin-free alternatives."; }
+      }
+
+      var html = "";
+
+      // Product Banner
+      if (p.name) {
+        var imgHtml = p.image_url ? '<img src="' + p.image_url + '" class="p-thumb" />' : '<div class="p-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px;">🧴</div>';
+        var nutriHtml = p.nutriscore ? '<span class="pill pill-green">Nutri-Score: ' + p.nutriscore + '</span>' : '';
+        html += '<div class="product-card">' +
+          imgHtml +
+          '<div style="flex:1;min-width:0;">' +
+            '<div class="p-brand">' + (p.brand || 'Product') + '</div>' +
+            '<div class="p-title">' + p.name + '</div>' +
+            '<div class="p-meta">' +
+              '<span class="pill pill-blue">⚡ ' + (p.barcode || 'VERIFIED') + '</span>' +
+              '<span class="pill pill-pink">' + (p.category || 'Consumer Product') + '</span>' +
+              nutriHtml +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // Expiry Banner
+      var expStatus = calculateExpiryStatus(p.expiry_date, p.mfg_date, p.shelf_life);
+      if (expStatus.hasDate) {
+        if (expStatus.status === "EXPIRED") {
+          data.score = Math.max(10, data.score - 40);
+          data.grade = "D";
+          gradeInfo = { name: "EXPIRED PRODUCT – UNSAFE", color: "#f43f5e", stroke: "#f43f5e", desc: "Product has passed its expiration date. Chemical degradation and bacterial contamination risk." };
+        }
+        var expIcon = expStatus.status === "EXPIRED" ? "🚨" : (expStatus.status === "EXPIRING_SOON" ? "⏳" : "✅");
+        html += '<div class="expiry-banner ' + expStatus.alertClass + '">' +
+          '<div class="expiry-banner-icon">' + expIcon + '</div>' +
+          '<div class="expiry-banner-body">' +
+            '<div class="expiry-banner-title">' +
+              '<span>' + expStatus.badge + '</span>' +
+              (p.batch_no ? '<span style="font-size:0.72rem;font-weight:600;opacity:0.8;color:#94a3b8;margin-left:auto;">Batch: ' + p.batch_no + '</span>' : '') +
+            '</div>' +
+            '<div class="expiry-banner-desc">' + expStatus.message + '</div>' +
+            '<div class="expiry-banner-meta">' +
+              (p.mfg_date ? '<span>🗓️ <strong>Mfg:</strong> ' + p.mfg_date + '</span>' : '') +
+              (expStatus.dateFormatted ? '<span>⌛ <strong>Exp:</strong> ' + expStatus.dateFormatted + '</span>' : '') +
+              (p.shelf_life ? '<span>📦 <strong>Shelf Life:</strong> ' + p.shelf_life + '</span>' : '') +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      } else {
+        var typicalShelf = getTypicalShelfLife(p.category, p.name);
+        html += '<div class="expiry-banner expiry-guide">' +
+          '<div class="expiry-banner-icon">🗓️</div>' +
+          '<div class="expiry-banner-body">' +
+            '<div class="expiry-banner-title">Expiry & Shelf Life Guide</div>' +
+            '<div class="expiry-banner-desc">Typical shelf life for this category: <strong>' + typicalShelf + '</strong>. Check the stamped MFD / EXP on your pack.</div>' +
+            '<div style="display:flex;gap:6px;margin-top:8px;align-items:center;">' +
+              '<input type="text" id="manual-exp-input" class="manual-input" style="height:34px;font-size:0.76rem;flex:1;" placeholder="Enter printed EXP date (e.g. 10/2025)" />' +
+              '<button class="manual-btn" style="height:34px;padding:0 12px;font-size:0.76rem;" onclick="checkManualPackExpiry(document.getElementById(\'manual-exp-input\').value, \'' + (p.category || '') + '\')">Verify</button>' +
+            '</div>' +
+            '<div id="manual-exp-result"></div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      // Dynamic Animated SVG Circular Score Ring Gauge
+      var strokeDashoffset = Math.round(238.76 - (data.score / 100) * 238.76);
+      html += '<div class="grade-card">' +
+        '<div class="gauge-wrapper">' +
+          '<svg class="gauge-svg" viewBox="0 0 84 84">' +
+            '<circle class="gauge-bg-circle" cx="42" cy="42" r="38"></circle>' +
+            '<circle class="gauge-fill-circle" id="score-ring-fill" cx="42" cy="42" r="38" style="stroke:' + gradeInfo.stroke + ';stroke-dashoffset:238;"></circle>' +
+          '</svg>' +
+          '<div class="gauge-center-content">' +
+            '<div class="gauge-score-val" style="color:' + gradeInfo.color + '">' + data.score + '</div>' +
+            '<div class="gauge-grade-badge" style="background:' + gradeInfo.color + '22;color:' + gradeInfo.color + ';border:1px solid ' + gradeInfo.color + '55">Grade ' + data.grade + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="grade-info">' +
+          '<div class="grade-name" style="color:' + gradeInfo.color + '">' + gradeInfo.name + '</div>' +
+          '<div style="font-size:0.75rem;color:#94a3b8;margin-top:2px;">' + gradeInfo.desc + '</div>' +
+          '<div class="score-bar"><div class="score-fill" style="width:' + data.score + '%;background:' + gradeInfo.stroke + '"></div></div>' +
+        '</div>' +
+      '</div>';
+
+      // Stats Grid
+      var highRiskCount = data.ingredients.filter(function(i) { return i.risk === "High Risk"; }).length;
+      var modRiskCount  = data.ingredients.filter(function(i) { return i.risk === "Moderate Risk"; }).length;
+      var safeCount     = data.ingredients.filter(function(i) { return i.risk === "Safe" || i.risk === "Low Risk"; }).length;
+
+      html += '<div class="stats-row">' +
+        '<div class="stat-pill"><div class="stat-num" style="color:#38bdf8">' + data.total + '</div><div class="stat-lbl">Total</div></div>' +
+        '<div class="stat-pill"><div class="stat-num" style="color:#34d399">' + safeCount + '</div><div class="stat-lbl">Safe / Clean</div></div>' +
+        '<div class="stat-pill"><div class="stat-num" style="color:#fb7185">' + data.concerning + '</div><div class="stat-lbl">Concerning</div></div>' +
+        '<div class="stat-pill"><div class="stat-num" style="color:#fde047">' + data.allergens.length + '</div><div class="stat-lbl">Allergens</div></div>' +
+      '</div>';
+
+      // Custom Health Warning Alerts
+      if (data.healthWarnings && data.healthWarnings.length > 0) {
+        data.healthWarnings.forEach(function(hw) {
+          html += '<div class="health-profile-warning-box">⚠️ ' + hw + '</div>';
+        });
+      }
+
+      // Allergens Warning
+      if (data.allergens.length > 0) {
+        html += '<div class="allergen-box">⚠️ <strong>Sensitive Allergens Detected:</strong> ' + data.allergens.join(', ') + '</div>';
+      }
+
+      // Healthier Swaps / Clean Guidance
+      var hasMineralOil = data.ingredients.some(function(i) { return /mineral\s*oil/i.test(i.name) || /liquid\s*paraffin/i.test(i.name); });
+      var hasAHA_BHA = data.ingredients.some(function(i) { return /lactic\s*acid/i.test(i.name) || /salicylic\s*acid/i.test(i.name) || /mandelic/i.test(i.name); });
+      var hasChemicalUV = data.ingredients.some(function(i) { return /oxybenzone/i.test(i.name) || /octinoxate/i.test(i.name); });
+
+      var altTitle = "💡 Better / Cleaner Choice Guidance";
+      var altDesc = "Opt for formulations rich in natural cold-pressed lipids, plant-derived emulsifiers, and non-comedogenic ingredients.";
+
+      if (hasAHA_BHA) {
+        altTitle = "✨ Active Exfoliating Formulation Detected";
+        altDesc = "Contains active AHA & BHA exfoliants (Lactic & Salicylic Acid). Excellent for underarm brightening, odour reduction & skin smoothing! Patch-test if sensitive.";
+      } else if (hasMineralOil) {
+        altTitle = "💡 Cleaner Botanical Choice Recommendation";
+        altDesc = "Contains petroleum mineral oil base. For healthier hair roots & skin barrier, consider 100% Pure Cold-Pressed Coconut Oil or Sweet Almond Oil.";
+      } else if (hasChemicalUV) {
+        altTitle = "💡 Safer Mineral Sunscreen Recommendation";
+        altDesc = "Contains chemical UV filters. For sensitive skin & reef protection, choose Non-Nano Zinc Oxide / Titanium Dioxide mineral sunscreens.";
+      }
+
+      html += '<div class="alt-choice-box">' +
+        '<div class="alt-choice-title">' + altTitle + '</div>' +
+        '<div class="alt-choice-desc">' + altDesc + '</div>' +
+      '</div>';
+
+      // Chemical Audit & Advice
+      html += '<div class="verdict-box"><strong style="color:#67e8f9">📋 Chemical Audit:</strong> ' + summaryText + '</div>';
+      html += '<div class="action-box"><strong style="color:#6ee7b7">💡 Safety Advice:</strong> ' + adviceText + '</div>';
+
+      // Filter Pills for Ingredients
+      html += '<div style="display:flex;align-items:center;justify-space-between;margin-top:1rem;">' +
+        '<h4 style="font-size:0.92rem;font-weight:800;flex:1;">🧪 Chemical Breakdown</h4>' +
+      '</div>';
+
+      html += '<div class="ing-filter-row">' +
+        '<button class="filter-pill-btn active" id="flt-all" onclick="filterIngredients(\'all\')"><span>All</span> <span style="opacity:0.6">(' + data.total + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-high" onclick="filterIngredients(\'High Risk\')"><span>🔴 High Risk</span> <span style="opacity:0.6">(' + highRiskCount + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-mod" onclick="filterIngredients(\'Moderate Risk\')"><span>🟠 Moderate</span> <span style="opacity:0.6">(' + modRiskCount + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-safe" onclick="filterIngredients(\'Safe\')"><span>✅ Clean / Safe</span> <span style="opacity:0.6">(' + safeCount + ')</span></button>' +
+      '</div>';
+
+      // Ingredient Cards
+      data.ingredients.forEach(function(item) {
+        var chipClass = "chip-safe";
+        if (item.risk === "Moderate Risk") chipClass = "chip-mod";
+        else if (item.risk === "High Risk") chipClass = "chip-high";
+        else if (item.risk === "Low Risk") chipClass = "chip-low";
+
+        html += '<div class="ing-card ing-card-item" data-risk="' + item.risk + '">' +
+          '<div class="ing-top">' +
+            '<div><span class="ing-name">' + (item.icon || '✅') + ' ' + item.name + '</span><span class="ing-cat"> · ' + item.cat + '</span></div>' +
+            '<span class="risk-chip ' + chipClass + '">' + item.risk + '</span>' +
+          '</div>' +
+          '<div class="ing-desc">' + item.side_effects + '</div>' +
+          '<div class="ing-reg">' + (item.status || 'Approved') + '</div>' +
+        '</div>';
+      });
+
+      // Expandable Raw Ingredients Drawer
+      if (data.rawIngredients) {
+        var cleanRaw = String(data.rawIngredients).replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        html += '<div class="raw-ingredients-card">' +
+          '<div class="raw-drawer-header" onclick="toggleRawIngredientsDrawer()">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+              '<span style="font-size:17px;">📜</span>' +
+              '<span style="font-weight:700;font-size:0.86rem;color:#f8fafc;">Original Label Ingredients</span>' +
+            '</div>' +
+            '<span id="raw-drawer-arrow" style="font-size:0.75rem;color:#94a3b8;transition:transform 0.25s;">▼</span>' +
+          '</div>' +
+          '<div id="raw-drawer-body" class="raw-drawer-body" style="display:none;">' +
+            '<div class="raw-text-box">' + cleanRaw + '</div>' +
+            '<div style="display:flex;justify-content:flex-end;margin-top:8px;">' +
+              '<button class="copy-raw-btn" onclick="copyRawIngredients()">📋 Copy Text</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      html += '<div class="action-grid">' +
+        '<button class="retake-btn" onclick="navToPage(\'scan\')">📷 Scan Another</button>' +
+        '<button class="share-btn" onclick="shareReport()">📤 Share Report</button>' +
+      '</div>';
+
+      resultsDiv.innerHTML = html;
+      saveToRecentScans(data);
+
+      var reportDot = document.getElementById("report-active-dot");
+      if (reportDot) reportDot.style.display = "block";
+
+      setTimeout(function() {
+        var ring = document.getElementById("score-ring-fill");
+        if (ring) {
+          ring.style.strokeDashoffset = strokeDashoffset;
+        }
+      }, 100);
+    }
+
+    // ── Raw Ingredients Drawer Helpers ──
+    function toggleRawIngredientsDrawer() {
+      var body = document.getElementById("raw-drawer-body");
+      var arrow = document.getElementById("raw-drawer-arrow");
+      if (!body) return;
+      if (body.style.display === "none") {
+        body.style.display = "block";
+        if (arrow) arrow.style.transform = "rotate(180deg)";
+      } else {
+        body.style.display = "none";
+        if (arrow) arrow.style.transform = "rotate(0deg)";
+      }
+    }
+
+    function copyRawIngredients() {
+      haptic();
+      if (lastAnalysisData && lastAnalysisData.rawIngredients) {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(lastAnalysisData.rawIngredients);
+          showStatus("📋 Raw ingredients copied!", "success");
+          setTimeout(hideStatus, 1500);
+        }
+      }
+    }
+
+    // ── Share Report Function ──
+    function shareReport() {
+      haptic();
+      if (!lastAnalysisData) return;
+      var d = lastAnalysisData;
+      var text = "🛡️ NutriScan Chemical & Safety Report: " + (d.product.name || 'Product') + "\n" +
+                 "⭐ Safety Score: " + d.score + "/100 (Grade " + d.grade + ")\n" +
+                 "⚠️ Allergens/Sensitizers: " + (d.allergens.length ? d.allergens.join(', ') : 'None') + "\n" +
+                 "🧪 Concerning Chemicals: " + d.concerning + "\n" +
+                 "⚡ Audited via NutriScan Universal Safety (Developed by Nitin Yadav)";
+      if (navigator.share) {
+        navigator.share({ title: "NutriScan Safety Report", text: text }).catch(function(){});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text);
+        showStatus("📋 Report copied to clipboard!", "success");
+        setTimeout(hideStatus, 2000);
+      }
+    }
+
+    // ── Recent Scans & Full History Page ──
+    function saveToRecentScans(analysis) {
+      if (!analysis || !analysis.product || !analysis.product.name) return;
+      var item = {
+        name: analysis.product.name,
+        brand: analysis.product.brand || "Brand",
+        barcode: analysis.product.barcode || "SCANNED",
+        category: analysis.product.category || "Consumer Product",
+        score: analysis.score,
+        grade: analysis.grade,
+        date: new Date().toLocaleDateString("en-IN", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }),
+        analysisData: analysis
+      };
+
+      try {
+        var list = JSON.parse(localStorage.getItem("nutriscan_history") || "[]");
+        list = list.filter(function(i) { return i.name !== item.name; });
+        list.unshift(item);
+        if (list.length > 40) list = list.slice(0, 40);
+        localStorage.setItem("nutriscan_history", JSON.stringify(list));
+      } catch(e){}
+    }
+
+    var historyGradeFilter = "all";
+    var historySearchTerm = "";
+
+    function renderFullHistoryPage() {
+      var container = document.getElementById("history-full-list");
+      if (!container) return;
+
+      var list = [];
+      try {
+        list = JSON.parse(localStorage.getItem("nutriscan_history") || "[]");
+      } catch(e){}
+
+      if (historySearchTerm) {
+        var q = historySearchTerm.toLowerCase();
+        list = list.filter(function(i) {
+          return i.name.toLowerCase().includes(q) || (i.brand && i.brand.toLowerCase().includes(q));
+        });
+      }
+
+      if (historyGradeFilter === "safe") {
+        list = list.filter(function(i) { return i.grade === "A" || i.grade === "B"; });
+      } else if (historyGradeFilter === "hazard") {
+        list = list.filter(function(i) { return i.grade === "C" || i.grade === "D"; });
+      }
+
+      if (!list || list.length === 0) {
+        container.innerHTML = '<div class="empty-state-box">' +
+          '<div class="empty-state-icon">🛒</div>' +
+          '<div class="empty-state-title">No Scans in History</div>' +
+          '<div class="empty-state-desc">Scan barcodes or product ingredient lists to build your healthy pantry audit.</div>' +
+        '</div>';
+        return;
+      }
+
+      var html = "";
+      list.forEach(function(item, idx) {
+        html += '<div class="history-card-item" onclick="openHistoryItem(' + idx + ')">' +
+          '<div class="history-card-badge hbadge-' + item.grade + '">' +
+            '<span style="font-size:1.1rem;line-height:1;">' + item.grade + '</span>' +
+            '<span style="font-size:0.56rem;margin-top:1px;">' + item.score + '</span>' +
+          '</div>' +
+          '<div class="history-card-info">' +
+            '<div class="history-card-title">' + item.name + '</div>' +
+            '<div class="history-card-meta">' + (item.brand || 'Brand') + ' · ' + (item.category || 'Product') + ' · ' + item.date + '</div>' +
+          '</div>' +
+          '<div style="display:flex;align-items:center;gap:6px;">' +
+            '<button class="history-del-btn" onclick="deleteHistoryItem(' + idx + ', event)" title="Remove this scan">🗑️</button>' +
+            '<div style="font-size:16px;color:#94a3b8;">›</div>' +
+          '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function deleteHistoryItem(index, event) {
+      if (event) event.stopPropagation();
+      haptic();
+      try {
+        var list = JSON.parse(localStorage.getItem("nutriscan_history") || "[]");
+        if (index >= 0 && index < list.length) {
+          list.splice(index, 1);
+          localStorage.setItem("nutriscan_history", JSON.stringify(list));
+          renderFullHistoryPage();
+          showStatus("🗑️ Item removed from history.", "loading");
+          setTimeout(hideStatus, 1200);
+        }
+      } catch(e){}
+    }
+
+    function openHistoryItem(index) {
+      try {
+        var list = JSON.parse(localStorage.getItem("nutriscan_history") || "[]");
+        if (list[index] && list[index].analysisData) {
+          lastAnalysisData = list[index].analysisData;
+          renderAnalysis(lastAnalysisData);
+          navToPage("report");
+        }
+      } catch(e){}
+    }
+
+    function filterHistoryList(val) {
+      historySearchTerm = (val || "").trim();
+      renderFullHistoryPage();
+    }
+
+    function filterHistoryGrade(grade) {
+      haptic();
+      historyGradeFilter = grade;
+      var pills = ['all', 'safe', 'hazard'];
+      pills.forEach(function(p) {
+        var btn = document.getElementById("hflt-" + p);
+        if (btn) btn.className = "filter-pill-btn" + (p === grade ? " active" : "");
+      });
+      renderFullHistoryPage();
+    }
+
+    function clearAllHistory() {
+      haptic();
+      localStorage.removeItem("nutriscan_history");
+      renderFullHistoryPage();
+      showStatus("🗑️ History cleared.", "loading");
+      setTimeout(hideStatus, 1500);
+    }
+
+    // ── Safety Guide & Additive Encyclopedia Page ──
+    var guideSearchTerm = "";
+    var guideCategoryFilter = "all";
+
+    function renderFullGuidePage() {
+      var container = document.getElementById("guide-items-list");
+      if (!container) return;
+
+      var list = CANONICAL_DB;
+
+      if (guideSearchTerm) {
+        var q = guideSearchTerm.toLowerCase();
+        list = list.filter(function(i) {
+          return i.name.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q) || i.side_effects.toLowerCase().includes(q);
+        });
+      }
+
+      if (guideCategoryFilter === "high") {
+        list = list.filter(function(i) { return i.risk === "High Risk"; });
+      } else if (guideCategoryFilter === "cosmetic") {
+        list = list.filter(function(i) { return /cosmetic|hair|skin|sunscreen|paraben|sulfate|silicone|aha|bha|lipid/i.test(i.cat + " " + i.name); });
+      } else if (guideCategoryFilter === "food") {
+        list = list.filter(function(i) { return /food|sweetener|antioxidant|preservative|color|fat|flour/i.test(i.cat + " " + i.name); });
+      }
+
+      var html = "";
+      list.forEach(function(item) {
+        var chipClass = "chip-safe";
+        if (item.risk === "Moderate Risk") chipClass = "chip-mod";
+        else if (item.risk === "High Risk") chipClass = "chip-high";
+        else if (item.risk === "Low Risk") chipClass = "chip-low";
+
+        html += '<div class="guide-card-item">' +
+          '<div class="guide-top">' +
+            '<div class="guide-title">' + (item.icon || '🧪') + ' ' + item.name + '</div>' +
+            '<span class="risk-chip ' + chipClass + '">' + item.risk + '</span>' +
+          '</div>' +
+          '<div class="guide-category">' + item.cat + '</div>' +
+          '<div class="guide-desc">' + item.side_effects + '</div>' +
+          '<div class="guide-status">🏛️ ' + item.status + '</div>' +
+        '</div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function filterGuideList(val) {
+      guideSearchTerm = (val || "").trim();
+      renderFullGuidePage();
+    }
+
+    function filterGuideCategory(cat) {
+      haptic();
+      guideCategoryFilter = cat;
+      var pills = ['all', 'high', 'cosmetic', 'food'];
+      pills.forEach(function(p) {
+        var btn = document.getElementById("gflt-" + p);
+        if (btn) btn.className = "filter-pill-btn" + (p === cat ? " active" : "");
+      });
+      renderFullGuidePage();
+    }
+
+    // ── Health Preferences State & UI ──
+    function getHealthPrefs() {
+      try {
+        return JSON.parse(localStorage.getItem("nutriscan_health_prefs") || "{}");
+      } catch(e) { return {}; }
+    }
+
+    function loadHealthPrefsUI() {
+      var prefs = getHealthPrefs();
+      if (document.getElementById("pref-diabetic")) document.getElementById("pref-diabetic").checked = !!prefs.diabetic;
+      if (document.getElementById("pref-pregnancy")) document.getElementById("pref-pregnancy").checked = !!prefs.pregnancy;
+      if (document.getElementById("pref-vegan")) document.getElementById("pref-vegan").checked = !!prefs.vegan;
+      if (document.getElementById("pref-gluten")) document.getElementById("pref-gluten").checked = !!prefs.gluten;
+      if (document.getElementById("pref-skin")) document.getElementById("pref-skin").checked = !!prefs.skin;
+    }
+
+    function saveHealthPrefs() {
+      haptic();
+      var prefs = {
+        diabetic: !!(document.getElementById("pref-diabetic") && document.getElementById("pref-diabetic").checked),
+        pregnancy: !!(document.getElementById("pref-pregnancy") && document.getElementById("pref-pregnancy").checked),
+        vegan: !!(document.getElementById("pref-vegan") && document.getElementById("pref-vegan").checked),
+        gluten: !!(document.getElementById("pref-gluten") && document.getElementById("pref-gluten").checked),
+        skin: !!(document.getElementById("pref-skin") && document.getElementById("pref-skin").checked)
+      };
+      localStorage.setItem("nutriscan_health_prefs", JSON.stringify(prefs));
+      showStatus("✅ Preferences saved!", "success");
+      setTimeout(hideStatus, 1200);
+    }
+
+    function setLanguage(lang) {
+      haptic();
+      currentLanguage = lang;
+      try { localStorage.setItem("nutriscan_lang", lang); } catch(e){}
+
+      var langs = ['en', 'hi', 'hl'];
+      langs.forEach(function(l) {
+        var btn = document.getElementById("plang-" + l);
+        if (btn) btn.className = "settings-lang-btn" + ((l === 'en' && lang === 'English') || (l === 'hi' && lang === 'Hindi') || (l === 'hl' && lang === 'Hinglish') ? " active" : "");
+      });
+
+      if (lastAnalysisData) {
+        renderAnalysis(lastAnalysisData);
+      }
+      showStatus("🌐 Language: " + lang, "success");
+      setTimeout(hideStatus, 1200);
+    }
+
+    // ── Custom Gemini API Key Management ──
+    function loadApiKeyUI() {
+      var keyInput = document.getElementById("custom-gemini-key");
+      var keyBadge = document.getElementById("key-status-badge");
+      var savedKey = "";
+      try { savedKey = localStorage.getItem("nutriscan_custom_gemini_key") || ""; } catch(e){}
+      if (keyInput) keyInput.value = savedKey;
+      if (keyBadge) {
+        if (savedKey) {
+          keyBadge.innerHTML = '<span style="color:#10b981;">● Active: Using Your Custom Gemini Key</span> <button onclick="resetApiKey()" style="background:none;border:none;color:#f43f5e;cursor:pointer;font-size:0.72rem;margin-left:8px;text-decoration:underline;">(Reset to Default)</button>';
+        } else {
+          keyBadge.innerHTML = '<span style="color:#06b6d4;">● Active: Using Built-in Ultra-Fast Key</span>';
+        }
+      }
+    }
+
+    function saveCustomApiKey() {
+      haptic();
+      var keyInput = document.getElementById("custom-gemini-key");
+      var val = keyInput ? keyInput.value.trim() : "";
+      if (val) {
+        localStorage.setItem("nutriscan_custom_gemini_key", val);
+        showStatus("✅ Custom API Key Saved!", "success");
+      } else {
+        localStorage.removeItem("nutriscan_custom_gemini_key");
+        showStatus("✅ Reset to Default Key!", "success");
+      }
+      loadApiKeyUI();
+      setTimeout(hideStatus, 1500);
+    }
+
+    function resetApiKey() {
+      haptic();
+      localStorage.removeItem("nutriscan_custom_gemini_key");
+      loadApiKeyUI();
+      showStatus("✅ Reverted to Built-in Key", "success");
+      setTimeout(hideStatus, 1500);
+    }
+
+    // ── Fast App Initializer ──
+    function initApp() {
+      if (window._appInitialized) return;
+      window._appInitialized = true;
+
+      try {
+        var savedLang = localStorage.getItem("nutriscan_lang");
+        if (savedLang) setLanguage(savedLang);
+      } catch(e){}
+
+      loadHealthPrefsUI();
+      loadApiKeyUI();
+      renderFullHistoryPage();
+      renderFullGuidePage();
+      runSplashScreen();
+    }
+
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      setTimeout(initApp, 10);
+    } else {
+      document.addEventListener("DOMContentLoaded", initApp);
+      window.addEventListener("load", initApp);
+    }
+    setTimeout(initApp, 400);
   </script>
 </body>
 </html>

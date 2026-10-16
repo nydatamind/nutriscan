@@ -10,6 +10,7 @@ __pycache__/
 dist/
 build/
 .eggs/
+.pytest_cache/
 
 # Environment & local secrets — NEVER commit these!
 .env
@@ -22,3 +23,15 @@ build/
 *.swo
 .DS_Store
 Thumbs.db
+
+# Android build & cache
+.gradle/
+**/build/
+**/.gradle/
+**/.kotlin/
+**/local.properties
+*.iml
+
+# Backups
+backups/
+*.bak

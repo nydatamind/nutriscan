@@ -24,11 +24,13 @@ import re
 import textwrap
 from io import BytesIO
 from typing import Any, Dict, List, Optional, Tuple
+import urllib.error
+import urllib.request
 
 from google import genai
 from google.genai import types as genai_types
-from groq import Groq
 from PIL import Image
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Logging
@@ -37,10 +39,12 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # ─────────────────────────────────────────────────────────────────────────────
-# In-Memory Cache (Stable Analysis by Image & Ingredients Hash)
+# In-Memory Cache (Stable Analysis by Image & Normalized Barcode)
 # ─────────────────────────────────────────────────────────────────────────────
 _IMAGE_CACHE: Dict[str, Dict[str, Any]] = {}
 _INGREDIENT_CACHE: Dict[str, Dict[str, Any]] = {}
+_BARCODE_CACHE: Dict[str, Dict[str, Any]] = {}
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Comprehensive Canonical Ingredient & Additive Knowledge Base
@@ -318,6 +322,77 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "icon": "✅",
         "score_penalty": 0,
     },
+    # ── Active Skincare & Cosmetic Ingredients (Roll-ons, Sunscreens, Serums) ──
+    {
+        "name": "Lactic Acid (AHA Exfoliant)",
+        "patterns": [r"lactic\s*acid"],
+        "risk_level": "Safe",
+        "category": "Alpha Hydroxy Acid (AHA)",
+        "side_effects": "Gentle AHA exfoliant; brightens skin, reduces underarm hyperpigmentation & hydrates skin.",
+        "regulatory_status": "Dermatologist Approved Active",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Salicylic Acid (BHA Active)",
+        "patterns": [r"salicylic\s*acid", r"\bbha\b"],
+        "risk_level": "Safe",
+        "category": "Beta Hydroxy Acid (BHA)",
+        "side_effects": "Penetrates deep into pores to control body odour, unclog pores, and prevent breakout bacteria.",
+        "regulatory_status": "Dermatologist Approved Active",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Mandelic Acid (AHA Active)",
+        "patterns": [r"mandelic\s*acid"],
+        "risk_level": "Safe",
+        "category": "Gentle AHA Exfoliant",
+        "side_effects": "Almond-derived gentle AHA; brightens skin tone without irritation.",
+        "regulatory_status": "Cosmetic Grade Active",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Shea Butter (Butyrospermum Parkii)",
+        "patterns": [r"shea\s*butter", r"butyrospermum\s*parkii"],
+        "risk_level": "Safe",
+        "category": "Nourishing Botanical Lipid",
+        "side_effects": "Rich in fatty acids and Vitamin E; deeply moisturizes and protects skin barrier.",
+        "regulatory_status": "Beneficial Natural Emollient",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Propylene Glycol / Propanediol",
+        "patterns": [r"propylene\s*glycol", r"propanediol"],
+        "risk_level": "Safe",
+        "category": "Skin Hydrator & Carrier",
+        "side_effects": "Helps active ingredients penetrate skin surface; attracts & locks in moisture.",
+        "regulatory_status": "Cosmetic Standard Approved",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Carrot Seed Oil / Extract",
+        "patterns": [r"carrot", r"daucus\s*carota"],
+        "risk_level": "Safe",
+        "category": "Natural Botanical Antioxidant",
+        "side_effects": "Rich in Beta-Carotene & Vitamin A; natural protection against free radical sun damage.",
+        "regulatory_status": "Beneficial Botanical Extract",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
+    {
+        "name": "Xanthan Gum / Sclerotium Gum",
+        "patterns": [r"xanthan\s*gum", r"sclerotium\s*gum", r"guar\s*gum"],
+        "risk_level": "Safe",
+        "category": "Natural Botanical Thickener",
+        "side_effects": "Plant-derived natural gelling & stabilizing agent; 100% non-toxic.",
+        "regulatory_status": "FDA GRAS Approved",
+        "icon": "✅",
+        "score_penalty": 0,
+    },
     {
         "name": "Maltodextrin",
         "patterns": [r"maltodextrin", r"malto\s*dextrin"],
@@ -568,13 +643,15 @@ def calculate_deterministic_safety(matched_ingredients: List[Dict[str, Any]]) ->
     total_count = len(matched_ingredients)
     if total_count == 0:
         return {
-            "overall_grade": "C",
-            "overall_score": 50,
+            "overall_grade": "N/A",
+            "overall_score": 0,
             "total_ingredients_found": 0,
             "concerning_ingredients_count": 0,
             "allergens_detected": [],
             "ingredients": [],
             "has_high_risk": False,
+            "has_moderate_risk": False,
+            "insufficient_data": True,
         }
 
     base_score = 100
@@ -773,12 +850,11 @@ class IngredientSafetyAI:
     def __init__(
         self,
         gemini_key: Optional[str] = None,
-        groq_key: Optional[str] = None,
     ) -> None:
         self._gemini_key = (gemini_key or os.getenv("GEMINI_API_KEY", "")).strip()
-        self._groq_key   = (groq_key   or os.getenv("GROQ_API_KEY",   "")).strip()
 
         self._gemini: Optional[GeminiEngine] = None
+
 
         if self._gemini_key:
             try:
@@ -880,9 +956,248 @@ class IngredientSafetyAI:
         _IMAGE_CACHE[img_hash] = final_result
         return final_result
 
+    def analyze_ingredients_text(
+        self,
+        raw_text: str,
+        language: str = "English",
+        product_meta: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """Analyze raw ingredient text deterministically without OCR step."""
+        tokens = parse_raw_ingredients_text(raw_text)
+        if not tokens:
+            return {
+                "is_unreadable": True,
+                "overall_grade": "N/A",
+                "overall_score": 0,
+                "summary": "No identifiable ingredients detected in product record.",
+                "recommendation": "Please capture a clear photo of the physical product label.",
+                "total_ingredients_found": 0,
+                "concerning_ingredients_count": 0,
+                "allergens_detected": [],
+                "ingredients": [],
+                "product_info": product_meta or {},
+            }
+
+        matched = [match_ingredient_against_kb(tok) for tok in tokens]
+        score_data = calculate_deterministic_safety(matched)
+        summary, rec = generate_deterministic_summary(score_data, language=language)
+
+        return {
+            "source_type": "barcode" if product_meta else "text",
+            "is_unreadable": False,
+            "overall_grade": score_data["overall_grade"],
+            "overall_score": score_data["overall_score"],
+            "summary": summary,
+            "recommendation": rec,
+            "total_ingredients_found": score_data["total_ingredients_found"],
+            "concerning_ingredients_count": score_data["concerning_ingredients_count"],
+            "allergens_detected": score_data["allergens_detected"],
+            "ingredients": score_data["ingredients"],
+            "raw_text": raw_text,
+            "product_info": product_meta or {},
+        }
+
+    def fetch_and_analyze_barcode(
+        self, barcode: str, language: str = "English", image_ocr_text: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Verified Barcode Pipeline:
+          1. Safe normalization & checksum validation (preserves leading zeros).
+          2. Check normalized barcode cache.
+          3. Multi-tier verified lookup (Local SQLite DB -> Verified Open Food Facts).
+          4. Barcode cross-verification on external results.
+          5. Deterministic ingredient analysis without AI fabrication.
+          6. Structured honest diagnostics when product is unverified or ingredients are missing.
+        """
+        from barcode_validator import normalize_barcode_string, validate_barcode
+        from product_resolver import resolve_scanned_barcode
+
+        clean_code = normalize_barcode_string(barcode)
+        val_res = validate_barcode(clean_code)
+
+        if not val_res.is_valid:
+            return {
+                "source_type": "barcode",
+                "found": False,
+                "is_valid_barcode": False,
+                "barcode": clean_code or str(barcode or ""),
+                "verification_status": "UNVERIFIED",
+                "confidence_score": 0.0,
+                "message": val_res.error_message or f"Invalid barcode #{barcode}.",
+                "action_prompt": "Please hold the camera steady or scan the barcode again in good lighting.",
+            }
+
+        # Check in-memory verified barcode cache
+        cache_key = f"barcode:{clean_code}"
+        if cache_key in _BARCODE_CACHE:
+            cached_data = _BARCODE_CACHE[cache_key]
+            logger.info("Cache hit for verified barcode: %s", clean_code)
+            summary, rec = generate_deterministic_summary(cached_data, language=language)
+            res = dict(cached_data)
+            res["summary"] = summary
+            res["recommendation"] = rec
+            return res
+
+        # Run verified multi-tier resolver
+        resolved = resolve_scanned_barcode(clean_code, image_ocr_text=image_ocr_text)
+
+        # Handle unverified barcode
+        if not resolved.get("found"):
+            return {
+                "source_type": "barcode",
+                "found": False,
+                "is_valid_barcode": True,
+                "barcode": clean_code,
+                "verification_status": "UNVERIFIED",
+                "confidence_score": 0.0,
+                "message": resolved.get("message", f"Product not verified for Barcode #{clean_code}."),
+                "action_prompt": resolved.get("action_prompt", "Please take a photo of the back label to analyze this product's health safety!"),
+            }
+
+        product_meta = resolved.get("product_info", {})
+        product_meta["barcode"] = clean_code
+        product_meta["source"] = resolved.get("source", "VERIFIED_REGISTRY")
+        product_meta["verification_status"] = resolved.get("verification_status", "VERIFIED")
+
+        # Handle verified product record with missing ingredients
+        if not resolved.get("has_ingredients") or not resolved.get("ingredients_text"):
+            p_name = product_meta.get("name", "Product")
+            brand = product_meta.get("brand", "Brand")
+            return {
+                "source_type": "barcode",
+                "found": True,
+                "has_ingredients": False,
+                "barcode": clean_code,
+                "product_info": product_meta,
+                "verification_status": "PARTIALLY_VERIFIED",
+                "confidence_score": resolved.get("confidence_score", 0.70),
+                "source": resolved.get("source", "VERIFIED_REGISTRY"),
+                "message": f"Found '{p_name}' by {brand}, but its ingredient list is missing from the database.",
+                "action_prompt": "Please take a quick photo of the ingredient list on the back of the packet to complete safety analysis!",
+            }
+
+        # Analyze verified product ingredients
+        ing_text = resolved["ingredients_text"]
+        analysis = self.analyze_ingredients_text(ing_text, language=language, product_meta=product_meta)
+        analysis["found"] = True
+        analysis["has_ingredients"] = True
+        analysis["barcode"] = clean_code
+        analysis["verification_status"] = "VERIFIED"
+        analysis["confidence_score"] = resolved.get("confidence_score", 1.0)
+        analysis["source"] = resolved.get("source", "VERIFIED_REGISTRY")
+
+        # Cache verified analysis
+        _BARCODE_CACHE[cache_key] = analysis
+        return analysis
+
     def get_status_info(self) -> Dict[str, Any]:
         return {
             "gemini_available": self._gemini is not None,
-            "groq_available":   bool(self._groq_key),
             "status": "Ready",
         }
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Open Food Facts Global & Local Lookup Helper (with strict barcode verification)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def fetch_open_food_facts_data(barcode: str) -> Optional[Dict[str, Any]]:
+    """Fetch and verify product data from Open Food Facts API."""
+    from product_resolver import fetch_and_verify_external_product
+    from barcode_validator import normalize_barcode_string
+
+    clean_code = normalize_barcode_string(barcode)
+    if not clean_code or len(clean_code) < 8:
+        return None
+    return fetch_and_verify_external_product(clean_code)
+
+
+LOCAL_PRODUCTS_FALLBACK: Dict[str, Dict[str, str]] = {
+    "8901088770507": {
+        "name": "Nihar Naturals Shanti Amla Badam Kesh Tel",
+        "brand": "Nihar Naturals (Marico)",
+        "category": "Hair Oil",
+        "ingredients_text": "Mineral Oil (73.4% v/v), Heavy Liquid Paraffin, Edible Vegetable Oil (25% v/v), Fragrance (Parfum), Tertiary Butylhydroquinone (TBHQ INS 319), Amla Extract (0.01% w/v), Almond Oil (0.1% w/v), Vitamin E Acetate, Synthetic Colours (CI 12700, CI 26100, CI 61565)."
+    },
+    "8901030383793": {
+        "name": "Dabur Amla Hair Oil",
+        "brand": "Dabur",
+        "category": "Hair Oil",
+        "ingredients_text": "Mineral Oil (50%), Canola Oil, Peanut Oil, Amla Extract, TBHQ (Antioxidant), Fragrance, Yellow 11 (CI 47000), Green 6 (CI 61565)."
+    },
+    "8901207010071": {
+        "name": "Bajaj Almond Drops Non-Sticky Hair Oil",
+        "brand": "Bajaj Consumer Care",
+        "category": "Hair Oil",
+        "ingredients_text": "Mineral Oil (77%), Refined Mustard Oil (21%), Sweet Almond Oil, Vitamin E Acetate, Fragrance, TBHQ (Antioxidant), CI 12700, CI 26100."
+    },
+    "8901030013003": {
+        "name": "Parachute 100% Pure Coconut Oil",
+        "brand": "Parachute (Marico)",
+        "category": "Pure Coconut Oil",
+        "ingredients_text": "100% Pure Coconut Oil (Cold Pressed / Pure Edible & Hair Oil)."
+    },
+    "8901030353451": {
+        "name": "Head & Shoulders Smooth & Silky Shampoo",
+        "brand": "Procter & Gamble",
+        "category": "Shampoo",
+        "ingredients_text": "Water, Sodium Laureth Sulfate (SLES), Sodium Xylenesulfonate, Zinc Carbonate, Cocamide MEA, Cocamidopropyl Betaine, Dimethicone, Zinc Pyrithione, Fragrance, Sodium Chloride, DMDM Hydantoin."
+    },
+    "8901719101038": {
+        "name": "Parle-G Original Gluco Biscuits",
+        "brand": "Parle",
+        "category": "Biscuits",
+        "ingredients_text": "Wheat Flour (67%), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Milk Solids, Emulsifier [INS 322(i)], Artificial Vanilla Flavour."
+    },
+    "8901058852394": {
+        "name": "Maggi 2-Minute Masala Instant Noodles",
+        "brand": "Nestlé",
+        "category": "Instant Noodles",
+        "ingredients_text": "Refined Wheat Flour (Maida), Palm Oil, Iodised Salt, Wheat Gluten, Thickeners (INS 508, INS 412), Acidity Regulators (INS 501i, INS 500i), Hydrolysed Groundnut Protein, Red Chilli, Spices, Flavour Enhancer (INS 635)."
+    },
+    "8901063142275": {
+        "name": "Britannia Bourbon Chocolate Biscuits",
+        "brand": "Britannia",
+        "category": "Biscuits",
+        "ingredients_text": "Refined Wheat Flour, Sugar, Palm Oil, Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 500ii, INS 503ii], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Chocolate Flavors."
+    },
+    "5449000000996": {
+        "name": "Coca-Cola Original Taste",
+        "brand": "The Coca-Cola Company",
+        "category": "Carbonated Beverage",
+        "ingredients_text": "Carbonated Water, Sugar, Acidity Regulator (INS 338), Caffeine, Caramel Colour (INS 150d), Natural Flavours."
+    },
+    "8906133402532": {
+        "name": "BE Bodywise 4% AHA BHA Underarm Roll-on (Flora)",
+        "brand": "BE Bodywise",
+        "category": "Underarm Roll-on & Deodorant",
+        "ingredients_text": "Aqua, Propylene Glycol, Lactic Acid (2%), Sodium Lactate, Glycerin, Mandelic Acid (1%), Salicylic Acid (1%), Alpha-Arbutin, Tocopheryl Acetate, Butyrospermum Parkii (Shea) Butter, Lysolecithin, Polysorbate 20, Perfume, Sodium Benzoate, Potassium Sorbate, Sclerotium Gum, Xanthan Gum, Silica."
+    },
+    "8906133400118": {
+        "name": "BE Bodywise 4% AHA BHA Underarm Roll-on (Fragrance Free)",
+        "brand": "BE Bodywise",
+        "category": "Underarm Roll-on & Deodorant",
+        "ingredients_text": "Aqua, Propylene Glycol, Lactic Acid, Butyrospermum Parkii (Shea) Butter, Salicylic Acid, Mandelic Acid, Sclerotium Gum, Potassium Sorbate, Sodium Benzoate, Polysorbate 20, Xanthan Gum."
+    },
+    "8901058853483": {
+        "name": "Nestlé KitKat 4 Finger Crispy Wafer Bar",
+        "brand": "Nestlé",
+        "category": "Chocolate & Wafer",
+        "ingredients_text": "Sugar, Milk Solids, Refined Wheat Flour (Maida), Cocoa Butter, Cocoa Solids, Hydrogenated Vegetable Fats, Emulsifier (INS 322), Raising Agent (INS 500ii), Yeast, Artificial Vanilla Flavouring Substances."
+    },
+    "8901030381010": {
+        "name": "Dabur Red Ayurvedic Toothpaste",
+        "brand": "Dabur",
+        "category": "Ayurvedic Toothpaste",
+        "ingredients_text": "Calcium Carbonate, Sorbitol, Aqua, Hydrated Silica, Sodium Lauryl Sulphate, Herbal Extract (Pippali, Tomar, Sunthi, Marich, Lavanga, Karpoor, Pudina, Gandhapura), Flavour, Red Ocher, Xanthan Gum, Sodium Silicate, Sodium Benzoate, Methylparaben, Propylparaben, Sodium Saccharin."
+    },
+    "8901138511012": {
+        "name": "Dettol Antiseptic Disinfectant Liquid",
+        "brand": "Dettol (Reckitt Benckiser)",
+        "category": "Antiseptic Liquid",
+        "ingredients_text": "Chloroxylenol (PCMX 4.8% w/v), Terpineol (9.0% v/v), Isopropyl Alcohol (Alcohol Denat. 13.1% v/v), Pine Oil, Castor Oil Soap, Caramel Colour, Aqua."
+    }
+}
+
+
+

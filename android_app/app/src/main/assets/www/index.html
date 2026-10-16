@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>NutriScan · Universal AI Chemical & Ingredient Safety Scanner</title>
+  <title>NutriScan Pro · Universal Chemical & Ingredient Safety Intelligence</title>
   <script src="zxing.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
@@ -61,7 +61,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       ⚡ FAST SPLASH SCREEN (0.25s)
+       FAST SPLASH SCREEN (0.25s)
        ════════════════════════════════════════════════════════════════════════ */
     #splash-screen {
       position: fixed;
@@ -208,7 +208,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       📱 MAIN APP & MULTI-PAGE NAVIGATION
+       MAIN APP & MULTI-PAGE NAVIGATION
        ════════════════════════════════════════════════════════════════════════ */
     #main-app {
       padding: 8px 12px 10px;
@@ -307,6 +307,14 @@
       letter-spacing: 0.3px;
     }
 
+    .top-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      display: inline-block;
+    }
     .top-badge-pill {
       font-size: 0.68rem;
       font-weight: 700;
@@ -321,7 +329,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       📷 SCANNER SCREEN (PAGE 1)
+       SCANNER SCREEN (PAGE 1)
        ════════════════════════════════════════════════════════════════════════ */
     .scan-tabs {
       display: flex;
@@ -775,7 +783,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       📊 DEDICATED REPORT SCREEN (PAGE 2)
+       DEDICATED REPORT SCREEN (PAGE 2)
        ════════════════════════════════════════════════════════════════════════ */
     .report-screen-header {
       display: flex;
@@ -1168,7 +1176,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       🕒 PANTRY & HISTORY SCREEN (PAGE 3)
+       PANTRY & HISTORY SCREEN (PAGE 3)
        ════════════════════════════════════════════════════════════════════════ */
     .page-header {
       margin-bottom: 0.85rem;
@@ -1304,7 +1312,7 @@
     .empty-state-desc { font-size: 0.74rem; color: #94a3b8; margin-top: 4px; }
 
     /* ════════════════════════════════════════════════════════════════════════
-       🧪 SAFETY GUIDE & ENCYCLOPEDIA (PAGE 4)
+       SAFETY GUIDE & ENCYCLOPEDIA (PAGE 4)
        ════════════════════════════════════════════════════════════════════════ */
     .guide-card-item {
       background: var(--bg-surface);
@@ -1348,7 +1356,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       ⚙️ HEALTH PROFILE & SETTINGS SCREEN (PAGE 5)
+       HEALTH PROFILE & SETTINGS SCREEN (PAGE 5)
        ════════════════════════════════════════════════════════════════════════ */
     .profile-section-card {
       background: var(--bg-surface);
@@ -1486,7 +1494,7 @@
     .credit-meta { font-size: 0.68rem; color: #64748b; }
 
     /* ════════════════════════════════════════════════════════════════════════
-       ⚡ FIXED BOTTOM NAVIGATION BAR
+       FIXED BOTTOM NAVIGATION BAR
        ════════════════════════════════════════════════════════════════════════ */
     .bottom-nav-bar {
       position: fixed;
@@ -1558,7 +1566,7 @@
     }
 
     /* ════════════════════════════════════════════════════════════════════════
-       🌀 FUTURISTIC HOLOGRAPHIC PROCESSING HUD
+       FUTURISTIC HOLOGRAPHIC PROCESSING HUD
        ════════════════════════════════════════════════════════════════════════ */
     .processing-hud {
       position: fixed;
@@ -1812,12 +1820,52 @@
       transform: scale(0.9);
       background: rgba(244, 63, 94, 0.25);
     }
+
+    .expiry-status-pill {
+      font-size: 0.62rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+      margin-top: 2px;
+      border: 1px solid currentColor;
+    }
+    .expiry-fresh .expiry-status-pill { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .expiry-warning .expiry-status-pill { background: rgba(245, 158, 11, 0.2); color: #facc15; }
+    .expiry-expired .expiry-status-pill { background: rgba(244, 63, 94, 0.25); color: #fb7185; }
+    .alert-tag-red {
+      display: inline-block;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(244, 63, 94, 0.3);
+      color: #fda4af;
+      margin-right: 6px;
+      border: 1px solid rgba(244, 63, 94, 0.5);
+    }
+    .alert-tag-yellow {
+      display: inline-block;
+      font-size: 0.58rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(245, 158, 11, 0.3);
+      color: #fde047;
+      margin-right: 6px;
+      border: 1px solid rgba(245, 158, 11, 0.5);
+    }
+
   </style>
 </head>
 <body>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       ⚡ 1. SPLASH SCREEN (FAST 0.25s BOOT)
+       1. SPLASH SCREEN (FAST 0.25s BOOT)
        ════════════════════════════════════════════════════════════════════════ -->
   <div id="splash-screen">
     <div class="splash-bg-glow"></div>
@@ -1841,14 +1889,19 @@
   </div>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       🌀 2. FUTURISTIC HOLOGRAPHIC PROCESSING HUD
+       2. HOLOGRAPHIC PROCESSING HUD
        ════════════════════════════════════════════════════════════════════════ -->
   <div id="processing-hud" class="processing-hud" style="display:none;">
     <div class="hud-card">
       <div class="hud-scanner-hologram">
         <div class="hud-radar-circle"></div>
         <div class="hud-radar-sweep"></div>
-        <div class="hud-center-icon">⚡</div>
+        <div class="hud-center-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 2 7 2 17 12 22 22 17 22 7 12 2"></polygon>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </div>
       </div>
       <div class="hud-title" id="hud-title">AI Safety Engine Auditing</div>
       <div class="hud-subtitle" id="hud-subtitle">Analyzing product ingredients & composition…</div>
@@ -1882,7 +1935,7 @@
   <div id="status-box"></div>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       📱 3. MAIN APPLICATION CONTAINER
+       3. MAIN APPLICATION CONTAINER
        ════════════════════════════════════════════════════════════════════════ -->
   <div id="main-app">
     
@@ -1900,22 +1953,22 @@
       </div>
 
       <div class="top-badge-pill">
-        <span>⚡</span> <span>v3.0 Ultra</span>
+        <span class="top-badge-dot"></span> <span>v1.0.0</span>
       </div>
     </div>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         📷 SCREEN 1: SCANNER VIEW (PAGE-SCAN)
+         SCREEN 1: SCANNER VIEW (PAGE-SCAN)
          ════════════════════════════════════════════════════════════════════════ -->
     <section id="page-scan" class="app-page active">
       
       <!-- Scanner Mode Tabs (2 Modes) -->
       <div class="scan-tabs">
         <button class="scan-tab-btn active" id="tab-bc" onclick="switchScanTab('barcode')">
-          <span>⚡</span> Barcode Scan
+          <span>BARCODE SCAN</span>
         </button>
         <button class="scan-tab-btn" id="tab-ph" onclick="switchScanTab('photo')">
-          <span>🔬</span> Ingredient Scanner
+          <span>INGREDIENT SCANNER</span>
         </button>
       </div>
 
@@ -1925,12 +1978,17 @@
           <video id="barcode-video" playsinline muted autoplay poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E"></video>
           
           <div class="cam-backdrop-placeholder" id="cam-placeholder">
-            <div class="placeholder-pulse" onclick="toggleCamera()" style="cursor:pointer;" title="Tap to Toggle Camera">⚡</div>
+            <div class="placeholder-pulse" onclick="toggleCamera()" style="cursor:pointer;" title="Tap to Toggle Camera">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+              </svg>
+            </div>
             <div id="cam-placeholder-title" style="font-size:0.82rem;font-weight:700;color:#67e8f9;">Camera Ready</div>
             <div id="cam-placeholder-sub" style="font-size:0.68rem;color:#94a3b8;margin-top:2px;">Point at product barcode or ingredient list</div>
             <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;">
-              <button class="quick-chip" onclick="startCamera()" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);">📷 Start Camera</button>
-              <button class="quick-chip" onclick="document.getElementById('hidden-gal').click()">🖼️ Upload Photo</button>
+              <button class="quick-chip" onclick="startCamera()" style="background:rgba(6,182,212,0.15);border-color:rgba(6,182,212,0.4);">Start Camera</button>
+              <button class="quick-chip" onclick="document.getElementById('hidden-gal').click()">Upload Photo</button>
             </div>
           </div>
 
@@ -1950,7 +2008,7 @@
             <div class="reticle-corner rc-bl"></div>
             <div class="reticle-corner rc-br"></div>
             <div class="reticle-guide-text">
-              <span>🔬 FRAME INGREDIENTS & DATES</span>
+              <span>ALIGN BARCODE / INGREDIENTS INSIDE FRAME</span>
             </div>
           </div>
 
@@ -1965,17 +2023,18 @@
               <span id="cam-btn-label">Live Camera Active</span>
             </button>
             <button id="btn-torch" class="cam-btn-torch" onclick="toggleFlashlight()" title="Toggle Flashlight">
-              💡
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
             </button>
             <button id="btn-flip" class="cam-btn-flip" onclick="flipCamera()" title="Switch Camera">
-              🔄
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
             </button>
           </div>
 
           <div class="manual-row">
             <input type="text" id="manual-code-input" class="manual-input" placeholder="Search barcode or product (e.g. Roll-on, Maggi)" onkeyup="if(event.key==='Enter') lookupManualBarcode()" />
             <button class="manual-btn" onclick="lookupManualBarcode()">
-              <span>🔍</span> Search
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <span>Search</span>
             </button>
           </div>
 
@@ -1997,27 +2056,27 @@
           
           <div class="shutter-bar">
             <button class="shutter-side-btn" onclick="document.getElementById('hidden-gal').click()" title="Pick from Gallery">
-              <span style="font-size:18px;">🖼️</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
               <span>Gallery</span>
             </button>
 
             <button class="shutter-main-btn" id="btn-shutter" onclick="captureAndScanIngredients()" title="Capture & Scan Ingredients">
               <div class="shutter-main-ring">
                 <div class="shutter-main-core">
-                  <span style="font-size:22px;">📸</span>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                 </div>
               </div>
               <span class="shutter-main-label">Scan Ingredients</span>
             </button>
 
             <button class="shutter-side-btn" onclick="toggleFlashlight()" title="Toggle Flashlight">
-              <span style="font-size:18px;">💡</span>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               <span>Torch</span>
             </button>
           </div>
 
           <div class="shutter-hint-text">
-            ✨ <strong>Point at ingredient list or date stamp</strong> & tap the center button for instant chemical & expiry audit!
+            <strong>Point at ingredient list or date stamp</strong> & tap the capture button for instant chemical & expiry audit.
           </div>
         </div>
       </div>
@@ -2025,7 +2084,9 @@
       <!-- Quick Feature Card -->
       <div class="home-hero-card">
         <div class="hero-stat-left">
-          <div class="hero-stat-icon">🛡️</div>
+          <div class="hero-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
           <div class="hero-stat-text">
             <h4>Universal Chemical Safety</h4>
             <p>Audits Foods, Drinks, Skincare & Additives</p>
@@ -2037,7 +2098,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         📊 SCREEN 2: DEDICATED REPORT SCREEN (PAGE-REPORT)
+         SCREEN 2: DEDICATED REPORT SCREEN (PAGE-REPORT)
          ════════════════════════════════════════════════════════════════════════ -->
     <section id="page-report" class="app-page">
       <div class="report-screen-header">
@@ -2054,20 +2115,22 @@
       <!-- Results Container populated by renderAnalysis -->
       <div id="results-area">
         <div class="empty-state-box">
-          <div class="empty-state-icon">🔍</div>
+          <div class="empty-state-icon">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          </div>
           <div class="empty-state-title">No Product Scanned Yet</div>
           <div class="empty-state-desc">Scan a barcode or take an ingredient photo to view the full safety report.</div>
-          <button class="btn-primary" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;" onclick="navToPage('scan')">📷 Open Scanner</button>
+          <button class="btn-primary" style="margin-top:12px;max-width:200px;margin-left:auto;margin-right:auto;" onclick="navToPage('scan')">Open Scanner</button>
         </div>
       </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         🕒 SCREEN 3: PANTRY & HISTORY SCREEN (PAGE-HISTORY)
+         SCREEN 3: PANTRY & HISTORY SCREEN (PAGE-HISTORY)
          ════════════════════════════════════════════════════════════════════════ -->
     <section id="page-history" class="app-page">
       <div class="page-header">
-        <h2>🕒 Scan History & Pantry</h2>
+        <h2>Scan History & Pantry</h2>
         <p>Audit trail of all your scanned food, snacks & skincare products</p>
       </div>
 
@@ -2075,25 +2138,25 @@
         <input type="text" id="history-search" class="manual-input" placeholder="Search saved scans by name, brand..." oninput="filterHistoryList(this.value)" />
         <div class="history-filter-row">
           <button class="filter-pill-btn active" id="hflt-all" onclick="filterHistoryGrade('all')">All Scans</button>
-          <button class="filter-pill-btn" id="hflt-safe" onclick="filterHistoryGrade('safe')">✅ Clean (A/B)</button>
-          <button class="filter-pill-btn" id="hflt-hazard" onclick="filterHistoryGrade('hazard')">🔴 Caution (C/D)</button>
+          <button class="filter-pill-btn" id="hflt-safe" onclick="filterHistoryGrade('safe')">Clean (A/B)</button>
+          <button class="filter-pill-btn" id="hflt-hazard" onclick="filterHistoryGrade('hazard')">Caution (C/D)</button>
         </div>
       </div>
 
       <div id="history-full-list" class="history-cards-container"></div>
 
       <div class="history-actions-bar">
-        <button class="btn-secondary" onclick="clearAllHistory()">🗑️ Clear History</button>
-        <button class="btn-primary" onclick="navToPage('scan')">📷 Scan Product</button>
+        <button class="btn-secondary" onclick="clearAllHistory()">Clear History</button>
+        <button class="btn-primary" onclick="navToPage('scan')">Scan Product</button>
       </div>
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         🧪 SCREEN 4: SAFETY GUIDE & ADDITIVE ENCYCLOPEDIA (PAGE-GUIDE)
+         SCREEN 4: SAFETY GUIDE & ADDITIVE ENCYCLOPEDIA (PAGE-GUIDE)
          ════════════════════════════════════════════════════════════════════════ -->
     <section id="page-guide" class="app-page">
       <div class="page-header">
-        <h2>🧪 Safety Guide & Encyclopedia</h2>
+        <h2>Safety Guide & Encyclopedia</h2>
         <p>Search 40+ canonical INS codes, food additives & cosmetic chemicals</p>
       </div>
 
@@ -2101,9 +2164,9 @@
         <input type="text" id="guide-search" class="manual-input" placeholder="Search additive (e.g. INS 924a, Parabens, SLS, TBHQ, MSG)..." oninput="filterGuideList(this.value)" />
         <div class="guide-filter-row">
           <button class="filter-pill-btn active" id="gflt-all" onclick="filterGuideCategory('all')">All Additives</button>
-          <button class="filter-pill-btn" id="gflt-high" onclick="filterGuideCategory('high')">🔴 High Risk Only</button>
-          <button class="filter-pill-btn" id="gflt-cosmetic" onclick="filterGuideCategory('cosmetic')">🧴 Skincare & Hair</button>
-          <button class="filter-pill-btn" id="gflt-food" onclick="filterGuideCategory('food')">🍫 Food Additives</button>
+          <button class="filter-pill-btn" id="gflt-high" onclick="filterGuideCategory('high')">High Risk Only</button>
+          <button class="filter-pill-btn" id="gflt-cosmetic" onclick="filterGuideCategory('cosmetic')">Skincare & Hair</button>
+          <button class="filter-pill-btn" id="gflt-food" onclick="filterGuideCategory('food')">Food Additives</button>
         </div>
       </div>
 
@@ -2111,21 +2174,21 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         ⚙️ SCREEN 5: HEALTH PROFILE & SETTINGS (PAGE-PROFILE)
+         SCREEN 5: HEALTH PROFILE & SETTINGS (PAGE-PROFILE)
          ════════════════════════════════════════════════════════════════════════ -->
     <section id="page-profile" class="app-page">
       <div class="page-header">
-        <h2>⚙️ Health Profile & Preferences</h2>
+        <h2>Health Profile & Preferences</h2>
         <p>Personalize toxic chemical alerts and safety report languages</p>
       </div>
 
       <!-- Personalized Health & Dietary Toggles -->
       <div class="profile-section-card">
-        <div class="section-title">🎯 Personal Health Alerts</div>
+        <div class="section-title">Personal Health Alerts</div>
         
         <div class="pref-toggle-row">
           <div class="pref-info">
-            <strong>🩸 Diabetic / Low Glycemic Alert</strong>
+            <strong>Diabetic / Low Glycemic Alert</strong>
             <small>Flag hidden maltodextrin, high-fructose corn syrup & invert sugars</small>
           </div>
           <label class="switch"><input type="checkbox" id="pref-diabetic" onchange="saveHealthPrefs()"><span class="slider"></span></label>
@@ -2133,7 +2196,7 @@
 
         <div class="pref-toggle-row">
           <div class="pref-info">
-            <strong>🤰 Pregnancy Safe Mode</strong>
+            <strong>Pregnancy Safe Mode</strong>
             <small>Flag high-risk retinoids, artificial sweeteners & chemical preservatives</small>
           </div>
           <label class="switch"><input type="checkbox" id="pref-pregnancy" onchange="saveHealthPrefs()"><span class="slider"></span></label>
@@ -2141,7 +2204,7 @@
 
         <div class="pref-toggle-row">
           <div class="pref-info">
-            <strong>🌿 100% Vegan Verification</strong>
+            <strong>100% Vegan Verification</strong>
             <small>Flag gelatin, carmine (E120), bone char, shellac & animal derivatives</small>
           </div>
           <label class="switch"><input type="checkbox" id="pref-vegan" onchange="saveHealthPrefs()"><span class="slider"></span></label>
@@ -2149,7 +2212,7 @@
 
         <div class="pref-toggle-row">
           <div class="pref-info">
-            <strong>🌾 Gluten-Free / Celiac Mode</strong>
+            <strong>Gluten-Free / Celiac Mode</strong>
             <small>Detect wheat, barley, malt, spelt & hidden gluten sources</small>
           </div>
           <label class="switch"><input type="checkbox" id="pref-gluten" onchange="saveHealthPrefs()"><span class="slider"></span></label>
@@ -2157,7 +2220,7 @@
 
         <div class="pref-toggle-row">
           <div class="pref-info">
-            <strong>💧 Sensitive Skin / Fragrance-Free</strong>
+            <strong>Sensitive Skin / Fragrance-Free</strong>
             <small>Flag SLS, harsh sulfates, synthetic parfum & petroleum mineral oil</small>
           </div>
           <label class="switch"><input type="checkbox" id="pref-skin" onchange="saveHealthPrefs()"><span class="slider"></span></label>
@@ -2166,17 +2229,17 @@
 
       <!-- Language Selector -->
       <div class="profile-section-card">
-        <div class="section-title">🌐 Analysis Language</div>
+        <div class="section-title">Analysis Language</div>
         <div class="lang-selector-row">
-          <button class="settings-lang-btn" id="plang-en" onclick="setLanguage('English')">🇬🇧 English</button>
-          <button class="settings-lang-btn" id="plang-hi" onclick="setLanguage('Hindi')">🇮🇳 हिन्दी</button>
-          <button class="settings-lang-btn active" id="plang-hl" onclick="setLanguage('Hinglish')">🔀 Hinglish</button>
+          <button class="settings-lang-btn" id="plang-en" onclick="setLanguage('English')">English</button>
+          <button class="settings-lang-btn" id="plang-hi" onclick="setLanguage('Hindi')">हिन्दी (Hindi)</button>
+          <button class="settings-lang-btn active" id="plang-hl" onclick="setLanguage('Hinglish')">Hinglish</button>
         </div>
       </div>
 
       <!-- Custom Gemini AI Key Section -->
       <div class="profile-section-card">
-        <div class="section-title">🔑 Custom Gemini AI Key (Optional)</div>
+        <div class="section-title">Custom Gemini AI Key (Optional)</div>
         <p style="font-size:0.75rem;color:var(--text-sub);margin-bottom:10px;line-height:1.4;">
           The app includes a built-in high-speed Gemini AI engine. You can optionally enter your own Google AI Studio key below for dedicated personal quota.
         </p>
@@ -2196,8 +2259,8 @@
             <div class="credit-sub">Universal Chemical & Safety Intelligence</div>
           </div>
         </div>
-        <div class="credit-badge">⚡ DEVELOPED BY NITIN YADAV</div>
-        <div class="credit-meta">v3.0 Ultra Edition · Multi-Engine Vision AI</div>
+        <div class="credit-badge">DEVELOPED BY NITIN YADAV</div>
+        <div class="credit-meta">v1.0.0 · Multi-Engine Chemical Safety AI</div>
       </div>
 
     </section>
@@ -2205,7 +2268,7 @@
   </div>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       ⚡ FIXED BOTTOM NAVIGATION BAR
+       FIXED BOTTOM NAVIGATION BAR
        ════════════════════════════════════════════════════════════════════════ -->
   <nav class="bottom-nav-bar">
     <button class="nav-tab-btn active" id="nav-btn-scan" onclick="navToPage('scan')">
@@ -2246,7 +2309,7 @@
   </nav>
 
   <!-- ════════════════════════════════════════════════════════════════════════
-       📜 JAVASCRIPT ENGINE & ARCHITECTURE
+       JAVASCRIPT ENGINE & ARCHITECTURE
        ════════════════════════════════════════════════════════════════════════ -->
   <script>
     var GEMINI_KEY = "";
@@ -2261,7 +2324,23 @@
     var isScanningFrame = false;
     var isCameraStarting = false;
     var lastScannedBarcode = null;
+    var currentScanSeqId = 0;
     var lastAnalysisData = null;
+
+    // ── Streamlit Bridge Helper ──
+    function stPost(msg) {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage(Object.assign({ isStreamlitMessage: true }, msg), "*");
+      }
+    }
+    function componentReady() {
+      stPost({ type: "streamlit:componentReady", apiVersion: 1 });
+      setFrameHeight();
+    }
+    function setFrameHeight() {
+      var h = document.documentElement.scrollHeight || document.body.scrollHeight || 700;
+      stPost({ type: "streamlit:setFrameHeight", height: h });
+    }
     var torchState = false;
     var currentFacingMode = "environment";
     var splashDone = false;
@@ -2269,390 +2348,373 @@
 
     // ── Pre-Indexed Local Database for Instant 0ms Lookup ──
     var LOCAL_PRODUCT_DB = {
-      // ── Hair Care, Oils & Shampoos ──
       "8901088770507": {
-        name: "Nihar Naturals Shanti Amla Badam Kesh Tel",
-        brand: "Nihar Naturals (Marico)",
+        name: 'Nihar Naturals Shanti Amla Badam Kesh Tel',
+        brand: 'Nihar Naturals (Marico)',
         image_url: "",
-        category: "Hair Oil",
-        ingredients_text: "Mineral Oil (73.4% v/v), Heavy Liquid Paraffin, Edible Vegetable Oil (25% v/v), Fragrance (Parfum), Tertiary Butylhydroquinone (TBHQ INS 319), Amla Extract (0.01% w/v), Almond Oil (0.1% w/v), Vitamin E Acetate, Synthetic Colours (CI 12700, CI 26100, CI 61565)."
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (73.4% v/v), Heavy Liquid Paraffin, Edible Vegetable Oil (25% v/v), Fragrance (Parfum), Tertiary Butylhydroquinone (TBHQ INS 319), Amla Extract (0.01% w/v), Almond Oil (0.1% w/v), Vitamin E Acetate, Synthetic Colours (CI 12700, CI 26100, CI 61565).'
       },
       "8901030383793": {
-        name: "Dabur Amla Hair Oil",
-        brand: "Dabur",
+        name: 'Dabur Amla Hair Oil',
+        brand: 'Dabur',
         image_url: "",
-        category: "Hair Oil",
-        ingredients_text: "Mineral Oil (50%), Canola Oil, Peanut Oil, Amla Extract, TBHQ (Antioxidant), Fragrance, Yellow 11 (CI 47000), Green 6 (CI 61565)."
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (50%), Canola Oil, Peanut Oil, Amla Extract, TBHQ (Antioxidant), Fragrance, Yellow 11 (CI 47000), Green 6 (CI 61565).'
       },
-      "8901207010078": {
-        name: "Bajaj Almond Drops Non-Sticky Hair Oil",
-        brand: "Bajaj Consumer Care",
+      "8901207010071": {
+        name: 'Bajaj Almond Drops Non-Sticky Hair Oil',
+        brand: 'Bajaj Consumer Care',
         image_url: "",
-        category: "Hair Oil",
-        ingredients_text: "Mineral Oil (77%), Refined Mustard Oil (21%), Sweet Almond Oil, Vitamin E Acetate, Fragrance, TBHQ (Antioxidant), CI 12700, CI 26100."
+        category: 'Hair Oil',
+        ingredients_text: 'Mineral Oil (77%), Refined Mustard Oil (21%), Sweet Almond Oil, Vitamin E Acetate, Fragrance, TBHQ (Antioxidant), CI 12700, CI 26100.'
       },
       "8901030013003": {
-        name: "Parachute 100% Pure Coconut Oil",
-        brand: "Parachute (Marico)",
+        name: 'Parachute 100% Pure Coconut Oil',
+        brand: 'Parachute (Marico)',
         image_url: "",
-        category: "Pure Coconut Oil",
-        ingredients_text: "100% Pure Coconut Oil (Cold Pressed / Pure Edible & Hair Oil)."
+        category: 'Pure Coconut Oil',
+        ingredients_text: '100% Pure Coconut Oil (Cold Pressed / Pure Edible & Hair Oil).'
       },
       "8901030353451": {
-        name: "Head & Shoulders Smooth & Silky Shampoo",
-        brand: "Procter & Gamble",
+        name: 'Head & Shoulders Smooth & Silky Shampoo',
+        brand: 'Procter & Gamble',
         image_url: "",
-        category: "Shampoo",
-        ingredients_text: "Water, Sodium Laureth Sulfate (SLES), Sodium Xylenesulfonate, Zinc Carbonate, Cocamide MEA, Cocamidopropyl Betaine, Dimethicone, Zinc Pyrithione, Fragrance, Sodium Chloride, DMDM Hydantoin."
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate (SLES), Sodium Xylenesulfonate, Zinc Carbonate, Cocamide MEA, Cocamidopropyl Betaine, Dimethicone, Zinc Pyrithione, Fragrance, Sodium Chloride, DMDM Hydantoin.'
       },
       "8901030865374": {
-        name: "Dove Intense Repair Shampoo",
-        brand: "Dove (Hindustan Unilever)",
+        name: 'Dove Intense Repair Shampoo',
+        brand: 'Dove (Hindustan Unilever)',
         image_url: "",
-        category: "Shampoo",
-        ingredients_text: "Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Glycerin, Glycol Distearate, Carbomer, Gluconolactone, Sodium Hydroxide, Guar Hydroxypropyltrimonium Chloride, Citric Acid, DMDM Hydantoin."
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Glycerin, Glycol Distearate, Carbomer, Gluconolactone, Sodium Hydroxide, Guar Hydroxypropyltrimonium Chloride, Citric Acid, DMDM Hydantoin.'
       },
       "8901030716577": {
-        name: "Clinic Plus Strong & Long Health Shampoo",
-        brand: "Clinic Plus (Hindustan Unilever)",
+        name: 'Clinic Plus Strong & Long Health Shampoo',
+        brand: 'Clinic Plus (Hindustan Unilever)',
         image_url: "",
-        category: "Shampoo",
-        ingredients_text: "Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Milk Protein, Lysine HCl, Carbomer, Guar Hydroxypropyltrimonium Chloride, Mica, Titanium Dioxide, Citric Acid, DMDM Hydantoin."
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Milk Protein, Lysine HCl, Carbomer, Guar Hydroxypropyltrimonium Chloride, Mica, Titanium Dioxide, Citric Acid, DMDM Hydantoin.'
       },
-      "8901030800378": {
-        name: "Sunsilk Black Shine Shampoo with Amla Pearl",
-        brand: "Sunsilk (Hindustan Unilever)",
+      "8901030800375": {
+        name: 'Sunsilk Black Shine Shampoo with Amla Pearl',
+        brand: 'Sunsilk (Hindustan Unilever)',
         image_url: "",
-        category: "Shampoo",
-        ingredients_text: "Water, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Dimethiconol, TEA-Dodecylbenzenesulfonate, Perfume, Pearl Extract, Phyllanthus Emblica (Amla) Fruit Extract, Carbomer, Sodium Chloride, Mica, Titanium Dioxide, Disodium EDTA, DMDM Hydantoin."
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Cocamidopropyl Betaine, Dimethiconol, TEA-Dodecylbenzenesulfonate, Perfume, Pearl Extract, Phyllanthus Emblica (Amla) Fruit Extract, Carbomer, Sodium Chloride, Mica, Titanium Dioxide, Disodium EDTA, DMDM Hydantoin.'
       },
       "8901030825361": {
-        name: "TRESemme Keratin Smooth Shampoo",
-        brand: "TRESemme (Hindustan Unilever)",
+        name: 'TRESemme Keratin Smooth Shampoo',
+        brand: 'TRESemme (Hindustan Unilever)',
         image_url: "",
-        category: "Shampoo",
-        ingredients_text: "Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Hydrolyzed Keratin, Argania Spinosa (Argan) Kernel Oil, Carbomer, Glycol Distearate, Guar Hydroxypropyltrimonium Chloride, DMDM Hydantoin."
+        category: 'Shampoo',
+        ingredients_text: 'Water, Sodium Laureth Sulfate, Dimethiconol, TEA-Dodecylbenzenesulfonate, Cocamidopropyl Betaine, Sodium Chloride, Perfume, Hydrolyzed Keratin, Argania Spinosa (Argan) Kernel Oil, Carbomer, Glycol Distearate, Guar Hydroxypropyltrimonium Chloride, DMDM Hydantoin.'
       },
-      "8906014640034": {
-        name: "Mamaearth Onion Hair Oil with Onion Oil & Redensyl",
-        brand: "Mamaearth (Honasa)",
+      "8906014640039": {
+        name: 'Mamaearth Onion Hair Oil with Onion Oil & Redensyl',
+        brand: 'Mamaearth (Honasa)',
         image_url: "",
-        category: "Hair Oil",
-        ingredients_text: "Helianthus Annuus (Sunflower) Seed Oil, Simmondsia Chinensis (Jojoba) Oil, Prunus Amygdalus Dulcis (Almond) Oil, Allium Cepa (Onion) Seed Oil, Eclipta Alba (Bhringraj) Oil, Redensyl, Tocopheryl Acetate (Vitamin E), Fragrance."
+        category: 'Hair Oil',
+        ingredients_text: 'Helianthus Annuus (Sunflower) Seed Oil, Simmondsia Chinensis (Jojoba) Oil, Prunus Amygdalus Dulcis (Almond) Oil, Allium Cepa (Onion) Seed Oil, Eclipta Alba (Bhringraj) Oil, Redensyl, Tocopheryl Acetate (Vitamin E), Fragrance.'
       },
-
-      // ── Biscuits, Noodles & Savory Snacks ──
-      "8901719101037": {
-        name: "Parle-G Original Gluco Biscuits",
-        brand: "Parle",
+      "8901719101038": {
+        name: 'Parle-G Original Gluco Biscuits',
+        brand: 'Parle',
         image_url: "",
-        category: "Biscuits",
-        ingredients_text: "Wheat Flour (67%), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Milk Solids, Emulsifier [INS 322(i)], Artificial Vanilla Flavour."
+        category: 'Biscuits',
+        ingredients_text: 'Wheat Flour (67%), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Milk Solids, Emulsifier [INS 322(i)], Artificial Vanilla Flavour.'
       },
-      "8901063142276": {
-        name: "Britannia Bourbon Chocolate Biscuits",
-        brand: "Britannia",
+      "8901063142275": {
+        name: 'Britannia Bourbon Chocolate Biscuits',
+        brand: 'Britannia',
         image_url: "",
-        category: "Biscuits",
-        ingredients_text: "Refined Wheat Flour, Sugar, Palm Oil, Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 500ii, INS 503ii], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Chocolate Flavors."
+        category: 'Biscuits',
+        ingredients_text: 'Refined Wheat Flour, Sugar, Palm Oil, Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 500ii, INS 503ii], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Chocolate Flavors.'
       },
-      "8901063012654": {
-        name: "Britannia Good Day Butter Cookies",
-        brand: "Britannia",
+      "8901063012653": {
+        name: 'Britannia Good Day Butter Cookies',
+        brand: 'Britannia',
         image_url: "",
-        category: "Cookies",
-        ingredients_text: "Refined Wheat Flour (Maida), Sugar, Edible Vegetable Oil (Palm), Butter (2%), Invert Sugar Syrup, Milk Solids, Raising Agents [INS 503(ii), INS 500(ii)], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Butter Flavours."
+        category: 'Cookies',
+        ingredients_text: 'Refined Wheat Flour (Maida), Sugar, Edible Vegetable Oil (Palm), Butter (2%), Invert Sugar Syrup, Milk Solids, Raising Agents [INS 503(ii), INS 500(ii)], Iodised Salt, Emulsifiers [INS 322, INS 471], Added Artificial Butter Flavours.'
       },
-      "8901063014160": {
-        name: "Britannia Marie Gold Biscuits",
-        brand: "Britannia",
+      "8901063014169": {
+        name: 'Britannia Marie Gold Biscuits',
+        brand: 'Britannia',
         image_url: "",
-        category: "Biscuits",
-        ingredients_text: "Refined Wheat Flour (Maida 65%), Sugar, Refined Palm Oil, Invert Sugar Syrup, Milk Solids, Raising Agents [INS 500(ii), INS 503(ii)], Iodised Salt, Emulsifiers [INS 471, INS 472e], Dough Conditioner (INS 223), Added Artificial Milk & Vanilla Flavours."
+        category: 'Biscuits',
+        ingredients_text: 'Refined Wheat Flour (Maida 65%), Sugar, Refined Palm Oil, Invert Sugar Syrup, Milk Solids, Raising Agents [INS 500(ii), INS 503(ii)], Iodised Salt, Emulsifiers [INS 471, INS 472e], Dough Conditioner (INS 223), Added Artificial Milk & Vanilla Flavours.'
       },
-      "8901719104045": {
-        name: "Parle Monaco Classic Regular Salted Biscuits",
-        brand: "Parle",
+      "8901719104046": {
+        name: 'Parle Monaco Classic Regular Salted Biscuits',
+        brand: 'Parle',
         image_url: "",
-        category: "Salted Biscuits",
-        ingredients_text: "Refined Wheat Flour (Maida), Edible Vegetable Oil (Palm Oil), Sugar, Raising Agents [INS 503(ii), INS 500(ii)], Invert Sugar Syrup, Edible Common Salt (2.1%), Yeast, Acidity Regulators [INS 270, INS 296], Emulsifiers [INS 322(i)], Dough Conditioner [INS 223]."
+        category: 'Salted Biscuits',
+        ingredients_text: 'Refined Wheat Flour (Maida), Edible Vegetable Oil (Palm Oil), Sugar, Raising Agents [INS 503(ii), INS 500(ii)], Invert Sugar Syrup, Edible Common Salt (2.1%), Yeast, Acidity Regulators [INS 270, INS 296], Emulsifiers [INS 322(i)], Dough Conditioner [INS 223].'
       },
-      "8901719108029": {
-        name: "Parle Hide & Seek Chocolate Chip Cookies",
-        brand: "Parle",
+      "8901719108020": {
+        name: 'Parle Hide & Seek Chocolate Chip Cookies',
+        brand: 'Parle',
         image_url: "",
-        category: "Cookies",
-        ingredients_text: "Wheat Flour (Maida), Chocolate Chips (Sugar, Cocoa Mass, Cocoa Butter, Emulsifier INS 322), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Artificial Chocolate & Vanilla Flavours."
+        category: 'Cookies',
+        ingredients_text: 'Wheat Flour (Maida), Chocolate Chips (Sugar, Cocoa Mass, Cocoa Butter, Emulsifier INS 322), Sugar, Edible Vegetable Oil (Palm Oil), Invert Sugar Syrup, Cocoa Solids, Raising Agents [INS 503(ii), INS 500(ii)], Salt, Artificial Chocolate & Vanilla Flavours.'
       },
-      "8901058852395": {
-        name: "Maggi 2-Minute Masala Instant Noodles",
-        brand: "Nestlé",
+      "8901058852394": {
+        name: 'Maggi 2-Minute Masala Instant Noodles',
+        brand: 'Nestlé',
         image_url: "",
-        category: "Instant Noodles",
-        ingredients_text: "Wheat Flour (Maida), Palm Oil, Salt, Wheat Gluten, Mineral (Calcium Carbonate), Guar Gum. Tastemaker: Hydrolysed Peanut Protein, Mixed Spices (Onion Powder, Coriander, Chili Powder, Turmeric, Garlic Powder, Cumin, Aniseed, Fenugreek, Ginger, Black Pepper, Clove, Nutmeg, Cardamom), Noodle Powder, Sugar, Edible Starch, Palm Oil, Caramel (INS 150d), Flavor Enhancer (INS 635), Acidity Regulator (INS 330), Sodium Bicarbonate."
+        category: 'Instant Noodles',
+        ingredients_text: 'Wheat Flour (Maida), Palm Oil, Salt, Wheat Gluten, Mineral (Calcium Carbonate), Guar Gum. Tastemaker: Hydrolysed Peanut Protein, Mixed Spices (Onion Powder, Coriander, Chili Powder, Turmeric, Garlic Powder, Cumin, Aniseed, Fenugreek, Ginger, Black Pepper, Clove, Nutmeg, Cardamom), Noodle Powder, Sugar, Edible Starch, Palm Oil, Caramel (INS 150d), Flavor Enhancer (INS 635), Acidity Regulator (INS 330), Sodium Bicarbonate.'
       },
-      "8901499008608": {
+      "8901499008602": {
         name: "Lay's India's Magic Masala Potato Chips",
         brand: "Lay's (PepsiCo)",
         image_url: "",
-        category: "Potato Chips",
-        ingredients_text: "Potato, Edible Vegetable Oil (Palmolein, Rice Bran Oil), Seasoning (Spices and Condiments, Iodised Salt, Maltodextrin, Black Salt, Sugar, Tomato Powder, Acidity Regulators [INS 330, INS 296, INS 334], Flavor Enhancers [INS 627, INS 631], Anticaking Agent [INS 551])."
+        category: 'Potato Chips',
+        ingredients_text: 'Potato, Edible Vegetable Oil (Palmolein, Rice Bran Oil), Seasoning (Spices and Condiments, Iodised Salt, Maltodextrin, Black Salt, Sugar, Tomato Powder, Acidity Regulators [INS 330, INS 296, INS 334], Flavor Enhancers [INS 627, INS 631], Anticaking Agent [INS 551]).'
       },
-      "8901499008585": {
-        name: "Kurkure Masala Munch Crispy Snack",
-        brand: "Kurkure (PepsiCo)",
+      "8901499008589": {
+        name: 'Kurkure Masala Munch Crispy Snack',
+        brand: 'Kurkure (PepsiCo)',
         image_url: "",
-        category: "Extruded Corn Snack",
-        ingredients_text: "Rice Meal (42.8%), Edible Vegetable Oil (Palmolein Oil), Corn Meal (19.8%), Gram Meal (3.3%), Spices and Condiments (Onion Powder, Chili Powder, Amchur, Coriander Powder, Ginger Powder, Garlic Powder, Black Pepper Powder, Turmeric Powder, Fenugreek Powder), Iodised Salt, Sugar, Tomato Powder, Citric Acid (INS 330), Tartaric Acid (INS 334), Flavor Enhancers (INS 627, INS 631)."
+        category: 'Extruded Corn Snack',
+        ingredients_text: 'Rice Meal (42.8%), Edible Vegetable Oil (Palmolein Oil), Corn Meal (19.8%), Gram Meal (3.3%), Spices and Condiments (Onion Powder, Chili Powder, Amchur, Coriander Powder, Ginger Powder, Garlic Powder, Black Pepper Powder, Turmeric Powder, Fenugreek Powder), Iodised Salt, Sugar, Tomato Powder, Citric Acid (INS 330), Tartaric Acid (INS 334), Flavor Enhancers (INS 627, INS 631).'
       },
-
-      // ── Chocolates & Confectionery ──
-      "8901058852234": {
-        name: "KitKat 4-Finger Crisp Wafer in Milk Chocolate",
-        brand: "Nestlé",
+      "8901058852233": {
+        name: 'KitKat 4-Finger Crisp Wafer in Milk Chocolate',
+        brand: 'Nestlé',
         image_url: "",
-        category: "Chocolate Wafer",
-        ingredients_text: "Sugar, Milk Solids (16.2%), Fractionated Vegetable Fat (Hydrogenated Palm Kernel Oil), Refined Wheat Flour (Maida), Cocoa Solids (4.5%), Emulsifier (Soya Lecithin INS 322), Yeast, Raising Agent [INS 500(ii)], Artificial Vanilla Flavor."
+        category: 'Chocolate Wafer',
+        ingredients_text: 'Sugar, Milk Solids (16.2%), Fractionated Vegetable Fat (Hydrogenated Palm Kernel Oil), Refined Wheat Flour (Maida), Cocoa Solids (4.5%), Emulsifier (Soya Lecithin INS 322), Yeast, Raising Agent [INS 500(ii)], Artificial Vanilla Flavor.'
       },
-      "8901233024036": {
-        name: "Cadbury Dairy Milk Chocolate",
-        brand: "Cadbury (Mondelez)",
+      "8901233024035": {
+        name: 'Cadbury Dairy Milk Chocolate',
+        brand: 'Cadbury (Mondelez)',
         image_url: "",
-        category: "Milk Chocolate",
-        ingredients_text: "Sugar, Milk Solids (22%), Cocoa Butter, Cocoa Solids, Emulsifiers (INS 442, INS 476), Added Flavours (Natural, Nature Identical and Artificial Vanilla Flavouring Substances)."
+        category: 'Milk Chocolate',
+        ingredients_text: 'Sugar, Milk Solids (22%), Cocoa Butter, Cocoa Solids, Emulsifiers (INS 442, INS 476), Added Flavours (Natural, Nature Identical and Artificial Vanilla Flavouring Substances).'
       },
-
-      // ── Skincare, Active Roll-ons & Deodorants ──
-      "8906114631239": {
-        name: "BE Bodywise 4% AHA Underarm Roll-On (Lactic + Mandelic)",
-        brand: "BE Bodywise",
+      "8906114631234": {
+        name: 'BE Bodywise 4% AHA Underarm Roll-On (Lactic + Mandelic)',
+        brand: 'BE Bodywise',
         image_url: "",
-        category: "Active Underarm Roll-on",
-        ingredients_text: "Aqua, Lactic Acid (2%), Mandelic Acid (2%), Propylene Glycol, Propanediol, Salicylic Acid (0.5%), Butyrospermum Parkii (Shea Butter), Aloe Barbadensis Leaf Extract, Niacinamide, Sclerotium Gum, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide."
+        category: 'Active Underarm Roll-on',
+        ingredients_text: 'Aqua, Lactic Acid (2%), Mandelic Acid (2%), Propylene Glycol, Propanediol, Salicylic Acid (0.5%), Butyrospermum Parkii (Shea Butter), Aloe Barbadensis Leaf Extract, Niacinamide, Sclerotium Gum, Phenoxyethanol, Ethylhexylglycerin, Sodium Hydroxide.'
       },
-      "8906009450075": {
-        name: "Nivea Pearl & Beauty Deodorant Roll-on",
-        brand: "Nivea (Beiersdorf)",
+      "8906009450070": {
+        name: 'Nivea Pearl & Beauty Deodorant Roll-on',
+        brand: 'Nivea (Beiersdorf)',
         image_url: "",
-        category: "Antiperspirant Roll-on",
-        ingredients_text: "Aqua, Aluminum Chlorohydrate, PPG-15 Stearyl Ether, Steareth-2, Steareth-21, Parfum, Hydrolyzed Pearl, Persea Gratissima Oil (Avocado Oil), Trisodium EDTA, BHT."
+        category: 'Antiperspirant Roll-on',
+        ingredients_text: 'Aqua, Aluminum Chlorohydrate, PPG-15 Stearyl Ether, Steareth-2, Steareth-21, Parfum, Hydrolyzed Pearl, Persea Gratissima Oil (Avocado Oil), Trisodium EDTA, BHT.'
       },
-
-      // ── Toothpastes & Oral Care ──
-      "8901314010526": {
-        name: "Colgate Strong Teeth Dental Cream",
-        brand: "Colgate-Palmolive",
+      "8901314010520": {
+        name: 'Colgate Strong Teeth Dental Cream',
+        brand: 'Colgate-Palmolive',
         image_url: "",
-        category: "Toothpaste",
-        ingredients_text: "Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide)."
+        category: 'Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide).'
       },
-      "8901207011037": {
-        name: "Dabur Red Ayurvedic Toothpaste",
-        brand: "Dabur",
+      "8901207011030": {
+        name: 'Dabur Red Ayurvedic Toothpaste',
+        brand: 'Dabur',
         image_url: "",
-        category: "Ayurvedic Toothpaste",
-        ingredients_text: "Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben."
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben.'
       },
-      "8901262013015": {
-        name: "Patanjali Dant Kanti Natural Dental Cream",
-        brand: "Patanjali Ayurved",
+      "8901262013017": {
+        name: 'Patanjali Dant Kanti Natural Dental Cream',
+        brand: 'Patanjali Ayurved',
         image_url: "",
-        category: "Ayurvedic Toothpaste",
-        ingredients_text: "Calcium Carbonate base, Anacyclus pyrethrum (Akarkara), Azadirachta indica (Neem), Acacia arabica (Babhul), Xanthoxylum alatum (Tomar), Mentha spicata (Pudina), Syzygium aromaticum (Laung), Piper sylvaticum (Pippali), Bakul, Vidang, Haldi, Pilu, Majuphal."
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate base, Anacyclus pyrethrum (Akarkara), Azadirachta indica (Neem), Acacia arabica (Babhul), Xanthoxylum alatum (Tomar), Mentha spicata (Pudina), Syzygium aromaticum (Laung), Piper sylvaticum (Pippali), Bakul, Vidang, Haldi, Pilu, Majuphal.'
       },
       "8901030341014": {
-        name: "Close Up Everfresh Red Hot Gel Toothpaste",
-        brand: "Close Up (Hindustan Unilever)",
+        name: 'Close Up Everfresh Red Hot Gel Toothpaste',
+        brand: 'Close Up (Hindustan Unilever)',
         image_url: "",
-        category: "Gel Toothpaste",
-        ingredients_text: "Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, Synthetic Fluorphlogopite, CI 16035, CI 17200."
+        category: 'Gel Toothpaste',
+        ingredients_text: 'Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, Synthetic Fluorphlogopite, CI 16035, CI 17200.'
       },
-      "5000347000017": {
-        name: "Sensodyne Repair & Protect Toothpaste with NovaMin",
-        brand: "Sensodyne (Haleon)",
+      "5000347000010": {
+        name: 'Sensodyne Repair & Protect Toothpaste with NovaMin',
+        brand: 'Sensodyne (Haleon)',
         image_url: "",
-        category: "Sensitivity Toothpaste",
-        ingredients_text: "Glycerin, PEG-8, Hydrated Silica, Calcium Sodium Phosphosilicate (NovaMin 5%), Cocamidopropyl Betaine, Sodium Methyl Cocoyl Taurate, Aroma, Titanium Dioxide, Carbomer, Sodium Saccharin, Sodium Fluoride (1450 ppm Fluoride)."
+        category: 'Sensitivity Toothpaste',
+        ingredients_text: 'Glycerin, PEG-8, Hydrated Silica, Calcium Sodium Phosphosilicate (NovaMin 5%), Cocamidopropyl Betaine, Sodium Methyl Cocoyl Taurate, Aroma, Titanium Dioxide, Carbomer, Sodium Saccharin, Sodium Fluoride (1450 ppm Fluoride).'
       },
-      "8901314010543": {
-        name: "Colgate Strong Teeth Calcium Boost Toothpaste",
-        brand: "Colgate-Palmolive",
+      "8901314010544": {
+        name: 'Colgate Strong Teeth Calcium Boost Toothpaste',
+        brand: 'Colgate-Palmolive',
         image_url: "",
-        category: "Toothpaste",
-        ingredients_text: "Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide)."
+        category: 'Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Sodium Lauryl Sulfate (SLS), Silica, Sodium Monofluorophosphate, Flavour, Cellulose Gum, Sodium Silicate, Sodium Saccharin, CI 77891 (Titanium Dioxide).'
       },
-      "8901207000109": {
-        name: "Dabur Red Paste 100g",
-        brand: "Dabur",
+      "8901207000102": {
+        name: 'Dabur Red Paste 100g',
+        brand: 'Dabur',
         image_url: "",
-        category: "Ayurvedic Toothpaste",
-        ingredients_text: "Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben."
+        category: 'Ayurvedic Toothpaste',
+        ingredients_text: 'Calcium Carbonate, Sorbitol, Water, Silica, Sodium Lauryl Sulfate, Herbal Extract (Black Pepper, Long Pepper, Ginger, Clove Oil, Pudina, Tomar Seed), Red Ochre (Geru), Sodium Silicate, Sodium Saccharin, Xanthan Gum, Sodium Benzoate, Methyl Paraben, Propyl Paraben.'
       },
       "8901030919244": {
-        name: "Close Up Triple Fresh Gel Red Hot",
-        brand: "Close Up (Hindustan Unilever)",
+        name: 'Close Up Triple Fresh Gel Red Hot',
+        brand: 'Close Up (Hindustan Unilever)',
         image_url: "",
-        category: "Gel Toothpaste",
-        ingredients_text: "Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, CI 16035, CI 17200."
+        category: 'Gel Toothpaste',
+        ingredients_text: 'Sorbitol, Water, Hydrated Silica, Sodium Lauryl Sulfate, PEG-32, Flavour, Cellulose Gum, Sodium Saccharin, Sodium Fluoride, Zinc Sulfate, CI 16035, CI 17200.'
       },
-
-      // ── Skincare & Sunscreen ──
-      "8906114630010": {
-        name: "The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50",
-        brand: "The Derma Co (Honasa)",
+      "8906114630015": {
+        name: 'The Derma Co 1% Hyaluronic Sunscreen Aqua Gel SPF 50',
+        brand: 'The Derma Co (Honasa)',
         image_url: "",
-        category: "Sunscreen Gel",
-        ingredients_text: "Aqua, 1% Hyaluronic Acid, Vitamin E, Titanium Dioxide, Zinc Oxide, Ethylhexyl Methoxycinnamate, Butyl Methoxydibenzoylmethane, Phospholipids, 1,3-Butylene Glycol, Propanediol, Phenoxyethanol, Ethylhexylglycerin."
+        category: 'Sunscreen Gel',
+        ingredients_text: 'Aqua, 1% Hyaluronic Acid, Vitamin E, Titanium Dioxide, Zinc Oxide, Ethylhexyl Methoxycinnamate, Butyl Methoxydibenzoylmethane, Phospholipids, 1,3-Butylene Glycol, Propanediol, Phenoxyethanol, Ethylhexylglycerin.'
       },
-      "8906128100013": {
-        name: "Minimalist SPF 50 Multi-Vitamin Sunscreen",
-        brand: "Minimalist",
+      "8906128100016": {
+        name: 'Minimalist SPF 50 Multi-Vitamin Sunscreen',
+        brand: 'Minimalist',
         image_url: "",
-        category: "Sunscreen",
-        ingredients_text: "Water, Octocrylene, Ethylhexyl Salicylate, Niacinamide, Butyl Methoxydibenzoylmethane, Glycerin, Titanium Dioxide, Vitamin B5 (Panthenol), Vitamin F, Phenoxyethanol, Ethylhexylglycerin."
+        category: 'Sunscreen',
+        ingredients_text: 'Water, Octocrylene, Ethylhexyl Salicylate, Niacinamide, Butyl Methoxydibenzoylmethane, Glycerin, Titanium Dioxide, Vitamin B5 (Panthenol), Vitamin F, Phenoxyethanol, Ethylhexylglycerin.'
       },
       "8901138500047": {
-        name: "Himalaya Purifying Neem Face Wash",
-        brand: "Himalaya Wellness",
+        name: 'Himalaya Purifying Neem Face Wash',
+        brand: 'Himalaya Wellness',
         image_url: "",
-        category: "Face Wash",
-        ingredients_text: "Aqua, Ammonium Lauryl Sulfate, Melia Azadirachta Leaf Extract (Neem), Curcuma Longa (Turmeric) Rhizome Extract, Cocamidopropyl Betaine, Sodium Cocoyl Glutamate, Glycerin, Acrylates/C10-30 Alkyl Acrylate Crosspolymer, Sodium Hydroxide, Phenoxyethanol, Methylchloroisothiazolinone, Methylisothiazolinone, CI 19140, CI 42090."
+        category: 'Face Wash',
+        ingredients_text: 'Aqua, Ammonium Lauryl Sulfate, Melia Azadirachta Leaf Extract (Neem), Curcuma Longa (Turmeric) Rhizome Extract, Cocamidopropyl Betaine, Sodium Cocoyl Glutamate, Glycerin, Acrylates/C10-30 Alkyl Acrylate Crosspolymer, Sodium Hydroxide, Phenoxyethanol, Methylchloroisothiazolinone, Methylisothiazolinone, CI 19140, CI 42090.'
       },
       "8901030752100": {
         name: "Pond's Super Light Gel Oil-Free Moisturiser",
         brand: "Pond's (Hindustan Unilever)",
         image_url: "",
-        category: "Face Moisturiser",
-        ingredients_text: "Water, Dimethicone, Glycerin, Butylene Glycol, Ammonium Acryloyldimethyltaurate/VP Copolymer, Niacinamide, Sodium Hyaluronate (Hyaluronic Acid), Vitamin E Acetate, Phenoxyethanol, Perfume, CI 42090."
+        category: 'Face Moisturiser',
+        ingredients_text: 'Water, Dimethicone, Glycerin, Butylene Glycol, Ammonium Acryloyldimethyltaurate/VP Copolymer, Niacinamide, Sodium Hyaluronate (Hyaluronic Acid), Vitamin E Acetate, Phenoxyethanol, Perfume, CI 42090.'
       },
       "8901144000012": {
-        name: "Boroline Antiseptic Ayurvedic Cream",
-        brand: "G.D. Pharmaceuticals",
+        name: 'Boroline Antiseptic Ayurvedic Cream',
+        brand: 'G.D. Pharmaceuticals',
         image_url: "",
-        category: "Antiseptic Skin Cream",
-        ingredients_text: "Boric Acid (1% w/w), Zinc Oxide (3% w/w), Anhydrous Lanolin, White Petroleum Jelly (Heavy Liquid Paraffin), Perfume, Microcrystalline Wax."
+        category: 'Antiseptic Skin Cream',
+        ingredients_text: 'Boric Acid (1% w/w), Zinc Oxide (3% w/w), Anhydrous Lanolin, White Petroleum Jelly (Heavy Liquid Paraffin), Perfume, Microcrystalline Wax.'
       },
-
-      // ── Bathing Soaps & Body Wash ──
-      "8901396001026": {
-        name: "Dettol Original Germ Protection Bathing Soap",
-        brand: "Dettol (Reckitt)",
+      "8901396001027": {
+        name: 'Dettol Original Germ Protection Bathing Soap',
+        brand: 'Dettol (Reckitt)',
         image_url: "",
-        category: "Bathing Soap",
-        ingredients_text: "Sodium Palmate, Sodium Palm Kernelate, Aqua, Talc, Glycerin, Parfum, Chloroxylenol, Sodium Chloride, Titanium Dioxide (CI 77891), Tetrasodium EDTA, Etidronic Acid, Cymbopogon Flexuosus Oil, CI 11680."
+        category: 'Bathing Soap',
+        ingredients_text: 'Sodium Palmate, Sodium Palm Kernelate, Aqua, Talc, Glycerin, Parfum, Chloroxylenol, Sodium Chloride, Titanium Dioxide (CI 77891), Tetrasodium EDTA, Etidronic Acid, Cymbopogon Flexuosus Oil, CI 11680.'
       },
       "8901030001017": {
-        name: "Dove Cream Beauty Bathing Bar (1/4 Moisturising Cream)",
-        brand: "Dove (Hindustan Unilever)",
+        name: 'Dove Cream Beauty Bathing Bar (1/4 Moisturising Cream)',
+        brand: 'Dove (Hindustan Unilever)',
         image_url: "",
-        category: "Beauty Bar",
-        ingredients_text: "Sodium Lauroyl Isethionate, Stearic Acid, Lauric Acid, Sodium Palmate, Aqua, Sodium Isethionate, Sodium Stearate, Cocamidopropyl Betaine, Sodium Palm Kernelate, Glycerin, Parfum, Sodium Chloride, Zinc Oxide, Tetrasodium EDTA, Titanium Dioxide."
+        category: 'Beauty Bar',
+        ingredients_text: 'Sodium Lauroyl Isethionate, Stearic Acid, Lauric Acid, Sodium Palmate, Aqua, Sodium Isethionate, Sodium Stearate, Cocamidopropyl Betaine, Sodium Palm Kernelate, Glycerin, Parfum, Sodium Chloride, Zinc Oxide, Tetrasodium EDTA, Titanium Dioxide.'
       },
       "8901030364020": {
-        name: "Lifebuoy Total 10 Germ Protection Soap",
-        brand: "Lifebuoy (Hindustan Unilever)",
+        name: 'Lifebuoy Total 10 Germ Protection Soap',
+        brand: 'Lifebuoy (Hindustan Unilever)',
         image_url: "",
-        category: "Bathing Soap",
-        ingredients_text: "Sodium Palmate, Sodium Palm Kernelate, Water, Talc, Glycerin, Perfume, Sodium Chloride, Titanium Dioxide, Terpineol, Thymol, Silver Oxide, Tetrasodium EDTA, Etidronic Acid, CI 12490."
+        category: 'Bathing Soap',
+        ingredients_text: 'Sodium Palmate, Sodium Palm Kernelate, Water, Talc, Glycerin, Perfume, Sodium Chloride, Titanium Dioxide, Terpineol, Thymol, Silver Oxide, Tetrasodium EDTA, Etidronic Acid, CI 12490.'
       },
-
-      // ── Breakfast Cereals & Healthy Oats ──
-      "8901499008011": {
+      "8901499008015": {
         name: "Kellogg's Corn Flakes Original",
         brand: "Kellogg's",
         image_url: "",
-        category: "Breakfast Cereal",
-        ingredients_text: "Corn Grits (88.6%), Sugar, Cereal Extract, Iodized Salt, Vitamins (Vitamin C, Vitamin B1, Vitamin B2, Vitamin B3, Vitamin B6, Folate, Vitamin B12), Mineral (Iron), Antioxidant (INS 307b)."
+        category: 'Breakfast Cereal',
+        ingredients_text: 'Corn Grits (88.6%), Sugar, Cereal Extract, Iodized Salt, Vitamins (Vitamin C, Vitamin B1, Vitamin B2, Vitamin B3, Vitamin B6, Folate, Vitamin B12), Mineral (Iron), Antioxidant (INS 307b).'
       },
       "8901088001014": {
-        name: "Saffola Masala Oats Classic Masala",
-        brand: "Saffola (Marico)",
+        name: 'Saffola Masala Oats Classic Masala',
+        brand: 'Saffola (Marico)',
         image_url: "",
-        category: "Instant Oats",
-        ingredients_text: "Rolled Oats (73.9%), Spices & Condiments (3.8%) (Onion, Turmeric, Pepper, Clove, Red Chili, Garlic, Fenugreek), Dried Vegetables (Carrots, Green Peas), Salt, Sugar, Hydrolysed Vegetable Protein, Flavour Enhancers (INS 627, INS 631), Refined Rice Bran Oil."
+        category: 'Instant Oats',
+        ingredients_text: 'Rolled Oats (73.9%), Spices & Condiments (3.8%) (Onion, Turmeric, Pepper, Clove, Red Chili, Garlic, Fenugreek), Dried Vegetables (Carrots, Green Peas), Salt, Sugar, Hydrolysed Vegetable Protein, Flavour Enhancers (INS 627, INS 631), Refined Rice Bran Oil.'
       },
-
-      // ── Beverages, Juices & Energy Drinks ──
-      "8901764012234": {
-        name: "Coca-Cola Original Carbonated Beverage",
-        brand: "The Coca-Cola Company",
+      "8901764012235": {
+        name: 'Coca-Cola Original Carbonated Beverage',
+        brand: 'The Coca-Cola Company',
         image_url: "",
-        category: "Carbonated Soft Drink",
-        ingredients_text: "Carbonated Water, Sugar, Acidity Regulator (INS 338), Caramel Colour (INS 150d), Natural Flavouring Substances, Caffeine."
+        category: 'Carbonated Soft Drink',
+        ingredients_text: 'Carbonated Water, Sugar, Acidity Regulator (INS 338), Caramel Colour (INS 150d), Natural Flavouring Substances, Caffeine.'
       },
-      "8901207010474": {
-        name: "Real Fruit Power Mixed Fruit Juice",
-        brand: "Real (Dabur)",
+      "8901207010477": {
+        name: 'Real Fruit Power Mixed Fruit Juice',
+        brand: 'Real (Dabur)',
         image_url: "",
-        category: "Packaged Fruit Juice",
-        ingredients_text: "Water, Mixed Fruit Concentrate (18.1%) (Apple Juice Conc., Orange Juice Conc., Guava Puree, Mango Puree, Banana Puree, Apricot Puree, Peach Puree), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Stabilizer (INS 440)."
+        category: 'Packaged Fruit Juice',
+        ingredients_text: 'Water, Mixed Fruit Concentrate (18.1%) (Apple Juice Conc., Orange Juice Conc., Guava Puree, Mango Puree, Banana Puree, Apricot Puree, Peach Puree), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Stabilizer (INS 440).'
       },
       "90162602": {
-        name: "Red Bull Energy Drink",
-        brand: "Red Bull",
+        name: 'Red Bull Energy Drink',
+        brand: 'Red Bull',
         image_url: "",
-        category: "Energy Drink",
-        ingredients_text: "Carbonated Water, Sucrose, Glucose, Acidity Regulators (Citric Acid, Sodium Bicarbonate, Magnesium Carbonate), Taurine (0.4%), Caffeine (0.03%), Vitamins (Niacin, Pantothenic Acid, B6, B12), Flavours, Colours (Caramel, Riboflavin)."
+        category: 'Energy Drink',
+        ingredients_text: 'Carbonated Water, Sucrose, Glucose, Acidity Regulators (Citric Acid, Sodium Bicarbonate, Magnesium Carbonate), Taurine (0.4%), Caffeine (0.03%), Vitamins (Niacin, Pantothenic Acid, B6, B12), Flavours, Colours (Caramel, Riboflavin).'
       },
-      "8901719101013": {
+      "8901719101014": {
         name: "Frooti Fresh 'N' Juicy Mango Drink",
-        brand: "Parle Agro",
+        brand: 'Parle Agro',
         image_url: "",
-        category: "Mango Beverage",
-        ingredients_text: "Water, Mango Pulp (19.5%), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Permitted Class II Preservatives (INS 211, INS 224, INS 202)."
-      }
+        category: 'Mango Beverage',
+        ingredients_text: 'Water, Mango Pulp (19.5%), Sugar, Acidity Regulator (INS 330), Antioxidant (INS 300), Permitted Class II Preservatives (INS 211, INS 224, INS 202).'
+      },
     };
 
     // ── Comprehensive Universal Canonical Safety Knowledge Base ──
     var CANONICAL_DB = [
       // ── High Risk Cosmetic & Chemical Additives ──
-      { name: "TBHQ (Tertiary Butylhydroquinone / INS 319)", patterns: [/\btbhq\b/i, /tertiary\s*butylhydroquinone/i, /ins\s*319/i, /e\s*319/i], risk: "High Risk", cat: "Synthetic Antioxidant Preservative", side_effects: "Used as lipid stabilizer in hair oils & cosmetics; high doses linked to skin allergies and cellular stress.", status: "Restricted in EU & Cosmetics", icon: "🔴", penalty: 25 },
-      { name: "Parabens (Methyl / Propyl / Butyl Paraben)", patterns: [/methylparaben/i, /propylparaben/i, /butylparaben/i, /ethylparaben/i, /isobutylparaben/i, /paraben/i, /ins\s*218/i, /ins\s*216/i], risk: "High Risk", cat: "Cosmetic Preservative", side_effects: "Endocrine disrupting potential; mimics estrogen in biological tissue; bioaccumulates.", status: "Banned/Restricted in EU Cosmetics", icon: "🔴", penalty: 28 },
-      { name: "Formaldehyde Releasers (DMDM Hydantoin / Quaternium-15)", patterns: [/dmdm\s*hydantoin/i, /quaternium-?15/i, /imidazolidinyl\s*urea/i, /diazolidinyl\s*urea/i, /bronopol/i, /sodium\s*hydroxymethylglycinate/i], risk: "High Risk", cat: "Formaldehyde-Releasing Preservative", side_effects: "Gradually releases carcinogenic formaldehyde; potent contact allergen causing scalp/skin dermatitis.", status: "Severely Restricted / Banned in EU", icon: "🔴", penalty: 32 },
-      { name: "Coal Tar Dyes (PPD / Resorcinol / CI 12700 / CI 26100)", patterns: [/p-?phenylenediamine/i, /\bppd\b/i, /resorcinol/i, /ci\s*12700/i, /ci\s*26100/i, /ci\s*61565/i, /coal\s*tar/i], risk: "High Risk", cat: "Synthetic Dye & Aromatic Amine", side_effects: "Severe sensitization, contact dermatitis, and potential endocrine/mutagenic concerns in hair dyes/oils.", status: "Regulated Cosmetic Colorant", icon: "🔴", penalty: 25 },
-      { name: "Triclosan & Triclocarban", patterns: [/triclosan/i, /triclocarban/i], risk: "High Risk", cat: "Antibacterial Agent", side_effects: "Endocrine disruptor affecting thyroid hormone metabolism; contributes to antibiotic resistance.", status: "Banned in Hand Washes by FDA", icon: "🔴", penalty: 30 },
-      { name: "Chemical Sunscreens (Oxybenzone / Benzophenone-3)", patterns: [/oxybenzone/i, /benzophenone-?3/i, /octinoxate/i, /octyl\s*methoxycinnamate/i, /homosalate/i], risk: "High Risk", cat: "Chemical UV Filter", side_effects: "Endocrine disruption, hormone mimicry, skin penetration, and coral reef bleaching toxicity.", status: "Banned in Hawaii & Restricted in EU", icon: "🔴", penalty: 25 },
+      { name: "TBHQ (Tertiary Butylhydroquinone / INS 319)", patterns: [/\btbhq\b/i, /tertiary\s*butylhydroquinone/i, /ins\s*319/i, /e\s*319/i], risk: "High Risk", cat: "Synthetic Antioxidant Preservative", side_effects: "Used as lipid stabilizer in hair oils & cosmetics; high doses linked to skin allergies and cellular stress.", status: "Restricted in EU & Cosmetics", penalty: 25 },
+      { name: "Parabens (Methyl / Propyl / Butyl Paraben)", patterns: [/methylparaben/i, /propylparaben/i, /butylparaben/i, /ethylparaben/i, /isobutylparaben/i, /paraben/i, /ins\s*218/i, /ins\s*216/i], risk: "High Risk", cat: "Cosmetic Preservative", side_effects: "Endocrine disrupting potential; mimics estrogen in biological tissue; bioaccumulates.", status: "Banned/Restricted in EU Cosmetics", penalty: 28 },
+      { name: "Formaldehyde Releasers (DMDM Hydantoin / Quaternium-15)", patterns: [/dmdm\s*hydantoin/i, /quaternium-?15/i, /imidazolidinyl\s*urea/i, /diazolidinyl\s*urea/i, /bronopol/i, /sodium\s*hydroxymethylglycinate/i], risk: "High Risk", cat: "Formaldehyde-Releasing Preservative", side_effects: "Gradually releases carcinogenic formaldehyde; potent contact allergen causing scalp/skin dermatitis.", status: "Severely Restricted / Banned in EU", penalty: 32 },
+      { name: "Coal Tar Dyes (PPD / Resorcinol / CI 12700 / CI 26100)", patterns: [/p-?phenylenediamine/i, /\bppd\b/i, /resorcinol/i, /ci\s*12700/i, /ci\s*26100/i, /ci\s*61565/i, /coal\s*tar/i], risk: "High Risk", cat: "Synthetic Dye & Aromatic Amine", side_effects: "Severe sensitization, contact dermatitis, and potential endocrine/mutagenic concerns in hair dyes/oils.", status: "Regulated Cosmetic Colorant", penalty: 25 },
+      { name: "Triclosan & Triclocarban", patterns: [/triclosan/i, /triclocarban/i], risk: "High Risk", cat: "Antibacterial Agent", side_effects: "Endocrine disruptor affecting thyroid hormone metabolism; contributes to antibiotic resistance.", status: "Banned in Hand Washes by FDA", penalty: 30 },
+      { name: "Chemical Sunscreens (Oxybenzone / Benzophenone-3)", patterns: [/oxybenzone/i, /benzophenone-?3/i, /octinoxate/i, /octyl\s*methoxycinnamate/i, /homosalate/i], risk: "High Risk", cat: "Chemical UV Filter", side_effects: "Endocrine disruption, hormone mimicry, skin penetration, and coral reef bleaching toxicity.", status: "Banned in Hawaii & Restricted in EU", penalty: 25 },
       
       // ── Moderate Risk Cosmetic & Hair Care Ingredients ──
-      { name: "Mineral Oil / Light Liquid Paraffin", patterns: [/mineral\s*oil/i, /liquid\s*paraffin/i, /paraffinum\s*liquidum/i, /petroleum\s*oil/i, /white\s*mineral\s*oil/i], risk: "Moderate Risk", cat: "Petroleum Hydrocarbon Base", side_effects: "Heavy petroleum by-product; forms an occlusive barrier on scalp/skin, can clog pores and trap dirt.", status: "Approved with Purity Limits", icon: "🟠", penalty: 15 },
-      { name: "Sulphates (SLS - Sodium Lauryl Sulfate / SLES)", patterns: [/sodium\s*lauryl\s*sulfate/i, /sodium\s*laureth\s*sulfate/i, /\bsls\b/i, /\bsles\b/i, /ammonium\s*lauryl\s*sulfate/i], risk: "Moderate Risk", cat: "Harsh Surfactant & Foaming Agent", side_effects: "Strips natural scalp sebum and hair proteins; common cause of scalp irritation, dryness, and hair thinning.", status: "Cosmetic Standard with Concentration Limits", icon: "🟠", penalty: 16 },
-      { name: "Non-Soluble Silicones (Dimethicone / Cyclopentasiloxane)", patterns: [/dimethicone/i, /cyclopentasiloxane/i, /amodimethicone/i, /dimethiconol/i, /cyclomethicone/i], risk: "Moderate Risk", cat: "Synthetic Silicone Emollient", side_effects: "Provides synthetic smoothness but causes product buildup on scalp and hair shafts requiring clarifying washes.", status: "Approved Cosmetic Agent", icon: "🟠", penalty: 12 },
-      { name: "Synthetic Fragrance / Perfume (Parfum)", patterns: [/fragrance/i, /perfume/i, /parfum/i, /aroma/i, /phthalate/i], risk: "Moderate Risk", cat: "Synthetic Scent Compound", side_effects: "Proprietary chemical mixture; frequent cause of contact dermatitis, scalp allergies, and headache triggers.", status: "IFRA Standards Regulated", icon: "🟠", penalty: 12 },
-      { name: "PEGs & Ethoxylated Emulsifiers (PEG-40 / Polysorbates)", patterns: [/peg-\d+/i, /polyethylene\s*glycol/i, /polysorbate-\d+/i, /steareth-\d+/i, /ceteareth-\d+/i], risk: "Moderate Risk", cat: "Penetration Enhancer & Emulsifier", side_effects: "Enhances skin permeability; risk of trace 1,4-dioxane and ethylene oxide impurities if not purified.", status: "Cosmetic Approved with Purity Limits", icon: "🟠", penalty: 12 },
+      { name: "Mineral Oil / Light Liquid Paraffin", patterns: [/mineral\s*oil/i, /liquid\s*paraffin/i, /paraffinum\s*liquidum/i, /petroleum\s*oil/i, /white\s*mineral\s*oil/i], risk: "Moderate Risk", cat: "Petroleum Hydrocarbon Base", side_effects: "Heavy petroleum by-product; forms an occlusive barrier on scalp/skin, can clog pores and trap dirt.", status: "Approved with Purity Limits", penalty: 15 },
+      { name: "Sulphates (SLS - Sodium Lauryl Sulfate / SLES)", patterns: [/sodium\s*lauryl\s*sulfate/i, /sodium\s*laureth\s*sulfate/i, /\bsls\b/i, /\bsles\b/i, /ammonium\s*lauryl\s*sulfate/i], risk: "Moderate Risk", cat: "Harsh Surfactant & Foaming Agent", side_effects: "Strips natural scalp sebum and hair proteins; common cause of scalp irritation, dryness, and hair thinning.", status: "Cosmetic Standard with Concentration Limits", penalty: 16 },
+      { name: "Non-Soluble Silicones (Dimethicone / Cyclopentasiloxane)", patterns: [/dimethicone/i, /cyclopentasiloxane/i, /amodimethicone/i, /dimethiconol/i, /cyclomethicone/i], risk: "Moderate Risk", cat: "Synthetic Silicone Emollient", side_effects: "Provides synthetic smoothness but causes product buildup on scalp and hair shafts requiring clarifying washes.", status: "Approved Cosmetic Agent", penalty: 12 },
+      { name: "Synthetic Fragrance / Perfume (Parfum)", patterns: [/fragrance/i, /perfume/i, /parfum/i, /aroma/i, /phthalate/i], risk: "Moderate Risk", cat: "Synthetic Scent Compound", side_effects: "Proprietary chemical mixture; frequent cause of contact dermatitis, scalp allergies, and headache triggers.", status: "IFRA Standards Regulated", penalty: 12 },
+      { name: "PEGs & Ethoxylated Emulsifiers (PEG-40 / Polysorbates)", patterns: [/peg-\d+/i, /polyethylene\s*glycol/i, /polysorbate-\d+/i, /steareth-\d+/i, /ceteareth-\d+/i], risk: "Moderate Risk", cat: "Penetration Enhancer & Emulsifier", side_effects: "Enhances skin permeability; risk of trace 1,4-dioxane and ethylene oxide impurities if not purified.", status: "Cosmetic Approved with Purity Limits", penalty: 12 },
 
       // ── Food Additives & High/Moderate Hazards ──
-      { name: "Potassium Bromate (INS 924a)", patterns: [/potassium\s*bromate/i, /ins\s*924\s*a?/i, /e\s*924\s*a?/i], risk: "High Risk", cat: "Flour Treatment Agent", side_effects: "Classified as potential carcinogen; banned in EU, India, UK.", status: "Banned in Food", icon: "🔴", penalty: 35 },
-      { name: "BHA / INS 320", patterns: [/\bbha\b/i, /butylated\s*hydroxyanisole/i, /ins\s*320/i, /e\s*320/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Potential endocrine disruptor; long-term high dose risks.", status: "Restricted in EU / FDA Regulated", icon: "🔴", penalty: 25 },
-      { name: "BHT / INS 321", patterns: [/\bbht\b/i, /butylated\s*hydroxytoluene/i, /ins\s*321/i, /e\s*321/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Linked to hormone disruption and potential organ toxicity.", status: "Strictly Limited Use", icon: "🔴", penalty: 25 },
-      { name: "Titanium Dioxide (INS 171 / CI 77891)", patterns: [/titanium\s*dioxide/i, /ins\s*171/i, /e\s*171/i, /ci\s*77891/i], risk: "High Risk", cat: "Artificial Color & Mineral Opacifier", side_effects: "Banned in EU food due to genotoxicity concerns; approved in cosmetics with inhalation restrictions.", status: "Banned in EU Food / Cosmetic Grade Approved", icon: "🔴", penalty: 25 },
-      { name: "Trans Fat / Partially Hydrogenated Oil", patterns: [/partially\s*hydrogenated/i, /trans\s*fat/i, /vanaspati/i, /hydrogenated\s*vegetable\s*oil/i], risk: "High Risk", cat: "Industrial Fat", side_effects: "Elevates bad LDL cholesterol; significantly increases heart risk.", status: "Prohibited by WHO & FDA", icon: "🔴", penalty: 30 },
-      { name: "Red 40 / Allura Red (INS 129)", patterns: [/allura\s*red/i, /red\s*40/i, /ins\s*129/i, /e\s*129/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic azo dye; linked to hyperactivity in sensitive children.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
-      { name: "Tartrazine / Yellow 5 (INS 102)", patterns: [/tartrazine/i, /yellow\s*5/i, /ins\s*102/i, /e\s*102/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "May trigger hives, asthma, and hyperactive behavior in children.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
-      { name: "Sunset Yellow (INS 110)", patterns: [/sunset\s*yellow/i, /yellow\s*6/i, /ins\s*110/i, /e\s*110/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic dye; linked to hyperactivity and allergy symptoms.", status: "Warning Required in EU", icon: "🟠", penalty: 15 },
-      { name: "Sodium Benzoate (INS 211)", patterns: [/sodium\s*benzoate/i, /ins\s*211/i, /e\s*211/i], risk: "Moderate Risk", cat: "Preservative", side_effects: "Can form trace benzene when combined with Vitamin C.", status: "FSSAI / FDA Approved with Limits", icon: "🟠", penalty: 14 },
-      { name: "High Fructose Corn Syrup (HFCS)", patterns: [/high\s*fructose\s*corn\s*syrup/i, /\bhfcs\b/i, /fructose\s*glucose\s*syrup/i, /invert\s*sugar/i], risk: "Moderate Risk", cat: "Refined Sweetener", side_effects: "Linked to fatty liver risk, insulin resistance, and obesity.", status: "Permitted Caloric Sweetener", icon: "🟠", penalty: 14 },
-      { name: "Aspartame (INS 951)", patterns: [/aspartame/i, /ins\s*951/i, /e\s*951/i], risk: "Moderate Risk", cat: "Artificial Sweetener", side_effects: "Classified as possibly carcinogenic (Group 2B); unsafe for PKU.", status: "FDA Approved / PKU Warning", icon: "🟠", penalty: 16 },
-      { name: "Palm Oil / Palmolein", patterns: [/palm\s*oil/i, /palmolein/i, /palm\s*kernel/i], risk: "Moderate Risk", cat: "Saturated Fat", side_effects: "High saturated palmitic fat; frequent high intake raises lipid levels.", status: "Approved Cooking Fat", icon: "🟠", penalty: 12 },
+      { name: "Potassium Bromate (INS 924a)", patterns: [/potassium\s*bromate/i, /ins\s*924\s*a?/i, /e\s*924\s*a?/i], risk: "High Risk", cat: "Flour Treatment Agent", side_effects: "Classified as potential carcinogen; banned in EU, India, UK.", status: "Banned in Food", penalty: 35 },
+      { name: "BHA / INS 320", patterns: [/\bbha\b/i, /butylated\s*hydroxyanisole/i, /ins\s*320/i, /e\s*320/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Potential endocrine disruptor; long-term high dose risks.", status: "Restricted in EU / FDA Regulated", penalty: 25 },
+      { name: "BHT / INS 321", patterns: [/\bbht\b/i, /butylated\s*hydroxytoluene/i, /ins\s*321/i, /e\s*321/i], risk: "High Risk", cat: "Synthetic Antioxidant", side_effects: "Linked to hormone disruption and potential organ toxicity.", status: "Strictly Limited Use", penalty: 25 },
+      { name: "Titanium Dioxide (INS 171 / CI 77891)", patterns: [/titanium\s*dioxide/i, /ins\s*171/i, /e\s*171/i, /ci\s*77891/i], risk: "High Risk", cat: "Artificial Color & Mineral Opacifier", side_effects: "Banned in EU food due to genotoxicity concerns; approved in cosmetics with inhalation restrictions.", status: "Banned in EU Food / Cosmetic Grade Approved", penalty: 25 },
+      { name: "Trans Fat / Partially Hydrogenated Oil", patterns: [/partially\s*hydrogenated/i, /trans\s*fat/i, /vanaspati/i, /hydrogenated\s*vegetable\s*oil/i], risk: "High Risk", cat: "Industrial Fat", side_effects: "Elevates bad LDL cholesterol; significantly increases heart risk.", status: "Prohibited by WHO & FDA", penalty: 30 },
+      { name: "Red 40 / Allura Red (INS 129)", patterns: [/allura\s*red/i, /red\s*40/i, /ins\s*129/i, /e\s*129/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic azo dye; linked to hyperactivity in sensitive children.", status: "Warning Required in EU", penalty: 15 },
+      { name: "Tartrazine / Yellow 5 (INS 102)", patterns: [/tartrazine/i, /yellow\s*5/i, /ins\s*102/i, /e\s*102/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "May trigger hives, asthma, and hyperactive behavior in children.", status: "Warning Required in EU", penalty: 15 },
+      { name: "Sunset Yellow (INS 110)", patterns: [/sunset\s*yellow/i, /yellow\s*6/i, /ins\s*110/i, /e\s*110/i], risk: "Moderate Risk", cat: "Artificial Color", side_effects: "Synthetic dye; linked to hyperactivity and allergy symptoms.", status: "Warning Required in EU", penalty: 15 },
+      { name: "Sodium Benzoate (INS 211)", patterns: [/sodium\s*benzoate/i, /ins\s*211/i, /e\s*211/i], risk: "Moderate Risk", cat: "Preservative", side_effects: "Can form trace benzene when combined with Vitamin C.", status: "FSSAI / FDA Approved with Limits", penalty: 14 },
+      { name: "High Fructose Corn Syrup (HFCS)", patterns: [/high\s*fructose\s*corn\s*syrup/i, /\bhfcs\b/i, /fructose\s*glucose\s*syrup/i, /invert\s*sugar/i], risk: "Moderate Risk", cat: "Refined Sweetener", side_effects: "Linked to fatty liver risk, insulin resistance, and obesity.", status: "Permitted Caloric Sweetener", penalty: 14 },
+      { name: "Aspartame (INS 951)", patterns: [/aspartame/i, /ins\s*951/i, /e\s*951/i], risk: "Moderate Risk", cat: "Artificial Sweetener", side_effects: "Classified as possibly carcinogenic (Group 2B); unsafe for PKU.", status: "FDA Approved / PKU Warning", penalty: 16 },
+      { name: "Palm Oil / Palmolein", patterns: [/palm\s*oil/i, /palmolein/i, /palm\s*kernel/i], risk: "Moderate Risk", cat: "Saturated Fat", side_effects: "High saturated palmitic fat; frequent high intake raises lipid levels.", status: "Approved Cooking Fat", penalty: 12 },
 
       // ── Safe & Beneficial Botanical & Skincare Actives ──
-      { name: "Amla Extract (Emblica Officinalis)", patterns: [/amla/i, /emblica\s*officinalis/i, /indian\s*gooseberry/i], risk: "Safe", cat: "Natural Ayurvedic Botanical", side_effects: "Rich in natural Vitamin C and flavonoids; nourishes hair roots and scalp.", status: "Beneficial Natural Botanical", icon: "✅", penalty: 0 },
-      { name: "Almond Oil (Prunus Amygdalus)", patterns: [/almond\s*oil/i, /badam\s*oil/i, /prunus\s*amygdalus/i, /sweet\s*almond/i], risk: "Safe", cat: "Natural Plant Lipid", side_effects: "Nourishing natural emollient rich in fatty acids and Vitamin E.", status: "Beneficial Botanical Oil", icon: "✅", penalty: 0 },
-      { name: "Bhringraj Extract (Eclipta Alba)", patterns: [/bhringraj/i, /eclipta\s*alba/i, /false\s*daisy/i], risk: "Safe", cat: "Ayurvedic Hair Tonic", side_effects: "Traditional herb clinically shown to support hair follicle vitality.", status: "Natural Ayurvedic Herb", icon: "✅", penalty: 0 },
-      { name: "Coconut Oil (Cocos Nucifera)", patterns: [/coconut\s*oil/i, /cocos\s*nucifera/i, /nariyal\s*tel/i], risk: "Safe", cat: "Pure Plant Lipid", side_effects: "Penetrates hair shaft to reduce protein loss; highly moisturizing.", status: "Beneficial Natural Oil", icon: "✅", penalty: 0 },
-      { name: "Vitamin E / Tocopheryl Acetate", patterns: [/vitamin\s*e/i, /tocopher/i, /ins\s*307/i, /e\s*307/i], risk: "Safe", cat: "Natural Antioxidant & Nutrient", side_effects: "Potent natural antioxidant protecting cells against lipid peroxidation.", status: "Safe & Essential Nutrient", icon: "✅", penalty: 0 },
-      { name: "Niacinamide (Vitamin B3)", patterns: [/niacinamide/i, /nicotinamide/i, /vitamin\s*b3/i], risk: "Safe", cat: "Active Skincare Vitamin", side_effects: "Repairs skin barrier, regulates sebum, reduces hyperpigmentation and inflammation.", status: "Dermatologist Recommended", icon: "✅", penalty: 0 },
-      { name: "Lactic Acid (AHA Exfoliant)", patterns: [/lactic\s*acid/i], risk: "Safe", cat: "Alpha Hydroxy Acid (AHA)", side_effects: "Gentle AHA exfoliant; brightens skin, reduces underarm/body hyperpigmentation & hydrates skin.", status: "Dermatologist Approved Active", icon: "✅", penalty: 0 },
-      { name: "Salicylic Acid (BHA Active)", patterns: [/salicylic\s*acid/i, /\bbha\b/i], risk: "Safe", cat: "Beta Hydroxy Acid (BHA)", side_effects: "Penetrates deep into pores to control body odour, unclog pores, and clear acne-causing bacteria.", status: "Dermatologist Approved Active", icon: "✅", penalty: 0 },
-      { name: "Mandelic Acid (AHA Active)", patterns: [/mandelic\s*acid/i], risk: "Safe", cat: "Gentle AHA Exfoliant", side_effects: "Almond-derived gentle AHA; brightens skin tone safely without redness or irritation.", status: "Cosmetic Active Approved", icon: "✅", penalty: 0 },
-      { name: "Shea Butter (Butyrospermum Parkii)", patterns: [/shea\s*butter/i, /butyrospermum\s*parkii/i], risk: "Safe", cat: "Nourishing Botanical Lipid", side_effects: "Rich in essential fatty acids and Vitamin E; deeply moisturizes skin barrier.", status: "Beneficial Natural Emollient", icon: "✅", penalty: 0 },
-      { name: "Propylene Glycol / Propanediol", patterns: [/propylene\s*glycol/i, /propanediol/i], risk: "Safe", cat: "Skin Hydrator & Delivery Carrier", side_effects: "Helps active ingredients penetrate skin surface; locks in moisture.", status: "Cosmetic Standard Approved", icon: "✅", penalty: 0 },
-      { name: "Carrot Seed Oil / Extract", patterns: [/carrot/i, /daucus\s*carota/i], risk: "Safe", cat: "Natural Botanical Antioxidant", side_effects: "Rich in Beta-Carotene & Vitamin A; natural protection against free radical sun damage.", status: "Beneficial Botanical Extract", icon: "✅", penalty: 0 },
-      { name: "Xanthan Gum / Sclerotium Gum", patterns: [/xanthan\s*gum/i, /sclerotium\s*gum/i, /guar\s*gum/i], risk: "Safe", cat: "Natural Botanical Thickener", side_effects: "Plant-derived natural gelling & stabilizing agent; 100% non-toxic.", status: "Natural GRAS Approved", icon: "✅", penalty: 0 },
-      { name: "Hyaluronic Acid / Sodium Hyaluronate", patterns: [/hyaluronic\s*acid/i, /sodium\s*hyaluronate/i], risk: "Safe", cat: "Hydrating Humectant", side_effects: "Holds 1000x its weight in water; delivers intense moisture to skin and hair.", status: "Clean & Safe Hydrator", icon: "✅", penalty: 0 },
-      { name: "Aloe Vera Extract (Aloe Barbadensis)", patterns: [/aloe\s*vera/i, /aloe\s*barbadensis/i, /ghritkumari/i], risk: "Safe", cat: "Soothing Botanical Gel", side_effects: "Calms scalp irritation, hydrates skin, and promotes wound healing.", status: "Natural Botanical", icon: "✅", penalty: 0 },
-      { name: "Glycerin / Vegetable Glycerin", patterns: [/glycerin/i, /glycerol/i], risk: "Safe", cat: "Natural Humectant", side_effects: "Attracts moisture into skin and hair fibers; non-irritating.", status: "Natural GRAS Approved", icon: "✅", penalty: 0 },
-      { name: "Citric Acid (INS 330)", patterns: [/citric\s*acid/i, /ins\s*330/i, /e\s*330/i], risk: "Safe", cat: "Natural Acidity Regulator", side_effects: "Naturally derived from citrus; balances formula pH safely.", status: "Natural / GRAS", icon: "✅", penalty: 0 },
-      { name: "Soy Lecithin (INS 322)", patterns: [/soy\s*lecithin/i, /lecithin/i, /ins\s*322/i, /e\s*322/i], risk: "Safe", cat: "Emulsifier", side_effects: "Plant-derived emulsifier; safe (contains soy allergen).", status: "Natural / Approved", icon: "✅", penalty: 0 }
+      { name: "Amla Extract (Emblica Officinalis)", patterns: [/amla/i, /emblica\s*officinalis/i, /indian\s*gooseberry/i], risk: "Safe", cat: "Natural Ayurvedic Botanical", side_effects: "Rich in natural Vitamin C and flavonoids; nourishes hair roots and scalp.", status: "Beneficial Natural Botanical", penalty: 0 },
+      { name: "Almond Oil (Prunus Amygdalus)", patterns: [/almond\s*oil/i, /badam\s*oil/i, /prunus\s*amygdalus/i, /sweet\s*almond/i], risk: "Safe", cat: "Natural Plant Lipid", side_effects: "Nourishing natural emollient rich in fatty acids and Vitamin E.", status: "Beneficial Botanical Oil", penalty: 0 },
+      { name: "Bhringraj Extract (Eclipta Alba)", patterns: [/bhringraj/i, /eclipta\s*alba/i, /false\s*daisy/i], risk: "Safe", cat: "Ayurvedic Hair Tonic", side_effects: "Traditional herb clinically shown to support hair follicle vitality.", status: "Natural Ayurvedic Herb", penalty: 0 },
+      { name: "Coconut Oil (Cocos Nucifera)", patterns: [/coconut\s*oil/i, /cocos\s*nucifera/i, /nariyal\s*tel/i], risk: "Safe", cat: "Pure Plant Lipid", side_effects: "Penetrates hair shaft to reduce protein loss; highly moisturizing.", status: "Beneficial Natural Oil", penalty: 0 },
+      { name: "Vitamin E / Tocopheryl Acetate", patterns: [/vitamin\s*e/i, /tocopher/i, /ins\s*307/i, /e\s*307/i], risk: "Safe", cat: "Natural Antioxidant & Nutrient", side_effects: "Potent natural antioxidant protecting cells against lipid peroxidation.", status: "Safe & Essential Nutrient", penalty: 0 },
+      { name: "Niacinamide (Vitamin B3)", patterns: [/niacinamide/i, /nicotinamide/i, /vitamin\s*b3/i], risk: "Safe", cat: "Active Skincare Vitamin", side_effects: "Repairs skin barrier, regulates sebum, reduces hyperpigmentation and inflammation.", status: "Dermatologist Recommended", penalty: 0 },
+      { name: "Lactic Acid (AHA Exfoliant)", patterns: [/lactic\s*acid/i], risk: "Safe", cat: "Alpha Hydroxy Acid (AHA)", side_effects: "Gentle AHA exfoliant; brightens skin, reduces underarm/body hyperpigmentation & hydrates skin.", status: "Dermatologist Approved Active", penalty: 0 },
+      { name: "Salicylic Acid (BHA Active)", patterns: [/salicylic\s*acid/i, /\bbha\b/i], risk: "Safe", cat: "Beta Hydroxy Acid (BHA)", side_effects: "Penetrates deep into pores to control body odour, unclog pores, and clear acne-causing bacteria.", status: "Dermatologist Approved Active", penalty: 0 },
+      { name: "Mandelic Acid (AHA Active)", patterns: [/mandelic\s*acid/i], risk: "Safe", cat: "Gentle AHA Exfoliant", side_effects: "Almond-derived gentle AHA; brightens skin tone safely without redness or irritation.", status: "Cosmetic Active Approved", penalty: 0 },
+      { name: "Shea Butter (Butyrospermum Parkii)", patterns: [/shea\s*butter/i, /butyrospermum\s*parkii/i], risk: "Safe", cat: "Nourishing Botanical Lipid", side_effects: "Rich in essential fatty acids and Vitamin E; deeply moisturizes skin barrier.", status: "Beneficial Natural Emollient", penalty: 0 },
+      { name: "Propylene Glycol / Propanediol", patterns: [/propylene\s*glycol/i, /propanediol/i], risk: "Safe", cat: "Skin Hydrator & Delivery Carrier", side_effects: "Helps active ingredients penetrate skin surface; locks in moisture.", status: "Cosmetic Standard Approved", penalty: 0 },
+      { name: "Carrot Seed Oil / Extract", patterns: [/carrot/i, /daucus\s*carota/i], risk: "Safe", cat: "Natural Botanical Antioxidant", side_effects: "Rich in Beta-Carotene & Vitamin A; natural protection against free radical sun damage.", status: "Beneficial Botanical Extract", penalty: 0 },
+      { name: "Xanthan Gum / Sclerotium Gum", patterns: [/xanthan\s*gum/i, /sclerotium\s*gum/i, /guar\s*gum/i], risk: "Safe", cat: "Natural Botanical Thickener", side_effects: "Plant-derived natural gelling & stabilizing agent; 100% non-toxic.", status: "Natural GRAS Approved", penalty: 0 },
+      { name: "Hyaluronic Acid / Sodium Hyaluronate", patterns: [/hyaluronic\s*acid/i, /sodium\s*hyaluronate/i], risk: "Safe", cat: "Hydrating Humectant", side_effects: "Holds 1000x its weight in water; delivers intense moisture to skin and hair.", status: "Clean & Safe Hydrator", penalty: 0 },
+      { name: "Aloe Vera Extract (Aloe Barbadensis)", patterns: [/aloe\s*vera/i, /aloe\s*barbadensis/i, /ghritkumari/i], risk: "Safe", cat: "Soothing Botanical Gel", side_effects: "Calms scalp irritation, hydrates skin, and promotes wound healing.", status: "Natural Botanical", penalty: 0 },
+      { name: "Glycerin / Vegetable Glycerin", patterns: [/glycerin/i, /glycerol/i], risk: "Safe", cat: "Natural Humectant", side_effects: "Attracts moisture into skin and hair fibers; non-irritating.", status: "Natural GRAS Approved", penalty: 0 },
+      { name: "Citric Acid (INS 330)", patterns: [/citric\s*acid/i, /ins\s*330/i, /e\s*330/i], risk: "Safe", cat: "Natural Acidity Regulator", side_effects: "Naturally derived from citrus; balances formula pH safely.", status: "Natural / GRAS", penalty: 0 },
+      { name: "Soy Lecithin (INS 322)", patterns: [/soy\s*lecithin/i, /lecithin/i, /ins\s*322/i, /e\s*322/i], risk: "Safe", cat: "Emulsifier", side_effects: "Plant-derived emulsifier; safe (contains soy allergen).", status: "Natural / Approved", penalty: 0 }
     ];
 
     var ALLERGEN_PATTERNS = {
@@ -2696,6 +2758,7 @@
       window.scrollTo({ top: 0, behavior: "smooth" });
 
       if (pageName === "scan") {
+        lastScannedBarcode = null;
         if (splashDone && currentActiveTab === "barcode") {
           startCamera();
         }
@@ -2993,11 +3056,11 @@
       haptic();
       if (activeStream || isCameraStarting) {
         stopCamera();
-        showStatus("📷 Camera Paused", "loading");
+        showStatus("Camera Paused", "loading");
         setTimeout(hideStatus, 800);
       } else {
         startCamera();
-        showStatus("⚡ Camera Started", "success");
+        showStatus("Camera Active", "success");
         setTimeout(hideStatus, 800);
       }
     }
@@ -3005,7 +3068,7 @@
     async function toggleFlashlight() {
       haptic();
       if (!activeStream) {
-        showStatus("⚠️ Please start camera first to use flashlight.", "loading");
+        showStatus("Start camera first to use flashlight.", "loading");
         setTimeout(hideStatus, 1500);
         return;
       }
@@ -3017,11 +3080,11 @@
         var btn = document.getElementById("btn-torch");
         if (torchState) {
           if (btn) btn.classList.add("on");
-          showStatus("⚡ Flashlight Torch ON", "success");
+          showStatus("Flashlight Active", "success");
           setTimeout(hideStatus, 1000);
         } else {
           if (btn) btn.classList.remove("on");
-          showStatus("💡 Flashlight Torch OFF", "loading");
+          showStatus("Flashlight Disabled", "loading");
           setTimeout(hideStatus, 800);
         }
       } catch (e) {
@@ -3029,7 +3092,7 @@
         torchState = false;
         var btn = document.getElementById("btn-torch");
         if (btn) btn.classList.remove("on");
-        showStatus("💡 Flashlight not supported on this camera.", "loading");
+        showStatus("Flashlight not supported on this camera.", "loading");
         setTimeout(hideStatus, 1500);
       }
     }
@@ -3111,6 +3174,7 @@
       if (bPh) bPh.className = "scan-tab-btn" + (tab === "photo" ? " active" : "");
 
       if (tab === "barcode") {
+        lastScannedBarcode = null;
         if (reticleBc) reticleBc.style.display = "block";
         if (reticlePh) reticlePh.style.display = "none";
         if (ctrlBc) ctrlBc.style.display = "block";
@@ -3144,15 +3208,6 @@
         var check = (10 - (sum % 10)) % 10;
         return check === parseInt(digits.charAt(12), 10);
       }
-      if (digits.length === 8) {
-        var sum8 = 0;
-        for (var j = 0; j < 7; j++) {
-          var d8 = parseInt(digits.charAt(j), 10);
-          sum8 += (j % 2 === 0) ? d8 * 3 : d8;
-        }
-        var check8 = (10 - (sum8 % 10)) % 10;
-        return check8 === parseInt(digits.charAt(7), 10);
-      }
       if (digits.length === 12) {
         var sum12 = 0;
         for (var k = 0; k < 11; k++) {
@@ -3162,7 +3217,25 @@
         var check12 = (10 - (sum12 % 10)) % 10;
         return check12 === parseInt(digits.charAt(11), 10);
       }
-      return digits.length >= 4;
+      if (digits.length === 8) {
+        var sum8 = 0;
+        for (var j = 0; j < 7; j++) {
+          var d8 = parseInt(digits.charAt(j), 10);
+          sum8 += (j % 2 === 0) ? d8 * 3 : d8;
+        }
+        var check8 = (10 - (sum8 % 10)) % 10;
+        return check8 === parseInt(digits.charAt(7), 10);
+      }
+      if (digits.length === 14) {
+        var sum14 = 0;
+        for (var m = 0; m < 13; m++) {
+          var d14 = parseInt(digits.charAt(m), 10);
+          sum14 += (m % 2 === 0) ? d14 * 3 : d14;
+        }
+        var check14 = (10 - (sum14 % 10)) % 10;
+        return check14 === parseInt(digits.charAt(13), 10);
+      }
+      return false;
     }
 
     // ── Date and Expiry Evaluation Engine ──
@@ -3251,7 +3324,7 @@
         return {
           hasDate: true,
           status: "EXPIRED",
-          badge: "🚨 EXPIRED PRODUCT",
+          badge: "EXPIRED PRODUCT",
           alertClass: "expiry-expired",
           dateFormatted: dateFormatted,
           daysDiff: diffDays,
@@ -3264,7 +3337,7 @@
         return {
           hasDate: true,
           status: "EXPIRING_SOON",
-          badge: "⏳ EXPIRING SOON",
+          badge: "EXPIRING SOON",
           alertClass: "expiry-warning",
           dateFormatted: dateFormatted,
           daysDiff: diffDays,
@@ -3278,7 +3351,7 @@
       return {
         hasDate: true,
         status: "FRESH",
-        badge: "✅ FRESH & SAFE",
+        badge: "VERIFIED FRESH & SAFE",
         alertClass: "expiry-fresh",
         dateFormatted: dateFormatted,
         daysDiff: diffDays,
@@ -3306,12 +3379,12 @@
       var container = document.getElementById("manual-exp-result");
       if (!container) return;
       if (!dateStr || !dateStr.trim()) {
-        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">⚠️ Please enter a date (e.g. 10/2025).</span>';
+        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">Please enter a date (e.g. 10/2025).</span>';
         return;
       }
       var res = calculateExpiryStatus(dateStr.trim(), null, null);
       if (!res.hasDate) {
-        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">⚠️ Could not parse date. Format: MM/YYYY or DD/MM/YYYY.</span>';
+        container.innerHTML = '<span style="color:#f43f5e;font-size:0.75rem;">Could not parse date. Format: MM/YYYY or DD/MM/YYYY.</span>';
         return;
       }
       var color = res.status === "EXPIRED" ? "#f43f5e" : (res.status === "EXPIRING_SOON" ? "#f59e0b" : "#10b981");
@@ -3385,7 +3458,16 @@
       }
 
       var onlyDigits = text.replace(/[^\d]/g, "");
-      if (onlyDigits.length >= 7 && (onlyDigits.length / text.length > 0.8)) {
+      if (onlyDigits.length >= 8 && onlyDigits.length <= 14) {
+        if (!isValidBarcodeChecksum(onlyDigits)) {
+          return {
+            type: "invalid_barcode",
+            raw: text,
+            barcode: onlyDigits,
+            display: "Barcode #" + onlyDigits,
+            message: "Checksum failed (blurred or partial scan: #" + onlyDigits + ")"
+          };
+        }
         var eanCode = onlyDigits;
         if (eanCode.length === 14 && eanCode.startsWith("0")) {
           eanCode = eanCode.substring(1);
@@ -3406,19 +3488,19 @@
       };
     }
 
-    // ── Search Local DB by Name or Brand ──
+    // ── Search Local DB by Name or Brand (Strict Matching) ──
     function searchLocalDbByName(term) {
-      if (!term || term.trim().length < 2) return null;
+      if (!term || term.trim().length < 3) return null;
       var q = term.trim().toLowerCase();
       for (var k in LOCAL_PRODUCT_DB) {
         var item = LOCAL_PRODUCT_DB[k];
-        if (item.name.toLowerCase() === q || item.name.toLowerCase().startsWith(q)) {
+        if (item.name.toLowerCase() === q) {
           return { barcode: k, item: item };
         }
       }
       for (var k2 in LOCAL_PRODUCT_DB) {
         var item2 = LOCAL_PRODUCT_DB[k2];
-        if (item2.name.toLowerCase().includes(q) || item2.brand.toLowerCase().includes(q)) {
+        if (item2.name.toLowerCase().startsWith(q) || item2.brand.toLowerCase() === q) {
           return { barcode: k2, item: item2 };
         }
       }
@@ -3439,7 +3521,7 @@
             input.style.boxShadow = "";
           }, 1500);
         }
-        showStatus("⚠️ Please enter a barcode number or product name.", "loading");
+        showStatus("Please enter a barcode number or product name.", "loading");
         setTimeout(hideStatus, 2000);
         return;
       }
@@ -3523,12 +3605,39 @@
         navToPage("report");
       } catch (err) {
         hideProcessingHud();
-        showStatus("⚠️ Could not locate formula for: " + q, "loading");
+        showStatus("Could not locate formula for: " + q, "loading");
         setTimeout(hideStatus, 2500);
       }
     }
 
-    // ── Universal Barcode Capture Pipeline with Multi-Tier Cloud Registry ──
+    // ── Resilient Local Product Database Lookup with Leading-Zero Normalization ──
+    function lookupLocalProduct(barcode) {
+      if (!barcode) return null;
+      var clean = String(barcode).trim();
+      if (LOCAL_PRODUCT_DB[clean]) return LOCAL_PRODUCT_DB[clean];
+      if (LOCAL_PRODUCT_DB["0" + clean]) return LOCAL_PRODUCT_DB["0" + clean];
+      if (clean.startsWith("0")) {
+        var unpadded = clean.replace(/^0+/, "");
+        if (unpadded && LOCAL_PRODUCT_DB[unpadded]) return LOCAL_PRODUCT_DB[unpadded];
+      }
+      return null;
+    }
+
+    // ── Render Honest Unverified State (No AI Fabrications) ──
+    function renderUnverifiedBarcodeResult(barcode) {
+      var resultsDiv = document.getElementById("results-area");
+      if (!resultsDiv) return;
+      resultsDiv.innerHTML = '<div class="empty-state-box" style="margin-top:2rem;">' +
+        '<div class="empty-state-icon"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#facc15" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"></rect><line x1="9" y1="9" x2="15" y2="15"></line><line x1="15" y1="9" x2="9" y2="15"></line></svg></div>' +
+        '<div class="empty-state-title" style="color:#fef08a;">Product Not Verified</div>' +
+        '<div class="empty-state-desc">Barcode #' + barcode + ' is not verified in global food & cosmetic registries.<br><br>To inspect chemical & ingredient safety, take a clear photo of the packaging ingredients list!</div>' +
+        '<div style="margin-top:1.5rem;"><button class="retake-btn" onclick="navToPage(\'scan\');switchScanTab(\'photo\')">Take Ingredient Photo</button></div>' +
+      '</div>';
+      var reportDot = document.getElementById("report-active-dot");
+      if (reportDot) reportDot.style.display = "block";
+    }
+
+    // ── Universal Barcode Capture Pipeline with Strict Barcode Verification ──
     async function onBarcodeCaptured(rawScanned) {
       if (!rawScanned) return;
       var parsed = parseScannedCode(rawScanned);
@@ -3536,8 +3645,15 @@
 
       if (parsed.type === "payment_qr") {
         haptic();
-        showStatus("⚠️ " + parsed.message, "loading");
+        showStatus("Notice: " + parsed.message, "loading");
         setTimeout(hideStatus, 3500);
+        return;
+      }
+
+      if (parsed.type === "invalid_barcode") {
+        haptic();
+        showStatus("Notice: " + parsed.message + ". Please rescan clearly.", "loading");
+        setTimeout(hideStatus, 3000);
         return;
       }
 
@@ -3545,16 +3661,29 @@
       haptic();
       stopCamera();
 
+      // Sequence ID to isolate concurrent scans and ignore stale async responses
+      var thisScanId = ++currentScanSeqId;
+
       // Show Holographic Processing HUD
       showProcessingHud("Auditing Product Formula", "Scanned: " + (parsed.display || rawScanned));
 
       if (parsed.type === "barcode") {
         var clean = parsed.barcode;
 
-        // Tier 1: Strict exact check in Pre-Indexed Local Database (0ms instant)
-        var localItem = LOCAL_PRODUCT_DB[clean] || LOCAL_PRODUCT_DB["0" + clean];
+        // Bridge to parent Streamlit if loaded in Streamlit iframe
+        stPost({
+          type: "streamlit:setComponentValue",
+          value: { type: "barcode", barcode: clean, timestamp: Date.now() }
+        });
+
+        // Cooldown reset for scanning same barcode subsequently
+        setTimeout(function() { if (lastScannedBarcode === clean) lastScannedBarcode = null; }, 3000);
+
+        // Tier 1: Exact match in verified local product database (0ms instant)
+        var localItem = lookupLocalProduct(clean);
         if (localItem) {
           setTimeout(function() {
+            if (thisScanId !== currentScanSeqId) return;
             hideProcessingHud();
             var meta = {
               name: localItem.name,
@@ -3565,98 +3694,104 @@
               expiry_date: parsed.expiry_date || null,
               mfg_date: parsed.mfg_date || null,
               batch_no: parsed.batch_no || null,
-              image_url: localItem.image_url || ""
+              image_url: localItem.image_url || "",
+              verification_status: "VERIFIED"
             };
             var analysis = analyzeIngredientsText(localItem.ingredients_text, meta);
             lastAnalysisData = analysis;
             renderAnalysis(analysis);
             navToPage("report");
-          }, 500);
+          }, 350);
           return;
         }
 
-        // Tier 2: OpenFoodFacts Global Cloud API (Food, Beverages, Snacks)
+        // Tier 2: OpenFoodFacts Global Cloud API (with strict returned barcode check)
         try {
           var offRes = await fetch("https://world.openfoodfacts.org/api/v2/product/" + clean + ".json");
+          if (thisScanId !== currentScanSeqId) return;
           if (offRes.ok) {
             var offData = await offRes.json();
             if (offData.status === 1 && offData.product) {
               var p = offData.product;
-              var ingText = p.ingredients_text || p.ingredients_text_en || p.ingredients_text_hi || "";
-              if (ingText && ingText.trim().length > 5) {
-                hideProcessingHud();
-                var metaOFF = {
-                  name: p.product_name || p.product_name_en || ("Product #" + clean),
-                  brand: p.brands || "Brand",
-                  barcode: clean,
-                  nutriscore: (p.nutriscore_grade || "").toUpperCase(),
-                  category: p.categories || "Food / Beverage",
-                  image_url: p.image_front_url || p.image_url || "",
-                  expiry_date: parsed.expiry_date || p.expiration_date || null
-                };
-                var analysisOFF = analyzeIngredientsText(ingText, metaOFF);
-                lastAnalysisData = analysisOFF;
-                renderAnalysis(analysisOFF);
-                navToPage("report");
-                return;
+              var retCode = String(p.code || p._id || offData.code || "").trim();
+
+              // Strict validation: returned code must match scanned barcode
+              if (!retCode || retCode === clean || retCode.endsWith(clean)) {
+                var ingText = p.ingredients_text || p.ingredients_text_en || p.ingredients_text_hi || "";
+                if (ingText && ingText.trim().length > 5) {
+                  hideProcessingHud();
+                  var metaOFF = {
+                    name: p.product_name || p.product_name_en || ("Product #" + clean),
+                    brand: p.brands || p.brand_owner || "Brand",
+                    barcode: clean,
+                    nutriscore: (p.nutriscore_grade || "").toUpperCase(),
+                    category: p.categories || "Food / Beverage",
+                    image_url: p.image_front_url || p.image_url || "",
+                    expiry_date: parsed.expiry_date || p.expiration_date || null,
+                    verification_status: "VERIFIED"
+                  };
+                  var analysisOFF = analyzeIngredientsText(ingText, metaOFF);
+                  lastAnalysisData = analysisOFF;
+                  renderAnalysis(analysisOFF);
+                  navToPage("report");
+                  return;
+                }
+              } else {
+                console.warn("Mismatched barcode from OpenFoodFacts: expected", clean, "got", retCode);
               }
             }
           }
-        } catch (e) {}
+        } catch (e) {
+          console.debug("OpenFoodFacts fetch error:", e);
+        }
 
         // Tier 3: OpenBeautyFacts Global Cloud API (Cosmetics, Hair Care, Skincare)
         try {
           var obfRes = await fetch("https://world.openbeautyfacts.org/api/v2/product/" + clean + ".json");
+          if (thisScanId !== currentScanSeqId) return;
           if (obfRes.ok) {
             var obfData = await obfRes.json();
             if (obfData.status === 1 && obfData.product) {
               var bp = obfData.product;
-              var bIngText = bp.ingredients_text || bp.ingredients_text_en || bp.ingredients_text_hi || "";
-              if (bIngText && bIngText.trim().length > 5) {
-                hideProcessingHud();
-                var metaOBF = {
-                  name: bp.product_name || bp.product_name_en || ("Cosmetic #" + clean),
-                  brand: bp.brands || "Cosmetics Brand",
-                  barcode: clean,
-                  nutriscore: "",
-                  category: bp.categories || "Skincare & Cosmetics",
-                  image_url: bp.image_front_url || bp.image_url || "",
-                  expiry_date: parsed.expiry_date || bp.expiration_date || null
-                };
-                var analysisOBF = analyzeIngredientsText(bIngText, metaOBF);
-                lastAnalysisData = analysisOBF;
-                renderAnalysis(analysisOBF);
-                navToPage("report");
-                return;
+              var bRetCode = String(bp.code || bp._id || obfData.code || "").trim();
+
+              if (!bRetCode || bRetCode === clean || bRetCode.endsWith(clean)) {
+                var bIngText = bp.ingredients_text || bp.ingredients_text_en || bp.ingredients_text_hi || "";
+                if (bIngText && bIngText.trim().length > 5) {
+                  hideProcessingHud();
+                  var metaOBF = {
+                    name: bp.product_name || bp.product_name_en || ("Cosmetic #" + clean),
+                    brand: bp.brands || bp.brand_owner || "Cosmetics Brand",
+                    barcode: clean,
+                    nutriscore: "",
+                    category: bp.categories || "Skincare & Cosmetics",
+                    image_url: bp.image_front_url || bp.image_url || "",
+                    expiry_date: parsed.expiry_date || bp.expiration_date || null,
+                    verification_status: "VERIFIED"
+                  };
+                  var analysisOBF = analyzeIngredientsText(bIngText, metaOBF);
+                  lastAnalysisData = analysisOBF;
+                  renderAnalysis(analysisOBF);
+                  navToPage("report");
+                  return;
+                }
               }
             }
           }
-        } catch(e) {}
-
-        // Tier 4: Multimodal Gemini AI Fallback with multi-model retry
-        try {
-          var aiRes = await callGeminiBarcodeLookup(clean);
-          hideProcessingHud();
-          var metaAI = {
-            name: aiRes.product_name || ("Product #" + clean),
-            brand: aiRes.brand || "Brand",
-            barcode: clean,
-            nutriscore: "",
-            category: aiRes.category || "Consumer Product",
-            expiry_date: parsed.expiry_date || null
-          };
-          var analysisAI = analyzeIngredientsText(aiRes.ingredients_text, metaAI);
-          lastAnalysisData = analysisAI;
-          renderAnalysis(analysisAI);
-          navToPage("report");
-          return;
-        } catch (err) {
-          hideProcessingHud();
-          showStatus("⚠️ Barcode #" + clean + " not found in cloud registries. Try photo scan or search name!", "loading");
-          setTimeout(hideStatus, 3500);
+        } catch(e) {
+          console.debug("OpenBeautyFacts fetch error:", e);
         }
+
+        if (thisScanId !== currentScanSeqId) return;
+
+        // Tier 4: Honest Unverified Handling (DO NOT invent products or ingredients with AI)
+        hideProcessingHud();
+        showStatus("Barcode #" + clean + " not verified. Please scan ingredients list.", "loading");
+        setTimeout(hideStatus, 3500);
+        renderUnverifiedBarcodeResult(clean);
+        navToPage("report");
       } else {
-        // Alphanumeric text or URL query
+        // Alphanumeric text or explicit manual search
         searchProductByName(parsed.text || rawScanned);
       }
     }
@@ -3692,6 +3827,7 @@
       var dataUrl = canvas.toDataURL("image/jpeg", 0.90);
       var base64Data = dataUrl.split(",")[1];
 
+      stPost({ type: "streamlit:setComponentValue", value: { type: "image", data: base64Data, source: "camera", timestamp: Date.now() } });
       stopCamera();
       showProcessingHud("Gemini Vision AI Auditing", "Reading ingredients list & expiry stamps from photo…");
 
@@ -3715,7 +3851,7 @@
         navToPage("report");
       } catch(e) {
         hideProcessingHud();
-        showStatus("⚠️ Could not read ingredients clearly. Try closer with good light.", "loading");
+        showStatus("Could not read ingredients clearly. Try closer with good light.", "loading");
         setTimeout(hideStatus, 3000);
         startCamera();
       }
@@ -3727,6 +3863,7 @@
       var reader = new FileReader();
       reader.onload = async function(e) {
         var base64Data = e.target.result.split(",")[1];
+        stPost({ type: "streamlit:setComponentValue", value: { type: "image", data: base64Data, source: "gallery", timestamp: Date.now() } });
         showProcessingHud("Auditing Uploaded Photo", "Gemini Vision AI analyzing uploaded label photo…");
         try {
           var aiResult = await callGeminiVision(base64Data);
@@ -3748,7 +3885,7 @@
           navToPage("report");
         } catch(err) {
           hideProcessingHud();
-          showStatus("⚠️ Vision OCR could not read ingredients. Please try another image.", "loading");
+          showStatus("Vision AI could not read ingredients. Please try another image.", "loading");
           setTimeout(hideStatus, 3000);
         }
       };
@@ -3760,6 +3897,10 @@
       var userKey = "";
       try { userKey = localStorage.getItem("nutriscan_custom_gemini_key"); } catch(e){}
       var apiKey = (userKey && userKey.trim()) ? userKey.trim() : GEMINI_KEY;
+      if (!apiKey) {
+        showStatus("Please enter your Gemini API key in Profile to enable photo scanning.", "loading");
+        throw new Error("Gemini API key is required. Please set your key in the Profile tab.");
+      }
       var models = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
       var lastErr = null;
 
@@ -3874,19 +4015,19 @@
       // Check Personalized Preferences
       var prefs = getHealthPrefs();
       if (prefs.diabetic && (/maltodextrin/i.test(text) || /high\s*fructose/i.test(text) || /invert\s*sugar/i.test(text) || /liquid\s*glucose/i.test(text))) {
-        customHealthWarnings.push("🩸 Diabetic Alert: Contains rapid glycemic index sweeteners (Maltodextrin / Invert Sugars).");
+        customHealthWarnings.push("Diabetic Alert: Contains rapid glycemic index sweeteners (Maltodextrin / Invert Sugars).");
       }
       if (prefs.pregnancy && (/retinol/i.test(text) || /retinoid/i.test(text) || /aspartame/i.test(text) || /saccharin/i.test(text))) {
-        customHealthWarnings.push("🤰 Pregnancy Alert: Contains ingredients not recommended during pregnancy (Retinoids / Artificial Sweeteners).");
+        customHealthWarnings.push("Pregnancy Alert: Contains ingredients not recommended during pregnancy (Retinoids / Artificial Sweeteners).");
       }
       if (prefs.vegan && (/gelatin/i.test(text) || /carmine/i.test(text) || /e\s*120/i.test(text) || /whey/i.test(text) || /lanolin/i.test(text) || /casein/i.test(text))) {
-        customHealthWarnings.push("🌿 Vegan Alert: Contains animal-derived components (Gelatin / Carmine E120 / Dairy derivatives).");
+        customHealthWarnings.push("Non-Vegan Alert: Contains animal-derived components (Gelatin / Carmine E120 / Dairy derivatives).");
       }
       if (prefs.gluten && (/wheat/i.test(text) || /gluten/i.test(text) || /barley/i.test(text) || /maida/i.test(text) || /atta/i.test(text))) {
-        customHealthWarnings.push("🌾 Gluten Alert: Contains wheat/gluten sources.");
+        customHealthWarnings.push("Gluten Alert: Contains wheat/gluten sources.");
       }
       if (prefs.skin && (/sodium\s*lauryl\s*sulfate/i.test(text) || /sls/i.test(text) || /fragrance/i.test(text) || /parfum/i.test(text) || /mineral\s*oil/i.test(text))) {
-        customHealthWarnings.push("💧 Sensitive Skin Alert: Contains potential pore-cloggers or harsh sulfates (SLS / Synthetic Perfume / Mineral Oil).");
+        customHealthWarnings.push("Sensitive Skin Alert: Contains potential pore-cloggers or harsh sulfates (SLS / Synthetic Perfume / Mineral Oil).");
       }
 
       // Canonical Database Matching
@@ -3912,7 +4053,6 @@
             cat: "Standard Component",
             side_effects: "Natural or standard ingredient; safe for regular usage.",
             status: "Approved",
-            icon: "✅",
             penalty: 0
           });
         }
@@ -4000,7 +4140,7 @@
 
       // Product Banner
       if (p.name) {
-        var imgHtml = p.image_url ? '<img src="' + p.image_url + '" class="p-thumb" />' : '<div class="p-thumb" style="display:flex;align-items:center;justify-content:center;font-size:24px;">🧴</div>';
+        var imgHtml = p.image_url ? '<img src="' + p.image_url + '" class="p-thumb" />' : '<div class="p-thumb" style="display:flex;align-items:center;justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8"><rect x="5" y="2" width="14" height="20" rx="3"></rect><line x1="5" y1="8" x2="19" y2="8"></line></svg></div>';
         var nutriHtml = p.nutriscore ? '<span class="pill pill-green">Nutri-Score: ' + p.nutriscore + '</span>' : '';
         html += '<div class="product-card">' +
           imgHtml +
@@ -4008,7 +4148,7 @@
             '<div class="p-brand">' + (p.brand || 'Product') + '</div>' +
             '<div class="p-title">' + p.name + '</div>' +
             '<div class="p-meta">' +
-              '<span class="pill pill-blue">⚡ ' + (p.barcode || 'VERIFIED') + '</span>' +
+              '<span class="pill pill-blue">CODE: ' + (p.barcode || 'VERIFIED') + '</span>' +
               '<span class="pill pill-pink">' + (p.category || 'Consumer Product') + '</span>' +
               nutriHtml +
             '</div>' +
@@ -4024,9 +4164,9 @@
           data.grade = "D";
           gradeInfo = { name: "EXPIRED PRODUCT – UNSAFE", color: "#f43f5e", stroke: "#f43f5e", desc: "Product has passed its expiration date. Chemical degradation and bacterial contamination risk." };
         }
-        var expIcon = expStatus.status === "EXPIRED" ? "🚨" : (expStatus.status === "EXPIRING_SOON" ? "⏳" : "✅");
+        var expTag = expStatus.status === "EXPIRED" ? "EXPIRED" : (expStatus.status === "EXPIRING_SOON" ? "EXPIRING SOON" : "VERIFIED FRESH");
         html += '<div class="expiry-banner ' + expStatus.alertClass + '">' +
-          '<div class="expiry-banner-icon">' + expIcon + '</div>' +
+          '<div class="expiry-status-pill">' + expTag + '</div>' +
           '<div class="expiry-banner-body">' +
             '<div class="expiry-banner-title">' +
               '<span>' + expStatus.badge + '</span>' +
@@ -4034,16 +4174,16 @@
             '</div>' +
             '<div class="expiry-banner-desc">' + expStatus.message + '</div>' +
             '<div class="expiry-banner-meta">' +
-              (p.mfg_date ? '<span>🗓️ <strong>Mfg:</strong> ' + p.mfg_date + '</span>' : '') +
-              (expStatus.dateFormatted ? '<span>⌛ <strong>Exp:</strong> ' + expStatus.dateFormatted + '</span>' : '') +
-              (p.shelf_life ? '<span>📦 <strong>Shelf Life:</strong> ' + p.shelf_life + '</span>' : '') +
+              (p.mfg_date ? '<span><strong>Mfg:</strong> ' + p.mfg_date + '</span>' : '') +
+              (expStatus.dateFormatted ? '<span><strong>Exp:</strong> ' + expStatus.dateFormatted + '</span>' : '') +
+              (p.shelf_life ? '<span><strong>Shelf Life:</strong> ' + p.shelf_life + '</span>' : '') +
             '</div>' +
           '</div>' +
         '</div>';
       } else {
         var typicalShelf = getTypicalShelfLife(p.category, p.name);
         html += '<div class="expiry-banner expiry-guide">' +
-          '<div class="expiry-banner-icon">🗓️</div>' +
+          '<div class="expiry-banner-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>' +
           '<div class="expiry-banner-body">' +
             '<div class="expiry-banner-title">Expiry & Shelf Life Guide</div>' +
             '<div class="expiry-banner-desc">Typical shelf life for this category: <strong>' + typicalShelf + '</strong>. Check the stamped MFD / EXP on your pack.</div>' +
@@ -4091,13 +4231,13 @@
       // Custom Health Warning Alerts
       if (data.healthWarnings && data.healthWarnings.length > 0) {
         data.healthWarnings.forEach(function(hw) {
-          html += '<div class="health-profile-warning-box">⚠️ ' + hw + '</div>';
+          html += '<div class="health-profile-warning-box"><span class="alert-tag-red">ALERT</span> ' + hw + '</div>';
         });
       }
 
       // Allergens Warning
       if (data.allergens.length > 0) {
-        html += '<div class="allergen-box">⚠️ <strong>Sensitive Allergens Detected:</strong> ' + data.allergens.join(', ') + '</div>';
+        html += '<div class="allergen-box"><span class="alert-tag-yellow">ALLERGENS</span> <strong>Sensitive Allergens Detected:</strong> ' + data.allergens.join(', ') + '</div>';
       }
 
       // Healthier Swaps / Clean Guidance
@@ -4105,17 +4245,17 @@
       var hasAHA_BHA = data.ingredients.some(function(i) { return /lactic\s*acid/i.test(i.name) || /salicylic\s*acid/i.test(i.name) || /mandelic/i.test(i.name); });
       var hasChemicalUV = data.ingredients.some(function(i) { return /oxybenzone/i.test(i.name) || /octinoxate/i.test(i.name); });
 
-      var altTitle = "💡 Better / Cleaner Choice Guidance";
+      var altTitle = "Cleaner Choice Guidance";
       var altDesc = "Opt for formulations rich in natural cold-pressed lipids, plant-derived emulsifiers, and non-comedogenic ingredients.";
 
       if (hasAHA_BHA) {
-        altTitle = "✨ Active Exfoliating Formulation Detected";
+        altTitle = "Active Exfoliating Formulation Detected";
         altDesc = "Contains active AHA & BHA exfoliants (Lactic & Salicylic Acid). Excellent for underarm brightening, odour reduction & skin smoothing! Patch-test if sensitive.";
       } else if (hasMineralOil) {
-        altTitle = "💡 Cleaner Botanical Choice Recommendation";
+        altTitle = "Cleaner Botanical Choice Recommendation";
         altDesc = "Contains petroleum mineral oil base. For healthier hair roots & skin barrier, consider 100% Pure Cold-Pressed Coconut Oil or Sweet Almond Oil.";
       } else if (hasChemicalUV) {
-        altTitle = "💡 Safer Mineral Sunscreen Recommendation";
+        altTitle = "Safer Mineral Sunscreen Recommendation";
         altDesc = "Contains chemical UV filters. For sensitive skin & reef protection, choose Non-Nano Zinc Oxide / Titanium Dioxide mineral sunscreens.";
       }
 
@@ -4125,19 +4265,19 @@
       '</div>';
 
       // Chemical Audit & Advice
-      html += '<div class="verdict-box"><strong style="color:#67e8f9">📋 Chemical Audit:</strong> ' + summaryText + '</div>';
-      html += '<div class="action-box"><strong style="color:#6ee7b7">💡 Safety Advice:</strong> ' + adviceText + '</div>';
+      html += '<div class="verdict-box"><strong style="color:#67e8f9">Chemical Audit:</strong> ' + summaryText + '</div>';
+      html += '<div class="action-box"><strong style="color:#6ee7b7">Clinical Safety Guidance:</strong> ' + adviceText + '</div>';
 
       // Filter Pills for Ingredients
       html += '<div style="display:flex;align-items:center;justify-space-between;margin-top:1rem;">' +
-        '<h4 style="font-size:0.92rem;font-weight:800;flex:1;">🧪 Chemical Breakdown</h4>' +
+        '<h4 style="font-size:0.92rem;font-weight:800;flex:1;">Chemical Breakdown</h4>' +
       '</div>';
 
       html += '<div class="ing-filter-row">' +
         '<button class="filter-pill-btn active" id="flt-all" onclick="filterIngredients(\'all\')"><span>All</span> <span style="opacity:0.6">(' + data.total + ')</span></button>' +
-        '<button class="filter-pill-btn" id="flt-high" onclick="filterIngredients(\'High Risk\')"><span>🔴 High Risk</span> <span style="opacity:0.6">(' + highRiskCount + ')</span></button>' +
-        '<button class="filter-pill-btn" id="flt-mod" onclick="filterIngredients(\'Moderate Risk\')"><span>🟠 Moderate</span> <span style="opacity:0.6">(' + modRiskCount + ')</span></button>' +
-        '<button class="filter-pill-btn" id="flt-safe" onclick="filterIngredients(\'Safe\')"><span>✅ Clean / Safe</span> <span style="opacity:0.6">(' + safeCount + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-high" onclick="filterIngredients(\'High Risk\')"><span>High Risk</span> <span style="opacity:0.6">(' + highRiskCount + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-mod" onclick="filterIngredients(\'Moderate Risk\')"><span>Moderate</span> <span style="opacity:0.6">(' + modRiskCount + ')</span></button>' +
+        '<button class="filter-pill-btn" id="flt-safe" onclick="filterIngredients(\'Safe\')"><span>Clean / Safe</span> <span style="opacity:0.6">(' + safeCount + ')</span></button>' +
       '</div>';
 
       // Ingredient Cards
@@ -4149,7 +4289,7 @@
 
         html += '<div class="ing-card ing-card-item" data-risk="' + item.risk + '">' +
           '<div class="ing-top">' +
-            '<div><span class="ing-name">' + (item.icon || '✅') + ' ' + item.name + '</span><span class="ing-cat"> · ' + item.cat + '</span></div>' +
+            '<div><span class="ing-name">' + item.name + '</span><span class="ing-cat"> · ' + item.cat + '</span></div>' +
             '<span class="risk-chip ' + chipClass + '">' + item.risk + '</span>' +
           '</div>' +
           '<div class="ing-desc">' + item.side_effects + '</div>' +
@@ -4163,7 +4303,7 @@
         html += '<div class="raw-ingredients-card">' +
           '<div class="raw-drawer-header" onclick="toggleRawIngredientsDrawer()">' +
             '<div style="display:flex;align-items:center;gap:8px;">' +
-              '<span style="font-size:17px;">📜</span>' +
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>' +
               '<span style="font-weight:700;font-size:0.86rem;color:#f8fafc;">Original Label Ingredients</span>' +
             '</div>' +
             '<span id="raw-drawer-arrow" style="font-size:0.75rem;color:#94a3b8;transition:transform 0.25s;">▼</span>' +
@@ -4171,15 +4311,15 @@
           '<div id="raw-drawer-body" class="raw-drawer-body" style="display:none;">' +
             '<div class="raw-text-box">' + cleanRaw + '</div>' +
             '<div style="display:flex;justify-content:flex-end;margin-top:8px;">' +
-              '<button class="copy-raw-btn" onclick="copyRawIngredients()">📋 Copy Text</button>' +
+              '<button class="copy-raw-btn" onclick="copyRawIngredients()">Copy Text</button>' +
             '</div>' +
           '</div>' +
         '</div>';
       }
 
       html += '<div class="action-grid">' +
-        '<button class="retake-btn" onclick="navToPage(\'scan\')">📷 Scan Another</button>' +
-        '<button class="share-btn" onclick="shareReport()">📤 Share Report</button>' +
+        '<button class="retake-btn" onclick="navToPage(\'scan\')">Scan Another</button>' +
+        '<button class="share-btn" onclick="shareReport()">Share Report</button>' +
       '</div>';
 
       resultsDiv.innerHTML = html;
@@ -4215,7 +4355,7 @@
       if (lastAnalysisData && lastAnalysisData.rawIngredients) {
         if (navigator.clipboard) {
           navigator.clipboard.writeText(lastAnalysisData.rawIngredients);
-          showStatus("📋 Raw ingredients copied!", "success");
+          showStatus("Raw ingredients copied to clipboard", "success");
           setTimeout(hideStatus, 1500);
         }
       }
@@ -4226,16 +4366,16 @@
       haptic();
       if (!lastAnalysisData) return;
       var d = lastAnalysisData;
-      var text = "🛡️ NutriScan Chemical & Safety Report: " + (d.product.name || 'Product') + "\n" +
-                 "⭐ Safety Score: " + d.score + "/100 (Grade " + d.grade + ")\n" +
-                 "⚠️ Allergens/Sensitizers: " + (d.allergens.length ? d.allergens.join(', ') : 'None') + "\n" +
-                 "🧪 Concerning Chemicals: " + d.concerning + "\n" +
-                 "⚡ Audited via NutriScan Universal Safety (Developed by Nitin Yadav)";
+      var text = "NUTRISCAN CHEMICAL & SAFETY REPORT: " + (d.product.name || 'Product') + "\n" +
+                 "Safety Score: " + d.score + "/100 (Grade " + d.grade + ")\n" +
+                 "Allergens/Sensitizers: " + (d.allergens.length ? d.allergens.join(', ') : 'None') + "\n" +
+                 "Concerning Chemicals Detected: " + d.concerning + "\n" +
+                 "Audited via NutriScan Pro (Developed by Nitin Yadav)";
       if (navigator.share) {
         navigator.share({ title: "NutriScan Safety Report", text: text }).catch(function(){});
       } else if (navigator.clipboard) {
         navigator.clipboard.writeText(text);
-        showStatus("📋 Report copied to clipboard!", "success");
+        showStatus("Report copied to clipboard", "success");
         setTimeout(hideStatus, 2000);
       }
     }
@@ -4290,7 +4430,7 @@
 
       if (!list || list.length === 0) {
         container.innerHTML = '<div class="empty-state-box">' +
-          '<div class="empty-state-icon">🛒</div>' +
+          '<div class="empty-state-icon"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>' +
           '<div class="empty-state-title">No Scans in History</div>' +
           '<div class="empty-state-desc">Scan barcodes or product ingredient lists to build your healthy pantry audit.</div>' +
         '</div>';
@@ -4309,7 +4449,7 @@
             '<div class="history-card-meta">' + (item.brand || 'Brand') + ' · ' + (item.category || 'Product') + ' · ' + item.date + '</div>' +
           '</div>' +
           '<div style="display:flex;align-items:center;gap:6px;">' +
-            '<button class="history-del-btn" onclick="deleteHistoryItem(' + idx + ', event)" title="Remove this scan">🗑️</button>' +
+            '<button class="history-del-btn" onclick="deleteHistoryItem(' + idx + ', event)" title="Remove this scan"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>' +
             '<div style="font-size:16px;color:#94a3b8;">›</div>' +
           '</div>' +
         '</div>';
@@ -4327,7 +4467,7 @@
           list.splice(index, 1);
           localStorage.setItem("nutriscan_history", JSON.stringify(list));
           renderFullHistoryPage();
-          showStatus("🗑️ Item removed from history.", "loading");
+          showStatus("Item removed from history.", "loading");
           setTimeout(hideStatus, 1200);
         }
       } catch(e){}
@@ -4364,7 +4504,7 @@
       haptic();
       localStorage.removeItem("nutriscan_history");
       renderFullHistoryPage();
-      showStatus("🗑️ History cleared.", "loading");
+      showStatus("History cleared.", "loading");
       setTimeout(hideStatus, 1500);
     }
 
@@ -4402,12 +4542,12 @@
 
         html += '<div class="guide-card-item">' +
           '<div class="guide-top">' +
-            '<div class="guide-title">' + (item.icon || '🧪') + ' ' + item.name + '</div>' +
+            '<div class="guide-title">' + item.name + '</div>' +
             '<span class="risk-chip ' + chipClass + '">' + item.risk + '</span>' +
           '</div>' +
           '<div class="guide-category">' + item.cat + '</div>' +
           '<div class="guide-desc">' + item.side_effects + '</div>' +
-          '<div class="guide-status">🏛️ ' + item.status + '</div>' +
+          '<div class="guide-status">Status: ' + item.status + '</div>' +
         '</div>';
       });
 
@@ -4456,7 +4596,7 @@
         skin: !!(document.getElementById("pref-skin") && document.getElementById("pref-skin").checked)
       };
       localStorage.setItem("nutriscan_health_prefs", JSON.stringify(prefs));
-      showStatus("✅ Preferences saved!", "success");
+      showStatus("Preferences saved successfully", "success");
       setTimeout(hideStatus, 1200);
     }
 
@@ -4474,7 +4614,7 @@
       if (lastAnalysisData) {
         renderAnalysis(lastAnalysisData);
       }
-      showStatus("🌐 Language: " + lang, "success");
+      showStatus("Language: " + lang, "success");
       setTimeout(hideStatus, 1200);
     }
 
@@ -4500,10 +4640,10 @@
       var val = keyInput ? keyInput.value.trim() : "";
       if (val) {
         localStorage.setItem("nutriscan_custom_gemini_key", val);
-        showStatus("✅ Custom API Key Saved!", "success");
+        showStatus("Custom Gemini API Key Saved", "success");
       } else {
         localStorage.removeItem("nutriscan_custom_gemini_key");
-        showStatus("✅ Reset to Default Key!", "success");
+        showStatus("Reset to default system key", "success");
       }
       loadApiKeyUI();
       setTimeout(hideStatus, 1500);
@@ -4513,7 +4653,7 @@
       haptic();
       localStorage.removeItem("nutriscan_custom_gemini_key");
       loadApiKeyUI();
-      showStatus("✅ Reverted to Built-in Key", "success");
+      showStatus("Reverted to built-in system key", "success");
       setTimeout(hideStatus, 1500);
     }
 

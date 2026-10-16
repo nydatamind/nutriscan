@@ -47,7 +47,7 @@ def get_logo_base64() -> str:
 _LOGO_B64 = get_logo_base64()
 
 # ── Page Configuration ───────────────────────────────────────────────────────
-_fav = Image.open(_LOGO_PATH) if _LOGO_PATH.exists() else "🌿"
+_fav = Image.open(_LOGO_PATH) if _LOGO_PATH.exists() else None
 st.set_page_config(
     page_title="NutriScan",
     page_icon=_fav,
@@ -575,7 +575,7 @@ def render_results(data: dict) -> None:
         prompt = data.get("action_prompt", "Please capture a clear photo of the ingredient list!")
         st.markdown(f"""
         <div class="unreadable-banner" style="border-color:rgba(245,158,11,0.45);background:rgba(245,158,11,0.1)">
-            <div style="font-size:2.2rem;margin-bottom:0.4rem;">📦 🔍</div>
+            <div style="font-size:1.1rem;font-weight:800;letter-spacing:1px;color:#fef08a;margin-bottom:0.4rem;">[UNVERIFIED BARCODE]</div>
             <strong style="font-size:1.1rem;color:#fef08a;">{msg}</strong>
             <div style="font-size:0.9rem;color:#fde68a;margin-top:0.45rem;">{prompt}</div>
         </div>
@@ -589,7 +589,7 @@ def render_results(data: dict) -> None:
         p_brand = p_info.get("brand", "")
         p_img = p_info.get("image_url", "")
         bcode = data.get("barcode", "")
-        img_html = f'<img src="{p_img}" class="product-thumb" alt="{p_name}" />' if p_img else '<div class="product-thumb-placeholder">📦</div>'
+        img_html = f'<img src="{p_img}" class="product-thumb" alt="{p_name}" />' if p_img else '<div class="product-thumb-placeholder">PRODUCT</div>'
 
         st.markdown(f"""
         <div class="product-banner">
@@ -598,7 +598,7 @@ def render_results(data: dict) -> None:
                 <div class="product-brand">{p_brand}</div>
                 <div class="product-name">{p_name}</div>
                 <div class="product-meta-row">
-                    <span class="barcode-pill">⚡ Barcode: {bcode}</span>
+                    <span class="barcode-pill">BARCODE: {bcode}</span>
                 </div>
             </div>
         </div>
@@ -617,7 +617,7 @@ def render_results(data: dict) -> None:
         rec = data.get("recommendation", "Please capture a clear, well-lit photo of the ingredient list.")
         st.markdown(f"""
         <div class="unreadable-banner">
-            <div style="font-size:1.8rem;margin-bottom:0.4rem;">🔍 📸</div>
+            <div style="font-size:1.1rem;font-weight:800;letter-spacing:1px;color:#67e8f9;margin-bottom:0.4rem;">[INGREDIENT OCR]</div>
             <strong style="font-size:1.05rem;color:#fef08a;">{summary}</strong>
             <div style="font-size:0.88rem;color:#fde68a;margin-top:0.4rem;">{rec}</div>
         </div>
@@ -633,7 +633,7 @@ def render_results(data: dict) -> None:
         p_nutri = p_info.get("nutriscore", "")
         bcode = p_info.get("barcode") or data.get("barcode", "")
 
-        img_html = f'<img src="{p_img}" class="product-thumb" alt="{p_name}" />' if p_img else '<div class="product-thumb-placeholder">⚡</div>'
+        img_html = f'<img src="{p_img}" class="product-thumb" alt="{p_name}" />' if p_img else '<div class="product-thumb-placeholder"></div>'
         nutri_html = f'<span class="nutri-pill">Nutri-Score: {p_nutri}</span>' if p_nutri else ''
 
         st.markdown(f"""
@@ -643,7 +643,7 @@ def render_results(data: dict) -> None:
                 <div class="product-brand">{p_brand}</div>
                 <div class="product-name">{p_name}</div>
                 <div class="product-meta-row">
-                    <span class="barcode-pill">⚡ Barcode: {bcode}</span>
+                    <span class="barcode-pill">BARCODE: {bcode}</span>
                     {nutri_html}
                 </div>
             </div>
@@ -688,7 +688,7 @@ def render_results(data: dict) -> None:
     if allergens:
         st.markdown(f"""
         <div class="allergen-banner">
-            ⚠️ <strong>Allergens Detected:</strong> {', '.join(allergens)}
+            <strong>ALLERGEN ALERT:</strong> {', '.join(allergens)}
         </div>
         """, unsafe_allow_html=True)
 
@@ -698,21 +698,21 @@ def render_results(data: dict) -> None:
     if summary:
         st.markdown(f"""
         <div class="verdict-box">
-            <strong style="color:#67e8f9">📋 Verdict:</strong> {summary}
+            <strong style="color:#67e8f9">Chemical Audit:</strong> {summary}
         </div>
         """, unsafe_allow_html=True)
 
     if rec:
         st.markdown(f"""
         <div class="action-box">
-            <strong style="color:#6ee7b7">💡 Advice:</strong> {rec}
+            <strong style="color:#6ee7b7">Safety Advice:</strong> {rec}
         </div>
         """, unsafe_allow_html=True)
 
     # Ingredient Cards
     ingredients = data.get("ingredients", [])
     if ingredients:
-        st.markdown("<h4 style='margin:1.4rem 0 0.7rem 0;font-size:1.05rem;font-weight:800;letter-spacing:-0.2px'>🧪 Ingredient Breakdown</h4>", unsafe_allow_html=True)
+        st.markdown("<h4 style='margin:1.4rem 0 0.7rem 0;font-size:1.05rem;font-weight:800;letter-spacing:-0.2px'> Ingredient Breakdown</h4>", unsafe_allow_html=True)
 
         for item in ingredients:
             name = item.get("name", "Unknown")
@@ -720,7 +720,7 @@ def render_results(data: dict) -> None:
             risk = item.get("risk_level", "Safe")
             side_fx = item.get("side_effects", "Safe for regular consumption")
             reg = item.get("regulatory_status", "Approved")
-            icon = item.get("icon", "✅")
+            icon = item.get("icon", "")
 
             if "Safe" in risk:
                 chip_class = "chip-safe"
@@ -752,7 +752,7 @@ def render_results(data: dict) -> None:
 
 def render_sidebar() -> tuple[str, str]:
     with st.sidebar:
-        logo_html = f'<img src="data:image/png;base64,{_LOGO_B64}" style="width:48px;height:48px;border-radius:14px;box-shadow:0 0 16px rgba(6,182,212,0.35);margin-bottom:0.4rem;border:1px solid rgba(255,255,255,0.2)" />' if _LOGO_B64 else '<div style="font-size:1.8rem">🌿</div>'
+        logo_html = f'<img src="data:image/png;base64,{_LOGO_B64}" style="width:48px;height:48px;border-radius:14px;box-shadow:0 0 16px rgba(6,182,212,0.35);margin-bottom:0.4rem;border:1px solid rgba(255,255,255,0.2)" />' if _LOGO_B64 else '<div style="font-size:1.8rem">NUTRISCAN</div>'
         st.markdown(f"""
         <div style="text-align:center;padding:0.5rem 0 1rem;">
             {logo_html}
@@ -766,16 +766,16 @@ def render_sidebar() -> tuple[str, str]:
         # Engine Status
         ai = st.session_state.get("ai_engine")
         if ai:
-            st.markdown("🟢 **AI Analysis Engine**: `Active & Ready`")
-            st.markdown("⚡ **Barcode Scanner**: `Open Food Facts Global`")
-            st.markdown("🛡️ **Safety Scoring**: `Deterministic Rules Engine`")
+            st.markdown("**AI Analysis Engine**: `Active & Ready`")
+            st.markdown("**Barcode Scanner**: `Open Food Facts Global`")
+            st.markdown("**Safety Scoring**: `Deterministic Rules Engine`")
         else:
-            st.markdown("🟡 **AI Analysis Engine**: `Initializing...`")
+            st.markdown("**AI Analysis Engine**: `Initializing...`")
 
         st.divider()
 
         # Optional Custom Key
-        with st.expander("🔑 Override API Key", expanded=False):
+        with st.expander("Override API Key", expanded=False):
             cg = st.text_input("Gemini API Key", type="password", value=st.session_state.get("c_gemini", _get_key("GEMINI_API_KEY")), key="c_gemini")
             if st.button("Save Key", use_container_width=True, type="secondary"):
                 st.session_state.pop("ai_engine", None)
@@ -785,7 +785,7 @@ def render_sidebar() -> tuple[str, str]:
 
         st.markdown("""
         <div style="font-size:0.72rem;color:#64748b;text-align:center;margin-top:2rem">
-            ⚡ <strong>NutriScan</strong><br>
+            <strong>NutriScan Pro</strong><br>
             AI Food & Barcode Safety Scanner
         </div>
         """, unsafe_allow_html=True)
@@ -809,21 +809,21 @@ def main() -> None:
         <div class="logo-glow-ring"></div>
         <img src="data:image/png;base64,{_LOGO_B64}" class="app-logo-img" alt="NutriScan Logo Emblem" />
     </div>
-    """ if _LOGO_B64 else '<div style="font-size:3rem;margin-bottom:0.5rem">🌿</div>'
+    """ if _LOGO_B64 else '<div style="font-size:3rem;margin-bottom:0.5rem">NUTRISCAN</div>'
 
     st.markdown(f"""
     <div class="hero-box">
         {logo_markup}
         <h1 class="hero-title">NutriScan <span class="ny-tag">NY</span></h1>
         <p class="hero-subtitle">Smart AI Barcode, Line Code & Ingredient Safety Scanner</p>
-        <div class="hero-dev-tag">⚡ INSTANT FOOD & BARCODE SCANNER</div>
+        <div class="hero-dev-tag">UNIVERSAL CHEMICAL & INGREDIENT SCANNER</div>
     </div>
     """, unsafe_allow_html=True)
 
     # ── Compact Response Language Selector ───────────────────────────────────
     st.markdown("""
     <div class="lang-header">
-        <span class="lang-label">🌐 Select Response Language</span>
+        <span class="lang-label">Response Language</span>
     </div>
     """, unsafe_allow_html=True)
 
@@ -835,7 +835,7 @@ def main() -> None:
 
     with lang_col1:
         st.markdown('<div class="lang-btn">', unsafe_allow_html=True)
-        if st.button("🇬🇧 English", key="lang_en", use_container_width=True,
+        if st.button("English", key="lang_en", use_container_width=True,
                      type="primary" if curr_lang == "English" else "secondary"):
             if st.session_state["language"] != "English":
                 st.session_state["language"] = "English"
@@ -845,7 +845,7 @@ def main() -> None:
 
     with lang_col2:
         st.markdown('<div class="lang-btn">', unsafe_allow_html=True)
-        if st.button("🇮🇳 Hindi", key="lang_hi", use_container_width=True,
+        if st.button("Hindi", key="lang_hi", use_container_width=True,
                      type="primary" if curr_lang == "Hindi" else "secondary"):
             if st.session_state["language"] != "Hindi":
                 st.session_state["language"] = "Hindi"
@@ -855,7 +855,7 @@ def main() -> None:
 
     with lang_col3:
         st.markdown('<div class="lang-btn">', unsafe_allow_html=True)
-        if st.button("🔀 Hinglish", key="lang_hl", use_container_width=True,
+        if st.button("Hinglish", key="lang_hl", use_container_width=True,
                      type="primary" if curr_lang == "Hinglish" else "secondary"):
             if st.session_state["language"] != "Hinglish":
                 st.session_state["language"] = "Hinglish"
@@ -869,7 +869,7 @@ def main() -> None:
     if ai is None:
         st.markdown("""
         <div class="allergen-banner" style="color:#fde047;border-color:#f59e0b">
-            ⚠️ <strong>API Key Required</strong><br>
+            <strong>API Key Required</strong><br>
             Please configure GEMINI_API_KEY in your environment or Streamlit Secrets.
         </div>
         """, unsafe_allow_html=True)
@@ -920,10 +920,10 @@ def main() -> None:
 
         if active_barcode:
             spinner_msg = {
-                "English":  f"⚡ Fetching product details for Barcode {active_barcode}…",
-                "Hindi":    f"⚡ बारकोड {active_barcode} से उत्पाद की जानकारी प्राप्त हो रही है…",
-                "Hinglish": f"⚡ Barcode {active_barcode} se product details fetch ho rahi hain…",
-            }.get(lang, "⚡ Fetching product details…")
+                "English":  f"Fetching product details for Barcode {active_barcode}…",
+                "Hindi":    f"बारकोड {active_barcode} से उत्पाद की जानकारी प्राप्त हो रही है…",
+                "Hinglish": f"Barcode {active_barcode} se product details fetch ho rahi hain…",
+            }.get(lang, "Fetching product details…")
 
             with st.spinner(spinner_msg):
                 try:
@@ -936,10 +936,10 @@ def main() -> None:
 
         elif active_img is not None:
             spinner_msg = {
-                "English":  "🔬 Analyzing your ingredients…",
-                "Hindi":    "🔬 सामग्रियों का विश्लेषण हो रहा है…",
-                "Hinglish": "🔬 Ingredients ka analysis ho raha hai…",
-            }.get(lang, "🔬 Analyzing your ingredients…")
+                "English":  "Analyzing ingredients…",
+                "Hindi":    "सामग्रियों का विश्लेषण हो रहा है…",
+                "Hinglish": "Ingredients ka analysis ho raha hai…",
+            }.get(lang, "Analyzing ingredients…")
 
             with st.spinner(spinner_msg):
                 try:
@@ -953,7 +953,7 @@ def main() -> None:
     # ── Active State Preview & Clear / Retake Option ──────────────────────────
     if active_img is not None:
         source = st.session_state.get("active_source", "camera")
-        source_label = "📷 Captured from Phone Camera" if source == "camera" else "🖼️ Selected from Gallery"
+        source_label = "Captured from Camera" if source == "camera" else "Selected from Gallery"
 
         st.markdown(f"""
         <div style="background:var(--bg-card);border:1px solid rgba(6,182,212,0.4);border-radius:16px;
@@ -966,7 +966,7 @@ def main() -> None:
 
         st.image(active_img, caption="Product Label", use_container_width=True)
 
-        if st.button("🔄 Scan Another Item", key="btn_retake_img", type="secondary", use_container_width=True):
+        if st.button("Scan Another Item", key="btn_retake_img", type="secondary", use_container_width=True):
             st.session_state.pop("active_image", None)
             st.session_state.pop("active_barcode", None)
             st.session_state.pop("scan_data", None)
@@ -974,7 +974,7 @@ def main() -> None:
             st.rerun()
 
     elif active_barcode is not None:
-        if st.button("🔄 Scan Another Barcode / Label", key="btn_retake_bc", type="secondary", use_container_width=True):
+        if st.button("Scan Another Item", key="btn_retake_bc", type="secondary", use_container_width=True):
             st.session_state.pop("active_barcode", None)
             st.session_state.pop("active_image", None)
             st.session_state.pop("scan_data", None)
@@ -989,7 +989,7 @@ def main() -> None:
     # ── Bottom Developer Banner ───────────────────────────────────────────────
     st.markdown("""
     <div class="dev-banner">
-        <span class="dev-badge">⚡ NutriScan · NY</span>
+        <span class="dev-badge">NutriScan · NY</span>
     </div>
     """, unsafe_allow_html=True)
 

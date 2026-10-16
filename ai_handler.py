@@ -58,7 +58,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Flour Treatment Agent",
         "side_effects": "Classified as potential carcinogen; banned in EU, India, UK, and multiple countries.",
         "regulatory_status": "Banned in Food",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 35,
     },
     {
@@ -68,7 +68,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Synthetic Antioxidant",
         "side_effects": "Potential endocrine disruptor; possible human carcinogen in long-term high doses.",
         "regulatory_status": "Restricted in EU / FDA Regulated",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 25,
     },
     {
@@ -78,7 +78,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Synthetic Antioxidant",
         "side_effects": "Linked to hormone disruption and potential organ toxicity with excessive intake.",
         "regulatory_status": "Strictly Limited Use",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 25,
     },
     {
@@ -88,7 +88,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Color",
         "side_effects": "Banned in EU as food additive due to DNA damage (genotoxicity) concerns.",
         "regulatory_status": "Banned in EU Food",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 30,
     },
     {
@@ -98,7 +98,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Industrial Fat",
         "side_effects": "Elevates LDL bad cholesterol, lowers HDL, significantly increases heart disease risk.",
         "regulatory_status": "Prohibited / Heavily Restricted by WHO & FDA",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 30,
     },
     {
@@ -108,7 +108,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Dough Conditioner",
         "side_effects": "Respiratory sensitivity and asthma risk; breakdown products include semicarbazide.",
         "regulatory_status": "Banned in EU & Australia",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 28,
     },
     {
@@ -118,7 +118,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Color",
         "side_effects": "Synthetic azo dye; linked to hyperactivity in children and mild allergic sensitivities.",
         "regulatory_status": "Warning Label Required in EU",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 15,
     },
     {
@@ -128,7 +128,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Color",
         "side_effects": "May trigger urticaria (hives), asthma, and hyperactive behavior in sensitive children.",
         "regulatory_status": "Warning Label Required in EU",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 15,
     },
     {
@@ -138,7 +138,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Color",
         "side_effects": "Synthetic azo dye; linked to hyperactivity and allergy symptoms in sensitive individuals.",
         "regulatory_status": "Warning Label Required in EU",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 15,
     },
     {
@@ -148,7 +148,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Color",
         "side_effects": "Synthetic dye; potential mild skin irritations or allergic reactions in rare cases.",
         "regulatory_status": "Approved with Limits",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 12,
     },
     {
@@ -158,7 +158,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Preservative",
         "side_effects": "Can form trace benzene when combined with Vitamin C (Ascorbic Acid).",
         "regulatory_status": "FSSAI / FDA Approved with Limits",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 14,
     },
     {
@@ -168,7 +168,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Preservative",
         "side_effects": "Widely used anti-fungal preservative; generally safe, rare contact allergic reactions.",
         "regulatory_status": "FDA GRAS / FSSAI Approved",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 6,
     },
     {
@@ -178,7 +178,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Curing Agent / Preservative",
         "side_effects": "Forms carcinogenic nitrosamines during high heat cooking; linked to colon health risks.",
         "regulatory_status": "Strictly Regulated Preservative",
-        "icon": "🔴",
+        "icon": "",
         "score_penalty": 24,
     },
     {
@@ -188,7 +188,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Flavor Enhancer",
         "side_effects": "Flavor enhancer providing umami; may cause mild transient sensitivity in rare individuals.",
         "regulatory_status": "FDA GRAS / FSSAI Approved",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 6,
     },
     {
@@ -198,7 +198,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Flavor Enhancer",
         "side_effects": "Synergistic flavor enhancers; metabolizes to purines, consume with caution if prone to gout.",
         "regulatory_status": "Approved Additive",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 5,
     },
     {
@@ -208,7 +208,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Refined Sweetener",
         "side_effects": "Linked to fatty liver risk, insulin resistance, obesity, and accelerated metabolic syndrome.",
         "regulatory_status": "Permitted Refined Caloric Sweetener",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 15,
     },
     {
@@ -218,7 +218,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Sweetener",
         "side_effects": "Classified by IARC as possibly carcinogenic (Group 2B); unsafe for individuals with PKU.",
         "regulatory_status": "FDA Approved / PKU Warning Required",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 16,
     },
     {
@@ -228,7 +228,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Artificial Sweetener",
         "side_effects": "Zero-calorie synthetic sweetener; some studies show potential gut microbiome disruption.",
         "regulatory_status": "FDA / FSSAI Approved",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 14,
     },
     {
@@ -238,7 +238,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Non-Nutritive Sweetener",
         "side_effects": "Chlorinated sugar derivative; generally safe, high heat cooking may degrade compounds.",
         "regulatory_status": "FDA GRAS / FSSAI Approved",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 7,
     },
     {
@@ -248,7 +248,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Saturated Fat",
         "side_effects": "High saturated palmitic acid content; frequent high consumption increases cardiovascular risk.",
         "regulatory_status": "Approved Cooking Oil",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 12,
     },
     {
@@ -258,7 +258,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Saturated Fat",
         "side_effects": "Contains over 80% saturated fat; regular excessive intake raises blood lipid levels.",
         "regulatory_status": "Approved Fat",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 12,
     },
     {
@@ -268,7 +268,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Food Coloring",
         "side_effects": "Ammonia-process caramel colors (150c/150d) may contain trace 4-MEI byproduct.",
         "regulatory_status": "Approved with Limits",
-        "icon": "🟠",
+        "icon": "",
         "score_penalty": 12,
     },
     {
@@ -278,7 +278,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Emulsifier",
         "side_effects": "Plant-derived natural phospholipid; safe for consumption. Contains soy allergen.",
         "regulatory_status": "FDA GRAS / FSSAI Approved",
-        "icon": "✅",
+        "icon": "",
         "allergen": "Soy",
         "score_penalty": 0,
     },
@@ -289,7 +289,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Acidity Regulator",
         "side_effects": "Naturally occurring organic acid; completely safe in standard food portions.",
         "regulatory_status": "FDA GRAS / FSSAI Approved",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -299,7 +299,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Leavening Agent",
         "side_effects": "Standard alkaline mineral leavening agent; safe for regular digestion.",
         "regulatory_status": "FDA GRAS",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -309,7 +309,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Antioxidant / Vitamin",
         "side_effects": "Essential nutrient and safe natural antioxidant for food preservation.",
         "regulatory_status": "FDA GRAS / Essential Nutrient",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -319,7 +319,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Antioxidant",
         "side_effects": "Fat-soluble natural antioxidant; safe and beneficial nutrient.",
         "regulatory_status": "FDA GRAS",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     # ── Active Skincare & Cosmetic Ingredients (Roll-ons, Sunscreens, Serums) ──
@@ -330,7 +330,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Alpha Hydroxy Acid (AHA)",
         "side_effects": "Gentle AHA exfoliant; brightens skin, reduces underarm hyperpigmentation & hydrates skin.",
         "regulatory_status": "Dermatologist Approved Active",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -340,7 +340,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Beta Hydroxy Acid (BHA)",
         "side_effects": "Penetrates deep into pores to control body odour, unclog pores, and prevent breakout bacteria.",
         "regulatory_status": "Dermatologist Approved Active",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -350,7 +350,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Gentle AHA Exfoliant",
         "side_effects": "Almond-derived gentle AHA; brightens skin tone without irritation.",
         "regulatory_status": "Cosmetic Grade Active",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -360,7 +360,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Nourishing Botanical Lipid",
         "side_effects": "Rich in fatty acids and Vitamin E; deeply moisturizes and protects skin barrier.",
         "regulatory_status": "Beneficial Natural Emollient",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -370,7 +370,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Skin Hydrator & Carrier",
         "side_effects": "Helps active ingredients penetrate skin surface; attracts & locks in moisture.",
         "regulatory_status": "Cosmetic Standard Approved",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -380,7 +380,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Botanical Antioxidant",
         "side_effects": "Rich in Beta-Carotene & Vitamin A; natural protection against free radical sun damage.",
         "regulatory_status": "Beneficial Botanical Extract",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -390,7 +390,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Botanical Thickener",
         "side_effects": "Plant-derived natural gelling & stabilizing agent; 100% non-toxic.",
         "regulatory_status": "FDA GRAS Approved",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -400,7 +400,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Processed Carbohydrate",
         "side_effects": "High glycemic index (GI 110-185); rapidly spikes blood glucose levels.",
         "regulatory_status": "FDA GRAS",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 6,
     },
     {
@@ -410,7 +410,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Refined Sugar",
         "side_effects": "High caloric sweetener; frequent high intake contributes to tooth decay and weight gain.",
         "regulatory_status": "Safe in moderation",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 5,
     },
     {
@@ -420,7 +420,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Mineral Seasoning",
         "side_effects": "Essential dietary mineral; safe for regular consumption in recommended daily amounts.",
         "regulatory_status": "Essential Food Standard",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -430,7 +430,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Refined Grain",
         "side_effects": "Stripped of natural bran and fiber; low satiety, contains gluten allergen.",
         "regulatory_status": "Standard Staple",
-        "icon": "🟡",
+        "icon": "",
         "allergen": "Wheat / Gluten",
         "score_penalty": 4,
     },
@@ -441,7 +441,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Whole Grain",
         "side_effects": "Rich in dietary fiber and essential micronutrients. Contains gluten allergen.",
         "regulatory_status": "Natural Whole Food",
-        "icon": "✅",
+        "icon": "",
         "allergen": "Wheat / Gluten",
         "score_penalty": 0,
     },
@@ -452,7 +452,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Dairy",
         "side_effects": "Source of natural protein and calcium. Contains lactose & dairy allergens.",
         "regulatory_status": "Natural Food",
-        "icon": "✅",
+        "icon": "",
         "allergen": "Milk / Dairy",
         "score_penalty": 0,
     },
@@ -463,7 +463,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Legume / Nut",
         "side_effects": "Nutrient-dense protein and healthy fats. Major common allergen.",
         "regulatory_status": "Natural Food",
-        "icon": "✅",
+        "icon": "",
         "allergen": "Peanuts",
         "score_penalty": 0,
     },
@@ -474,7 +474,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Tree Nut",
         "side_effects": "Heart-healthy unsaturated fats and antioxidants. Tree nut allergen.",
         "regulatory_status": "Natural Food",
-        "icon": "✅",
+        "icon": "",
         "allergen": "Tree Nuts",
         "score_penalty": 0,
     },
@@ -485,7 +485,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Stabilizer",
         "side_effects": "Plant seed soluble fiber; safe and natural thickening agent.",
         "regulatory_status": "FDA GRAS",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -495,7 +495,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Fermented Stabilizer",
         "side_effects": "Safe fermented polysaccharide thickener; well-tolerated in normal food amounts.",
         "regulatory_status": "FDA GRAS",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -505,7 +505,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Emulsifier",
         "side_effects": "Common fat-derived emulsifier; may contain trace trans fats depending on oil source.",
         "regulatory_status": "FDA GRAS",
-        "icon": "🟡",
+        "icon": "",
         "score_penalty": 5,
     },
     {
@@ -515,7 +515,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Natural Cocoa",
         "side_effects": "Rich in polyphenol antioxidants and natural flavonoids.",
         "regulatory_status": "Natural Food",
-        "icon": "✅",
+        "icon": "",
         "score_penalty": 0,
     },
     {
@@ -525,7 +525,7 @@ CANONICAL_DATABASE: List[Dict[str, Any]] = [
         "category": "Preservative / Allergen",
         "side_effects": "Can trigger acute bronchospasms and allergic reactions in asthmatic individuals.",
         "regulatory_status": "Allergen Declaration Required",
-        "icon": "🟠",
+        "icon": "",
         "allergen": "Sulfites",
         "score_penalty": 15,
     },
@@ -591,13 +591,13 @@ def match_ingredient_against_kb(raw_name: str) -> Dict[str, Any]:
     penalty = 0
     cat = "Food Ingredient"
     risk = "Safe"
-    icon = "✅"
+    icon = ""
     side_effects = "Standard food constituent; safe for general consumption."
     reg_status = "Approved Food"
 
     if re.search(r"artificial|synthetic|preservative|colour|color|stabilizer|emulsifier|flavo[u]?r", raw_lower):
         risk = "Moderate Risk" if re.search(r"artificial|synthetic", raw_lower) else "Low Risk"
-        icon = "🟠" if risk == "Moderate Risk" else "🟡"
+        icon = "" if risk == "Moderate Risk" else ""
         penalty = 12 if risk == "Moderate Risk" else 5
         cat = "Food Additive"
         side_effects = "Additive used for texture, shelf-life or flavoring. Consume in moderation."
@@ -605,13 +605,13 @@ def match_ingredient_against_kb(raw_name: str) -> Dict[str, Any]:
     elif re.search(r"oil|fat|hydrogenated", raw_lower):
         cat = "Fats & Oils"
         risk = "Low Risk"
-        icon = "🟡"
+        icon = ""
         penalty = 4
         side_effects = "Dietary lipid; recommended in balanced moderation."
     elif re.search(r"water|flour|grain|salt|spice|herb|extract|milk|fruit|nut|seed|vegetable", raw_lower):
         cat = "Natural Ingredient"
         risk = "Safe"
-        icon = "✅"
+        icon = ""
         penalty = 0
         side_effects = "Natural wholesome ingredient."
 
